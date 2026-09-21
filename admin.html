@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>E&B MARKETIZA - Owner Dashboard</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #111827;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* =========================
+       ACCESS DENIED
+    ========================= */
+
+    #accessDenied {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #f5f7fb;
+    }
+
+    .denied-box {
+      width: 100%;
+      max-width: 460px;
+      background: white;
+      border-radius: 20px;
+      padding: 40px 25px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .denied-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: #fee2e2;
+      color: #dc2626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+
+    .denied-box h1 {
+      font-size: 25px;
+      margin-bottom: 10px;
+    }
+
+    .denied-box p {
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    #loadingScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f7fb;
+    }
+
+    .loading-box {
+      text-align: center;
+      color: #555;
+    }
+
+    .spinner {
+      width: 42px;
+      height: 42px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #111827;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* =========================
+       DASHBOARD
+    ========================= */
+
+    #dashboard {
+      min-height: 100vh;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 16px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: white;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .brand-text h1 {
+      font-size: 19px;
+    }
+
+    .brand-text span {
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-actions a,
+    .logout-btn {
+      border: none;
+      text-decoration: none;
+      cursor: pointer;
+      padding: 10px 15px;
+      border-radius: 9px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .home-btn {
+      background: white;
+      color: #111827;
+    }
+
+    .logout-btn {
+      background: #dc2626;
+      color: white;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    main {
+      width: min(1200px, 94%);
+      margin: 30px auto 50px;
+    }
+
+    .welcome {
+      margin-bottom: 25px;
+    }
+
+    .welcome h2 {
+      font-size: 28px;
+      margin-bottom: 7px;
+    }
+
+    .welcome p {
+      color: #6b7280;
+    }
+
+    /* =========================
+       STATS
+    ========================= */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-card span {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 30px;
+      margin-top: 8px;
+    }
+
+    /* =========================
+       FORM
+    ========================= */
+
+    .panel {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 22px;
+    }
+
+    .panel-title h3 {
+      font-size: 21px;
+    }
+
+    .cancel-btn {
+      display: none;
+      border: none;
+      background: #e5e7eb;
+      color: #111827;
+      padding: 9px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 17px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 12px 13px;
+      outline: none;
+      background: white;
+      color: #111827;
+    }
+
+    .field textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: #111827;
+    }
+
+    .form-actions {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .save-btn {
+      border: none;
+      background: #111827;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .save-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status-message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 9px;
+      display: none;
+      font-size: 14px;
+    }
+
+    .status-message.success {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-message.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* =========================
+       PRODUCTS
+    ========================= */
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .product-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      background: #f3f4f6;
+      display: block;
+    }
+
+    .product-info {
+      padding: 17px;
+    }
+
+    .product-category {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin-bottom: 7px;
+    }
+
+    .product-info h4 {
+      font-size: 18px;
+      margin-bottom: 7px;
+    }
+
+    .product-description {
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 40px;
+      margin-bottom: 12px;
+    }
+
+    .product-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .price {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .stock {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .edit-btn,
+    .delete-btn {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .edit-btn {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .delete-btn {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .empty-products {
+      border: 2px dashed #d1d5db;
+      border-radius: 14px;
+      padding: 45px 20px;
+      text-align: center;
+      color: #6b7280;
+      grid-column: 1 / -1;
+    }
+
+    .empty-products .empty-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      header {
+        padding: 13px 15px;
+      }
+
+      .brand-text h1 {
+        font-size: 16px;
+      }
+
+      .header-actions a,
+      .logout-btn {
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+
+      main {
+        width: 92%;
+        margin-top: 22px;
+      }
+
+      .welcome h2 {
+        font-size: 23px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       LOADING
+  ========================= -->
+
+  <div id="loadingScreen">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p>Checking owner access...</p>
+    </div>
+  </div>
+
+
+  <!-- =========================
+       ACCESS DENIED
+  ========================= -->
+
+  <div id="accessDenied" class="hidden">
+
+    <div class="denied-box">
+
+      <div class="denied-icon">
+        🔒
+      </div>
+
+      <h1>Access Denied</h1>
+
+      <p>
+        This page is only available to the E&B MARKETIZA owner.
+      </p>
+
+      <a
+        href="index.html"
+        class="home-btn"
+        style="
+          display:inline-block;
+          background:#111827;
+          color:white;
+          padding:11px 18px;
+          border-radius:9px;
+          text-decoration:none;
+          font-weight:700;
+        "
+      >
+        Back to Store
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       DASHBOARD
+  ========================= -->
+
+  <div id="dashboard" class="hidden">
+
+    <header>
+
+      <div class="brand">
+
+        <div class="brand-logo">
+          E&B
+        </div>
+
+        <div class="brand-text">
+          <h1>E&B MARKETIZA</h1>
+          <span>Owner Dashboard</span>
+        </div>
+
+      </div>
+
+
+      <div class="header-actions">
+
+        <a
+          href="index.html"
+          class="home-btn"
+        >
+          Store
+        </a>
+
+        <button
+          id="logoutBtn"
+          class="logout-btn"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <main>
+
+      <!-- WELCOME -->
+
+      <section class="welcome">
+
+        <h2>Owner Dashboard</h2>
+
+        <p>
+          Manage your products and store from here.
+        </p>
+
+      </section>
+
+
+      <!-- STATS -->
+
+      <section class="stats">
+
+        <div class="stat-card">
+
+          <span>Total Products</span>
+
+          <strong id="totalProducts">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span>Total Stock</span>
+
+          <strong id="totalStock">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <span>Owner Account</span>
+
+          <strong style="font-size:15px; margin-top:12px;">
+            Verified
+          </strong>
+
+        </div>
+
+      </section>
+
+
+      <!-- ADD / EDIT PRODUCT -->
+
+      <section class="panel">
+
+        <div class="panel-title">
+
+          <h3 id="formTitle">
+            Add New Product
+          </h3>
+
+          <button
+            type="button"
+            id="cancelEditBtn"
+            class="cancel-btn"
+          >
+            Cancel Edit
+          </button>
+
+        </div>
+
+
+        <form id="productForm">
+
+          <div class="form-grid">
+
+            <div class="field">
+
+              <label for="productName">
+                Product Name
+              </label>
+
+              <input
+                type="text"
+                id="productName"
+                placeholder="Example: Nail Clipper"
+                required
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="productPrice">
+                Price (SEK)
+              </label>
+
+              <input
+                type="number"
+                id="productPrice"
+                placeholder="25"
+                min="0"
+                step="0.01"
+                required
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="productCategory">
+                Category
+              </label>
+
+              <select
+                id="productCategory"
+                required
+              >
+
+                <option value="">
+                  Select category
+                </option>
+
+                <option value="Beauty">
+                  Beauty
+                </option>
+
+                <option value="Electronics">
+                  Electronics
+                </option>
+
+                <option value="Fashion">
+                  Fashion
+                </option>
+
+                <option value="Home">
+                  Home
+                </option>
+
+                <option value="Accessories">
+                  Accessories
+                </option>
+
+                <option value="Other">
+                  Other
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="productStock">
+                Stock
+              </label>
+
+              <input
+                type="number"
+                id="productStock"
+                placeholder="10"
+                min="0"
+                step="1"
+                required
+              >
+
+            </div>
+
+
+            <div class="field full">
+
+              <label for="productImage">
+                Product Image URL
+              </label>
+
+              <input
+                type="url"
+                id="productImage"
+                placeholder="https://example.com/product-image.jpg"
+                required
+              >
+
+            </div>
+
+
+            <div class="field full">
+
+              <label for="productDescription">
+                Description
+              </label>
+
+              <textarea
+                id="productDescription"
+                placeholder="Write a description for your product..."
+                required
+              ></textarea>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-actions">
+
+            <button
+              type="submit"
+              id="saveProductBtn"
+              class="save-btn"
+            >
+              Add Product
+            </button>
+
+          </div>
+
+
+          <div
+            id="statusMessage"
+            class="status-message"
+          ></div>
+
+        </form>
+
+      </section>
+
+
+      <!-- PRODUCTS -->
+
+      <section class="panel">
+
+        <div class="panel-title">
+
+          <h3>
+            Your Products
+          </h3>
+
+        </div>
+
+
+        <div
+          id="productsGrid"
+          class="products-grid"
+        >
+
+          <div class="empty-products">
+
+            <div class="empty-icon">
+              📦
+            </div>
+
+            <p>
+              Loading products...
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <!-- =========================
+       FIREBASE + DASHBOARD JS
+  ========================= -->
+
+  <script type="module">
+
+    import {
+      auth,
+      db
+    } from "./firebase-config.js";
+
+
+    import {
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    import {
+      collection,
+      getDocs,
+      addDoc,
+      updateDoc,
+      deleteDoc,
+      doc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+    /* =========================
+       OWNER
+    ========================= */
+
+    const OWNER_EMAIL =
+      "mucyoemmy@gmail.com";
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const loadingScreen =
+      document.getElementById("loadingScreen");
+
+    const accessDenied =
+      document.getElementById("accessDenied");
+
+    const dashboard =
+      document.getElementById("dashboard");
+
+    const logoutBtn =
+      document.getElementById("logoutBtn");
+
+    const productForm =
+      document.getElementById("productForm");
+
+    const productName =
+      document.getElementById("productName");
+
+    const productDescription =
+      document.getElementById("productDescription");
+
+    const productPrice =
+      document.getElementById("productPrice");
+
+    const productCategory =
+      document.getElementById("productCategory");
+
+    const productStock =
+      document.getElementById("productStock");
+
+    const productImage =
+      document.getElementById("productImage");
+
+    const saveProductBtn =
+      document.getElementById("saveProductBtn");
+
+    const productsGrid =
+      document.getElementById("productsGrid");
+
+    const totalProducts =
+      document.getElementById("totalProducts");
+
+    const totalStock =
+      document.getElementById("totalStock");
+
+    const formTitle =
+      document.getElementById("formTitle");
+
+    const cancelEditBtn =
+      document.getElementById("cancelEditBtn");
+
+    const statusMessage =
+      document.getElementById("statusMessage");
+
+
+    /* =========================
+       STATE
+    ========================= */
+
+    let editingProductId = null;
+
+
+    /* =========================
+       SHOW MESSAGE
+    ========================= */
+
+    function showMessage(message, type) {
+
+      statusMessage.textContent = message;
+
+      statusMessage.className =
+        "status-message " + type;
+
+    }
+
+
+    /* =========================
+       RESET FORM
+    ========================= */
+
+    function resetForm() {
+
+      productForm.reset();
+
+      editingProductId = null;
+
+      formTitle.textContent =
+        "Add New Product";
+
+      saveProductBtn.textContent =
+        "Add Product";
+
+      cancelEditBtn.style.display =
+        "none";
+
+      statusMessage.className =
+        "status-message";
+
+      statusMessage.textContent =
+        "";
+
+    }
+
+
+    /* =========================
+       AUTH CHECK
+    ========================= */
+
+    onAuthStateChanged(auth, async (user) => {
+
+      loadingScreen.classList.add("hidden");
+
+
+      if (!user) {
+
+        accessDenied.classList.remove("hidden");
+
+        return;
+      }
+
+
+      const userEmail =
+        (user.email || "").toLowerCase();
+
+
+      if (
+        userEmail !== OWNER_EMAIL.toLowerCase()
+      ) {
+
+        accessDenied.classList.remove("hidden");
+
+        return;
+      }
+
+
+      dashboard.classList.remove("hidden");
+
+
+      await loadProducts();
+
+    });
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    logoutBtn.addEventListener(
+      "click",
+      async () => {
+
+        try {
+
+          await signOut(auth);
+
+          window.location.href =
+            "login.html";
+
+        } catch (error) {
+
+          console.error(error);
+
+          alert(
+            "Could not log out. Please try again."
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       LOAD PRODUCTS
+    ========================= */
+
+    async function loadProducts() {
+
+      productsGrid.innerHTML = `
+        <div class="empty-products">
+          <div class="empty-icon">⏳</div>
+          <p>Loading products...</p>
+        </div>
+      `;
+
+
+      try {
+
+        const snapshot =
+          await getDocs(
+            collection(db, "products")
+          );
+
+
+        totalProducts.textContent =
+          snapshot.size;
+
+
+        let stockTotal = 0;
+
+
+        if (snapshot.empty) {
+
+          totalStock.textContent = "0";
+
+
+          productsGrid.innerHTML = `
+            <div class="empty-products">
+
+              <div class="empty-icon">
+                📦
+              </div>
+
+              <p>
+                No products available yet.
+              </p>
+
+            </div>
+          `;
+
+          return;
+        }
+
+
+        productsGrid.innerHTML = "";
+
+
+        snapshot.forEach((productDoc) => {
+
+          const product =
+            productDoc.data();
+
+
+          const stock =
+            Number(product.stock || 0);
+
+
+          stockTotal += stock;
+
+
+          const card =
+            createProductCard(
+              productDoc.id,
+              product
+            );
+
+
+          productsGrid.appendChild(card);
+
+        });
+
+
+        totalStock.textContent =
+          stockTotal;
+
+
+      } catch (error) {
+
+        console.error(
+          "Error loading products:",
+          error
+        );
+
+
+        productsGrid.innerHTML = `
+          <div class="empty-products">
+
+            <div class="empty-icon">
+              ⚠️
+            </div>
+
+            <p>
+              Could not load products.
+            </p>
+
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    /* =========================
+       CREATE PRODUCT CARD
+    ========================= */
+
+    function createProductCard(
+      productId,
+      product
+    ) {
+
+      const card =
+        document.createElement("article");
+
+
+      card.className =
+        "product-card";
+
+
+      const image =
+        document.createElement("img");
+
+      image.className =
+        "product-image";
+
+      image.alt =
+        product.name || "Product";
+
+      image.src =
+        product.imageUrl || "";
+
+      image.onerror = () => {
+
+        image.style.display =
+          "none";
+
+      };
+
+
+      const info =
+        document.createElement("div");
+
+      info.className =
+        "product-info";
+
+
+      const category =
+        document.createElement("span");
+
+      category.className =
+        "product-category";
+
+      category.textContent =
+        product.category || "Other";
+
+
+      const name =
+        document.createElement("h4");
+
+      name.textContent =
+        product.name || "Unnamed Product";
+
+
+      const description =
+        document.createElement("p");
+
+      description.className =
+        "product-description";
+
+      description.textContent =
+        product.description || "";
+
+
+      const bottom =
+        document.createElement("div");
+
+      bottom.className =
+        "product-bottom";
+
+
+      const price =
+        document.createElement("span");
+
+      price.className =
+        "price";
+
+      price.textContent =
+        `${Number(product.price || 0).toFixed(2)} SEK`;
+
+
+      const stock =
+        document.createElement("span");
+
+      stock.className =
+        "stock";
+
+      stock.textContent =
+        `Stock: ${Number(product.stock || 0)}`;
+
+
+      bottom.appendChild(price);
+      bottom.appendChild(stock);
+
+
+      const actions =
+        document.createElement("div");
+
+      actions.className =
+        "product-actions";
+
+
+      const editButton =
+        document.createElement("button");
+
+      editButton.className =
+        "edit-btn";
+
+      editButton.type =
+        "button";
+
+      editButton.textContent =
+        "Edit";
+
+
+      editButton.addEventListener(
+        "click",
+        () => {
+
+          startEditing(
+            productId,
+            product
+          );
+
+        }
+      );
+
+
+      const deleteButton =
+        document.createElement("button");
+
+      deleteButton.className =
+        "delete-btn";
+
+      deleteButton.type =
+        "button";
+
+      deleteButton.textContent =
+        "Delete";
+
+
+      deleteButton.addEventListener(
+        "click",
+        () => {
+
+          deleteProduct(
+            productId,
+            product.name
+          );
+
+        }
+      );
+
+
+      actions.appendChild(editButton);
+      actions.appendChild(deleteButton);
+
+
+      info.appendChild(category);
+      info.appendChild(name);
+      info.appendChild(description);
+      info.appendChild(bottom);
+      info.appendChild(actions);
+
+
+      card.appendChild(image);
+      card.appendChild(info);
+
+
+      return card;
+
+    }
+
+
+    /* =========================
+       ADD / UPDATE
+    ========================= */
+
+    productForm.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+
+        saveProductBtn.disabled =
+          true;
+
+
+        saveProductBtn.textContent =
+          editingProductId
+            ? "Updating..."
+            : "Adding...";
+
+
+        const productData = {
+
+          name:
+            productName.value.trim(),
+
+          description:
+            productDescription.value.trim(),
+
+          price:
+            Number(productPrice.value),
+
+          category:
+            productCategory.value,
+
+          stock:
+            Number(productStock.value),
+
+          imageUrl:
+            productImage.value.trim()
+
+        };
+
+
+        try {
+
+          if (editingProductId) {
+
+            await updateDoc(
+              doc(
+                db,
+                "products",
+                editingProductId
+              ),
+              {
+                ...productData,
+                updatedAt:
+                  serverTimestamp()
+              }
+            );
+
+
+            showMessage(
+              "Product updated successfully.",
+              "success"
+            );
+
+
+          } else {
+
+            await addDoc(
+              collection(db, "products"),
+              {
+                ...productData,
+                createdAt:
+                  serverTimestamp(),
+                updatedAt:
+                  serverTimestamp()
+              }
+            );
+
+
+            showMessage(
+              "Product added successfully.",
+              "success"
+            );
+
+          }
+
+
+          resetForm();
+
+          await loadProducts();
+
+
+        } catch (error) {
+
+          console.error(
+            "Save product error:",
+            error
+          );
+
+
+          showMessage(
+            "Could not save product. Check Firebase Authentication and Firestore Rules.",
+            "error"
+          );
+
+
+        } finally {
+
+          saveProductBtn.disabled =
+            false;
+
+          saveProductBtn.textContent =
+            editingProductId
+              ? "Update Product"
+              : "Add Product";
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       START EDITING
+    ========================= */
+
+    function startEditing(
+      productId,
+      product
+    ) {
+
+      editingProductId =
+        productId;
+
+
+      productName.value =
+        product.name || "";
+
+
+      productDescription.value =
+        product.description || "";
+
+
+      productPrice.value =
+        product.price ?? "";
+
+
+      productCategory.value =
+        product.category || "";
+
+
+      productStock.value =
+        product.stock ?? "";
+
+
+      productImage.value =
+        product.imageUrl || "";
+
+
+      formTitle.textContent =
+        "Edit Product";
+
+
+      saveProductBtn.textContent =
+        "Update Product";
+
+
+      cancelEditBtn.style.display =
+        "block";
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    /* =========================
+       CANCEL EDIT
+    ========================= */
+
+    cancelEditBtn.addEventListener(
+      "click",
+      () => {
+
+        resetForm();
+
+      }
+    );
+
+
+    /* =========================
+       DELETE PRODUCT
+    ========================= */
+
+    async function deleteProduct(
+      productId,
+      productName
+    ) {
+
+      const confirmed =
+        confirm(
+          `Delete "${productName || "this product"}"?`
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      try {
+
+        await deleteDoc(
+          doc(
+            db,
+            "products",
+            productId
+          )
+        );
+
+
+        showMessage(
+          "Product deleted successfully.",
+          "success"
+        );
+
+
+        await loadProducts();
+
+
+      } catch (error) {
+
+        console.error(
+          "Delete product error:",
+          error
+        );
+
+
+        showMessage(
+          "Could not delete product. Check your Firestore Rules.",
+          "error"
+        );
+
+      }
+
+    }
+
+  </script>
+
+</body>
+</html>

@@ -34,10 +34,6 @@
       display: none !important;
     }
 
-    /* =========================
-       ACCESS DENIED
-    ========================= */
-
     #accessDenied {
       min-height: 100vh;
       display: flex;
@@ -81,10 +77,6 @@
       margin-bottom: 20px;
     }
 
-    /* =========================
-       LOADING
-    ========================= */
-
     #loadingScreen {
       min-height: 100vh;
       display: flex;
@@ -113,10 +105,6 @@
         transform: rotate(360deg);
       }
     }
-
-    /* =========================
-       DASHBOARD
-    ========================= */
 
     #dashboard {
       min-height: 100vh;
@@ -190,10 +178,6 @@
       color: white;
     }
 
-    /* =========================
-       MAIN
-    ========================= */
-
     main {
       width: min(1200px, 94%);
       margin: 30px auto 50px;
@@ -211,10 +195,6 @@
     .welcome p {
       color: #6b7280;
     }
-
-    /* =========================
-       STATS
-    ========================= */
 
     .stats {
       display: grid;
@@ -240,10 +220,6 @@
       font-size: 30px;
       margin-top: 8px;
     }
-
-    /* =========================
-       FORM
-    ========================= */
 
     .panel {
       background: white;
@@ -362,10 +338,6 @@
       color: #991b1b;
     }
 
-    /* =========================
-       PRODUCTS
-    ========================= */
-
     .products-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -470,10 +442,6 @@
       margin-bottom: 12px;
     }
 
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
     @media (max-width: 900px) {
       .products-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -533,21 +501,12 @@
 
 <body>
 
-  <!-- =========================
-       LOADING
-  ========================= -->
-
   <div id="loadingScreen">
     <div class="loading-box">
       <div class="spinner"></div>
       <p>Checking owner access...</p>
     </div>
   </div>
-
-
-  <!-- =========================
-       ACCESS DENIED
-  ========================= -->
 
   <div id="accessDenied" class="hidden">
 
@@ -583,11 +542,6 @@
 
   </div>
 
-
-  <!-- =========================
-       DASHBOARD
-  ========================= -->
-
   <div id="dashboard" class="hidden">
 
     <header>
@@ -604,7 +558,6 @@
         </div>
 
       </div>
-
 
       <div class="header-actions">
 
@@ -626,10 +579,7 @@
 
     </header>
 
-
     <main>
-
-      <!-- WELCOME -->
 
       <section class="welcome">
 
@@ -640,9 +590,6 @@
         </p>
 
       </section>
-
-
-      <!-- STATS -->
 
       <section class="stats">
 
@@ -656,7 +603,6 @@
 
         </div>
 
-
         <div class="stat-card">
 
           <span>Total Stock</span>
@@ -666,7 +612,6 @@
           </strong>
 
         </div>
-
 
         <div class="stat-card">
 
@@ -679,9 +624,6 @@
         </div>
 
       </section>
-
-
-      <!-- ADD / EDIT PRODUCT -->
 
       <section class="panel">
 
@@ -700,7 +642,6 @@
           </button>
 
         </div>
-
 
         <form id="productForm">
 
@@ -721,7 +662,6 @@
 
             </div>
 
-
             <div class="field">
 
               <label for="productPrice">
@@ -738,7 +678,6 @@
               >
 
             </div>
-
 
             <div class="field">
 
@@ -783,7 +722,6 @@
 
             </div>
 
-
             <div class="field">
 
               <label for="productStock">
@@ -801,7 +739,6 @@
 
             </div>
 
-
             <div class="field full">
 
               <label for="productImage">
@@ -816,7 +753,6 @@
               >
 
             </div>
-
 
             <div class="field full">
 
@@ -834,7 +770,6 @@
 
           </div>
 
-
           <div class="form-actions">
 
             <button
@@ -847,7 +782,6 @@
 
           </div>
 
-
           <div
             id="statusMessage"
             class="status-message"
@@ -856,9 +790,6 @@
         </form>
 
       </section>
-
-
-      <!-- PRODUCTS -->
 
       <section class="panel">
 
@@ -869,7 +800,6 @@
           </h3>
 
         </div>
-
 
         <div
           id="productsGrid"
@@ -896,11 +826,6 @@
 
   </div>
 
-
-  <!-- =========================
-       FIREBASE + DASHBOARD JS
-  ========================= -->
-
   <script type="module">
 
     import {
@@ -908,12 +833,10 @@
       db
     } from "./firebase-config.js";
 
-
     import {
       onAuthStateChanged,
       signOut
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
 
     import {
       collection,
@@ -925,14 +848,12 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-
     /* =========================
        OWNER
     ========================= */
 
     const OWNER_EMAIL =
-      "mucyoemmy@gmail.com";
-
+      "mucyoemmy539@gmail.com";
 
     /* =========================
        ELEMENTS
@@ -992,13 +913,11 @@
     const statusMessage =
       document.getElementById("statusMessage");
 
-
     /* =========================
        STATE
     ========================= */
 
     let editingProductId = null;
-
 
     /* =========================
        SHOW MESSAGE
@@ -1012,7 +931,6 @@
         "status-message " + type;
 
     }
-
 
     /* =========================
        RESET FORM
@@ -1041,7 +959,6 @@
 
     }
 
-
     /* =========================
        AUTH CHECK
     ========================= */
@@ -1050,7 +967,6 @@
 
       loadingScreen.classList.add("hidden");
 
-
       if (!user) {
 
         accessDenied.classList.remove("hidden");
@@ -1058,10 +974,8 @@
         return;
       }
 
-
       const userEmail =
         (user.email || "").toLowerCase();
-
 
       if (
         userEmail !== OWNER_EMAIL.toLowerCase()
@@ -1072,14 +986,11 @@
         return;
       }
 
-
       dashboard.classList.remove("hidden");
-
 
       await loadProducts();
 
     });
-
 
     /* =========================
        LOGOUT
@@ -1109,7 +1020,6 @@
       }
     );
 
-
     /* =========================
        LOAD PRODUCTS
     ========================= */
@@ -1123,7 +1033,6 @@
         </div>
       `;
 
-
       try {
 
         const snapshot =
@@ -1131,18 +1040,14 @@
             collection(db, "products")
           );
 
-
         totalProducts.textContent =
           snapshot.size;
 
-
         let stockTotal = 0;
-
 
         if (snapshot.empty) {
 
           totalStock.textContent = "0";
-
 
           productsGrid.innerHTML = `
             <div class="empty-products">
@@ -1161,22 +1066,17 @@
           return;
         }
 
-
         productsGrid.innerHTML = "";
-
 
         snapshot.forEach((productDoc) => {
 
           const product =
             productDoc.data();
 
-
           const stock =
             Number(product.stock || 0);
 
-
           stockTotal += stock;
-
 
           const card =
             createProductCard(
@@ -1184,15 +1084,12 @@
               product
             );
 
-
           productsGrid.appendChild(card);
 
         });
 
-
         totalStock.textContent =
           stockTotal;
-
 
       } catch (error) {
 
@@ -1200,7 +1097,6 @@
           "Error loading products:",
           error
         );
-
 
         productsGrid.innerHTML = `
           <div class="empty-products">
@@ -1220,7 +1116,6 @@
 
     }
 
-
     /* =========================
        CREATE PRODUCT CARD
     ========================= */
@@ -1233,10 +1128,8 @@
       const card =
         document.createElement("article");
 
-
       card.className =
         "product-card";
-
 
       const image =
         document.createElement("img");
@@ -1257,13 +1150,11 @@
 
       };
 
-
       const info =
         document.createElement("div");
 
       info.className =
         "product-info";
-
 
       const category =
         document.createElement("span");
@@ -1274,13 +1165,11 @@
       category.textContent =
         product.category || "Other";
 
-
       const name =
         document.createElement("h4");
 
       name.textContent =
         product.name || "Unnamed Product";
-
 
       const description =
         document.createElement("p");
@@ -1291,13 +1180,11 @@
       description.textContent =
         product.description || "";
 
-
       const bottom =
         document.createElement("div");
 
       bottom.className =
         "product-bottom";
-
 
       const price =
         document.createElement("span");
@@ -1308,7 +1195,6 @@
       price.textContent =
         `${Number(product.price || 0).toFixed(2)} SEK`;
 
-
       const stock =
         document.createElement("span");
 
@@ -1318,17 +1204,14 @@
       stock.textContent =
         `Stock: ${Number(product.stock || 0)}`;
 
-
       bottom.appendChild(price);
       bottom.appendChild(stock);
-
 
       const actions =
         document.createElement("div");
 
       actions.className =
         "product-actions";
-
 
       const editButton =
         document.createElement("button");
@@ -1342,7 +1225,6 @@
       editButton.textContent =
         "Edit";
 
-
       editButton.addEventListener(
         "click",
         () => {
@@ -1354,7 +1236,6 @@
 
         }
       );
-
 
       const deleteButton =
         document.createElement("button");
@@ -1368,7 +1249,6 @@
       deleteButton.textContent =
         "Delete";
 
-
       deleteButton.addEventListener(
         "click",
         () => {
@@ -1381,10 +1261,8 @@
         }
       );
 
-
       actions.appendChild(editButton);
       actions.appendChild(deleteButton);
-
 
       info.appendChild(category);
       info.appendChild(name);
@@ -1392,15 +1270,12 @@
       info.appendChild(bottom);
       info.appendChild(actions);
 
-
       card.appendChild(image);
       card.appendChild(info);
-
 
       return card;
 
     }
-
 
     /* =========================
        ADD / UPDATE
@@ -1412,16 +1287,13 @@
 
         event.preventDefault();
 
-
         saveProductBtn.disabled =
           true;
-
 
         saveProductBtn.textContent =
           editingProductId
             ? "Updating..."
             : "Adding...";
-
 
         const productData = {
 
@@ -1445,7 +1317,6 @@
 
         };
 
-
         try {
 
           if (editingProductId) {
@@ -1463,12 +1334,10 @@
               }
             );
 
-
             showMessage(
               "Product updated successfully.",
               "success"
             );
-
 
           } else {
 
@@ -1483,7 +1352,6 @@
               }
             );
 
-
             showMessage(
               "Product added successfully.",
               "success"
@@ -1491,11 +1359,9 @@
 
           }
 
-
           resetForm();
 
           await loadProducts();
-
 
         } catch (error) {
 
@@ -1504,12 +1370,10 @@
             error
           );
 
-
           showMessage(
             "Could not save product. Check Firebase Authentication and Firestore Rules.",
             "error"
           );
-
 
         } finally {
 
@@ -1526,7 +1390,6 @@
       }
     );
 
-
     /* =========================
        START EDITING
     ========================= */
@@ -1539,42 +1402,32 @@
       editingProductId =
         productId;
 
-
       productName.value =
         product.name || "";
-
 
       productDescription.value =
         product.description || "";
 
-
       productPrice.value =
         product.price ?? "";
-
 
       productCategory.value =
         product.category || "";
 
-
       productStock.value =
         product.stock ?? "";
-
 
       productImage.value =
         product.imageUrl || "";
 
-
       formTitle.textContent =
         "Edit Product";
-
 
       saveProductBtn.textContent =
         "Update Product";
 
-
       cancelEditBtn.style.display =
         "block";
-
 
       window.scrollTo({
         top: 0,
@@ -1582,7 +1435,6 @@
       });
 
     }
-
 
     /* =========================
        CANCEL EDIT
@@ -1596,7 +1448,6 @@
 
       }
     );
-
 
     /* =========================
        DELETE PRODUCT
@@ -1612,11 +1463,9 @@
           `Delete "${productName || "this product"}"?`
         );
 
-
       if (!confirmed) {
         return;
       }
-
 
       try {
 
@@ -1628,15 +1477,12 @@
           )
         );
 
-
         showMessage(
           "Product deleted successfully.",
           "success"
         );
 
-
         await loadProducts();
-
 
       } catch (error) {
 
@@ -1644,7 +1490,6 @@
           "Delete product error:",
           error
         );
-
 
         showMessage(
           "Could not delete product. Check your Firestore Rules.",

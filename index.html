@@ -1,11 +1,10 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>E&B MARKETIZA | Online Marketplace</title>
+  <title>E&B MARKETIZA | Online Store</title>
 
   <style>
     * {
@@ -20,7 +19,10 @@
       color: #111;
     }
 
-    /* HEADER */
+    /* =========================
+       HEADER
+    ========================= */
+
     header {
       background: #111;
       color: white;
@@ -81,11 +83,18 @@
       font-size: 14px;
     }
 
-    .cart {
-      font-size: 20px;
+    .header-links a:hover {
+      color: #00d084;
     }
 
-    /* HERO */
+    .cart {
+      font-size: 20px !important;
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
     .hero {
       min-height: 430px;
       padding: 70px 7%;
@@ -93,7 +102,15 @@
       align-items: center;
       justify-content: space-between;
       gap: 40px;
-      background: linear-gradient(135deg, #111 0%, #20252b 60%, #00a86b 100%);
+
+      background:
+        linear-gradient(
+          135deg,
+          #111 0%,
+          #20252b 60%,
+          #00a86b 100%
+        );
+
       color: white;
     }
 
@@ -143,21 +160,34 @@
       color: #111;
     }
 
+    .btn-primary:hover {
+      background: #00b873;
+    }
+
     .btn-secondary {
       border: 1px solid white;
       color: white;
     }
 
+    .btn-secondary:hover {
+      background: white;
+      color: #111;
+    }
+
     .hero-card {
       width: 330px;
       min-height: 260px;
+
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.2);
+
       border-radius: 20px;
+
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+
       backdrop-filter: blur(10px);
     }
 
@@ -170,7 +200,10 @@
       font-size: 23px;
     }
 
-    /* CATEGORIES */
+    /* =========================
+       SECTION
+    ========================= */
+
     .section {
       padding: 50px 6%;
     }
@@ -192,6 +225,10 @@
       font-weight: bold;
     }
 
+    /* =========================
+       CATEGORIES
+    ========================= */
+
     .categories {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -204,8 +241,11 @@
       padding: 25px 10px;
       text-align: center;
       cursor: pointer;
+
       transition: 0.2s;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+
+      box-shadow:
+        0 3px 12px rgba(0,0,0,0.05);
     }
 
     .category:hover {
@@ -221,7 +261,10 @@
       font-size: 14px;
     }
 
-    /* PRODUCTS */
+    /* =========================
+       PRODUCTS
+    ========================= */
+
     .products {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -232,7 +275,10 @@
       background: white;
       border-radius: 14px;
       overflow: hidden;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+
+      box-shadow:
+        0 3px 15px rgba(0,0,0,0.06);
+
       transition: 0.2s;
     }
 
@@ -243,10 +289,23 @@
     .product-image {
       height: 210px;
       background: #eee;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 65px;
+
+      overflow: hidden;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .no-image {
+      font-size: 60px;
     }
 
     .product-info {
@@ -258,10 +317,23 @@
       margin-bottom: 8px;
     }
 
+    .product-description {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
     .price {
       font-size: 20px;
       font-weight: bold;
       color: #008f5a;
+      margin-bottom: 8px;
+    }
+
+    .stock {
+      font-size: 13px;
+      color: #666;
       margin-bottom: 12px;
     }
 
@@ -270,22 +342,84 @@
       border: none;
       background: #111;
       color: white;
+
       padding: 11px;
+
       border-radius: 7px;
+
       cursor: pointer;
+
       font-weight: bold;
     }
 
-    /* PROMO */
+    .buy-btn:hover {
+      background: #00a86b;
+    }
+
+    /* =========================
+       EMPTY PRODUCTS
+    ========================= */
+
+    .empty-products {
+      grid-column: 1 / -1;
+
+      background: white;
+
+      border-radius: 14px;
+
+      padding: 55px 20px;
+
+      text-align: center;
+
+      box-shadow:
+        0 3px 15px rgba(0,0,0,0.06);
+    }
+
+    .empty-icon {
+      font-size: 55px;
+      margin-bottom: 15px;
+    }
+
+    .empty-products h3 {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .empty-products p {
+      color: #777;
+    }
+
+    .loading-products {
+      grid-column: 1 / -1;
+
+      text-align: center;
+
+      padding: 45px;
+
+      color: #666;
+    }
+
+    /* =========================
+       PROMO
+    ========================= */
+
     .promo {
       margin: 0 6% 50px;
+
       padding: 45px;
+
       border-radius: 18px;
+
       background: #111;
+
       color: white;
+
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
+
       gap: 25px;
     }
 
@@ -298,17 +432,25 @@
       color: #ccc;
     }
 
-    /* FOOTER */
+    /* =========================
+       FOOTER
+    ========================= */
+
     footer {
       background: #111;
       color: white;
+
       padding: 45px 6% 25px;
     }
 
     .footer-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
+
+      grid-template-columns:
+        2fr 1fr 1fr;
+
       gap: 35px;
+
       margin-bottom: 35px;
     }
 
@@ -323,8 +465,11 @@
 
     footer a {
       display: block;
+
       color: #bbb;
+
       text-decoration: none;
+
       margin: 9px 0;
     }
 
@@ -334,14 +479,22 @@
 
     .copyright {
       border-top: 1px solid #333;
+
       padding-top: 20px;
+
       text-align: center;
+
       color: #888;
+
       font-size: 13px;
     }
 
-    /* MOBILE */
+    /* =========================
+       MOBILE
+    ========================= */
+
     @media (max-width: 900px) {
+
       header {
         flex-wrap: wrap;
       }
@@ -367,19 +520,23 @@
       }
 
       .categories {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns:
+          repeat(3, 1fr);
       }
 
       .products {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+          repeat(2, 1fr);
       }
 
       .footer-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+          repeat(2, 1fr);
       }
     }
 
     @media (max-width: 550px) {
+
       header {
         padding: 13px 4%;
       }
@@ -393,7 +550,8 @@
       }
 
       .categories {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+          repeat(2, 1fr);
       }
 
       .products {
@@ -402,8 +560,11 @@
 
       .promo {
         margin: 0 4% 40px;
+
         padding: 30px 20px;
+
         flex-direction: column;
+
         text-align: center;
       }
 
@@ -420,7 +581,10 @@
 
 <body>
 
-  <!-- HEADER -->
+  <!-- =========================
+       HEADER
+  ========================= -->
+
   <header>
 
     <div class="logo">
@@ -428,102 +592,185 @@
     </div>
 
     <div class="search-box">
+
       <input
         type="text"
         id="searchInput"
         placeholder="Search products..."
       >
-      <button onclick="searchProducts()">🔍</button>
+
+      <button
+        onclick="searchProducts()"
+        aria-label="Search"
+      >
+        🔍
+      </button>
+
     </div>
 
     <div class="header-links">
-      <a href="login.html">Login</a>
-      <a href="register.html">Register</a>
-      <a href="cart.html" class="cart">🛒</a>
+
+      <a href="login.html">
+        Login
+      </a>
+
+      <a href="register.html">
+        Register
+      </a>
+
+      <a
+        href="cart.html"
+        class="cart"
+      >
+        🛒
+      </a>
+
     </div>
 
   </header>
 
 
-  <!-- HERO -->
+  <!-- =========================
+       HERO
+  ========================= -->
+
   <section class="hero">
 
     <div class="hero-content">
 
-      <small>WELCOME TO E&B MARKETIZA</small>
+      <small>
+        WELCOME TO E&B MARKETIZA
+      </small>
 
       <h1>
-        BUY.<br>
-        SELL.<br>
-        <span>GROW.</span>
+        SHOP.<br>
+        EASY.<br>
+        <span>SECURE.</span>
       </h1>
 
       <p>
         Discover products you love, shop with confidence,
-        and enjoy a modern online marketplace experience.
+        and enjoy a modern online shopping experience.
       </p>
 
       <div class="hero-buttons">
-        <a href="products.html" class="btn btn-primary">
+
+        <a
+          href="products.html"
+          class="btn btn-primary"
+        >
           Shop Now
         </a>
 
-        <a href="register.html" class="btn btn-secondary">
+        <a
+          href="register.html"
+          class="btn btn-secondary"
+        >
           Create Account
         </a>
+
       </div>
 
     </div>
 
+
     <div class="hero-card">
-      <div class="big-icon">🛍️</div>
-      <h3>Your Marketplace</h3>
-      <p style="margin-top:10px;color:#ccc;">
-        Everything in one place
+
+      <div class="big-icon">
+        🛍️
+      </div>
+
+      <h3>
+        E&B MARKETIZA
+      </h3>
+
+      <p
+        style="
+          margin-top:10px;
+          color:#ccc;
+        "
+      >
+        Your online store
       </p>
+
     </div>
 
   </section>
 
 
-  <!-- CATEGORIES -->
+  <!-- =========================
+       CATEGORIES
+  ========================= -->
+
   <section class="section">
 
     <div class="section-title">
-      <h2>Shop by Category</h2>
-      <a href="products.html">View All →</a>
+
+      <h2>
+        Shop by Category
+      </h2>
+
+      <a href="products.html">
+        View All →
+      </a>
+
     </div>
+
 
     <div class="categories">
 
       <div class="category">
-        <div class="category-icon">📱</div>
-        <h3>Electronics</h3>
+        <div class="category-icon">
+          📱
+        </div>
+        <h3>
+          Electronics
+        </h3>
       </div>
 
       <div class="category">
-        <div class="category-icon">👕</div>
-        <h3>Fashion</h3>
+        <div class="category-icon">
+          👕
+        </div>
+        <h3>
+          Fashion
+        </h3>
       </div>
 
       <div class="category">
-        <div class="category-icon">🏠</div>
-        <h3>Home</h3>
+        <div class="category-icon">
+          🏠
+        </div>
+        <h3>
+          Home
+        </h3>
       </div>
 
       <div class="category">
-        <div class="category-icon">💄</div>
-        <h3>Beauty</h3>
+        <div class="category-icon">
+          💄
+        </div>
+        <h3>
+          Beauty
+        </h3>
       </div>
 
       <div class="category">
-        <div class="category-icon">⚽</div>
-        <h3>Sports</h3>
+        <div class="category-icon">
+          ⚽
+        </div>
+        <h3>
+          Sports
+        </h3>
       </div>
 
       <div class="category">
-        <div class="category-icon">🎮</div>
-        <h3>Gaming</h3>
+        <div class="category-icon">
+          🎮
+        </div>
+        <h3>
+          Gaming
+        </h3>
       </div>
 
     </div>
@@ -531,89 +778,32 @@
   </section>
 
 
-  <!-- PRODUCTS -->
+  <!-- =========================
+       PRODUCTS
+  ========================= -->
+
   <section class="section">
 
     <div class="section-title">
-      <h2>Featured Products</h2>
-      <a href="products.html">See All →</a>
+
+      <h2>
+        Our Products
+      </h2>
+
+      <a href="products.html">
+        See All →
+      </a>
+
     </div>
 
-    <div class="products">
 
-      <div class="product">
+    <div
+      class="products"
+      id="productsContainer"
+    >
 
-        <div class="product-image">
-          📱
-        </div>
-
-        <div class="product-info">
-          <h3>Smartphone</h3>
-          <div class="price">2,499 SEK</div>
-
-          <button class="buy-btn"
-            onclick="addToCart('Smartphone',2499)">
-            Add to Cart
-          </button>
-        </div>
-
-      </div>
-
-
-      <div class="product">
-
-        <div class="product-image">
-          🎧
-        </div>
-
-        <div class="product-info">
-          <h3>Wireless Headphones</h3>
-          <div class="price">799 SEK</div>
-
-          <button class="buy-btn"
-            onclick="addToCart('Wireless Headphones',799)">
-            Add to Cart
-          </button>
-        </div>
-
-      </div>
-
-
-      <div class="product">
-
-        <div class="product-image">
-          👟
-        </div>
-
-        <div class="product-info">
-          <h3>Sport Shoes</h3>
-          <div class="price">699 SEK</div>
-
-          <button class="buy-btn"
-            onclick="addToCart('Sport Shoes',699)">
-            Add to Cart
-          </button>
-        </div>
-
-      </div>
-
-
-      <div class="product">
-
-        <div class="product-image">
-          ⌚
-        </div>
-
-        <div class="product-info">
-          <h3>Smart Watch</h3>
-          <div class="price">999 SEK</div>
-
-          <button class="buy-btn"
-            onclick="addToCart('Smart Watch',999)">
-            Add to Cart
-          </button>
-        </div>
-
+      <div class="loading-products">
+        Loading products...
       </div>
 
     </div>
@@ -621,118 +811,503 @@
   </section>
 
 
-  <!-- PROMO -->
+  <!-- =========================
+       PROMO
+  ========================= -->
+
   <section class="promo">
 
     <div>
-      <h2>Discover Great Deals</h2>
+
+      <h2>
+        Shop With E&B MARKETIZA
+      </h2>
 
       <p>
-        Find products, compare prices and shop easily
-        with E&B MARKETIZA.
+        Discover our products and enjoy
+        an easy online shopping experience.
       </p>
+
     </div>
 
-    <a href="products.html" class="btn btn-primary">
+    <a
+      href="products.html"
+      class="btn btn-primary"
+    >
       Explore Products
     </a>
 
   </section>
 
 
-  <!-- FOOTER -->
+  <!-- =========================
+       FOOTER
+  ========================= -->
+
   <footer>
 
     <div class="footer-grid">
 
       <div>
-        <h3>E&B MARKETIZA</h3>
+
+        <h3>
+          E&B MARKETIZA
+        </h3>
 
         <p>
-          Your modern online marketplace.
+          Your modern online store.
           Discover products and shop easily
           from one place.
         </p>
+
       </div>
 
-      <div>
-        <h3>Marketplace</h3>
 
-        <a href="products.html">Products</a>
-        <a href="cart.html">Cart</a>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
+      <div>
+
+        <h3>
+          Store
+        </h3>
+
+        <a href="products.html">
+          Products
+        </a>
+
+        <a href="cart.html">
+          Cart
+        </a>
+
+        <a href="login.html">
+          Login
+        </a>
+
+        <a href="register.html">
+          Register
+        </a>
+
       </div>
 
-      <div>
-        <h3>Information</h3>
-
-        <a href="about.html">About Us</a>
-        <a href="contact.html">Contact</a>
-        <a href="#">Terms</a>
-        <a href="#">Privacy</a>
-      </div>
 
       <div>
-        <h3>Account</h3>
 
-        <a href="account.html">My Account</a>
-        <a href="seller.html">Seller Area</a>
+        <h3>
+          Information
+        </h3>
+
+        <a href="about.html">
+          About Us
+        </a>
+
+        <a href="contact.html">
+          Contact
+        </a>
+
+        <a href="#">
+          Terms
+        </a>
+
+        <a href="#">
+          Privacy
+        </a>
+
       </div>
 
     </div>
 
+
     <div class="copyright">
-      © 2026 E&B MARKETIZA. All rights reserved.
+
+      © 2026 E&B MARKETIZA.
+      All rights reserved.
+
     </div>
 
   </footer>
 
 
-  <script>
+  <!-- =========================
+       FIREBASE
+  ========================= -->
 
-    function addToCart(name, price) {
+  <script type="module">
 
-      let cart = JSON.parse(
-        localStorage.getItem("marketizaCart") || "[]"
-      );
+    import { db }
+      from "./firebase-config.js";
 
-      cart.push({
-        name: name,
-        price: price,
-        quantity: 1
-      });
-
-      localStorage.setItem(
-        "marketizaCart",
-        JSON.stringify(cart)
-      );
-
-      alert(name + " added to cart!");
-
+    import {
+      collection,
+      getDocs
     }
+    from
+      "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
-    function searchProducts() {
+    const productsContainer =
+      document.getElementById(
+        "productsContainer"
+      );
 
-      const search =
-        document.getElementById("searchInput")
-        .value
-        .trim();
 
-      if (search === "") {
-        window.location.href = "products.html";
-        return;
+    async function loadProducts() {
+
+      try {
+
+        const productsSnapshot =
+          await getDocs(
+            collection(
+              db,
+              "products"
+            )
+          );
+
+
+        /*
+          IMPORTANT:
+
+          If the owner has not added
+          any products yet, we don't
+          create fake/demo products.
+        */
+
+        if (
+          productsSnapshot.empty
+        ) {
+
+          productsContainer.innerHTML = `
+
+            <div class="empty-products">
+
+              <div class="empty-icon">
+                🛍️
+              </div>
+
+              <h3>
+                No products available yet
+              </h3>
+
+              <p>
+                Our products will appear here soon.
+              </p>
+
+            </div>
+
+          `;
+
+          return;
+        }
+
+
+        productsContainer.innerHTML =
+          "";
+
+
+        productsSnapshot.forEach(
+          (doc) => {
+
+            const product =
+              doc.data();
+
+
+            /* PRODUCT CARD */
+
+            const card =
+              document.createElement(
+                "div"
+              );
+
+            card.className =
+              "product";
+
+
+            /* IMAGE */
+
+            const imageBox =
+              document.createElement(
+                "div"
+              );
+
+            imageBox.className =
+              "product-image";
+
+
+            if (
+              product.imageUrl
+            ) {
+
+              const image =
+                document.createElement(
+                  "img"
+                );
+
+              image.src =
+                product.imageUrl;
+
+              image.alt =
+                product.name ||
+                "Product";
+
+              image.loading =
+                "lazy";
+
+              imageBox.appendChild(
+                image
+              );
+
+            } else {
+
+              const noImage =
+                document.createElement(
+                  "div"
+                );
+
+              noImage.className =
+                "no-image";
+
+              noImage.textContent =
+                "🛍️";
+
+              imageBox.appendChild(
+                noImage
+              );
+
+            }
+
+
+            /* INFO */
+
+            const info =
+              document.createElement(
+                "div"
+              );
+
+            info.className =
+              "product-info";
+
+
+            /* NAME */
+
+            const name =
+              document.createElement(
+                "h3"
+              );
+
+            name.textContent =
+              product.name ||
+              "Unnamed Product";
+
+
+            /* DESCRIPTION */
+
+            const description =
+              document.createElement(
+                "p"
+              );
+
+            description.className =
+              "product-description";
+
+            description.textContent =
+              product.description ||
+              "";
+
+
+            /* PRICE */
+
+            const price =
+              document.createElement(
+                "div"
+              );
+
+            price.className =
+              "price";
+
+
+            const productPrice =
+              Number(
+                product.price || 0
+              );
+
+
+            price.textContent =
+              new Intl.NumberFormat(
+                "sv-SE",
+                {
+                  style: "currency",
+                  currency: "SEK"
+                }
+              ).format(
+                productPrice
+              );
+
+
+            /* STOCK */
+
+            const stock =
+              document.createElement(
+                "div"
+              );
+
+            stock.className =
+              "stock";
+
+
+            if (
+              product.stock !==
+              undefined &&
+              product.stock !==
+              null
+            ) {
+
+              stock.textContent =
+                `Stock: ${product.stock}`;
+
+            }
+
+
+            /* VIEW PRODUCT */
+
+            const button =
+              document.createElement(
+                "button"
+              );
+
+            button.className =
+              "buy-btn";
+
+            button.textContent =
+              "View Product";
+
+
+            button.addEventListener(
+              "click",
+              () => {
+
+                window.location.href =
+                  "product-details.html?id=" +
+                  encodeURIComponent(
+                    doc.id
+                  );
+
+              }
+            );
+
+
+            /* BUILD CARD */
+
+            info.appendChild(
+              name
+            );
+
+            info.appendChild(
+              description
+            );
+
+            info.appendChild(
+              price
+            );
+
+            info.appendChild(
+              stock
+            );
+
+            info.appendChild(
+              button
+            );
+
+
+            card.appendChild(
+              imageBox
+            );
+
+            card.appendChild(
+              info
+            );
+
+
+            productsContainer.appendChild(
+              card
+            );
+
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Firebase products error:",
+          error
+        );
+
+
+        productsContainer.innerHTML = `
+
+          <div class="empty-products">
+
+            <div class="empty-icon">
+              ⚠️
+            </div>
+
+            <h3>
+              Products could not be loaded
+            </h3>
+
+            <p>
+              Please try again later.
+            </p>
+
+          </div>
+
+        `;
+
       }
 
-      window.location.href =
-        "products.html?search=" +
-        encodeURIComponent(search);
-
     }
+
+
+    /*
+      Load real products
+      from Firebase.
+    */
+
+    loadProducts();
+
+
+    /* SEARCH */
+
+    window.searchProducts =
+      function () {
+
+        const search =
+          document
+            .getElementById(
+              "searchInput"
+            )
+            .value
+            .trim();
+
+
+        if (
+          search === ""
+        ) {
+
+          window.location.href =
+            "products.html";
+
+          return;
+        }
+
+
+        window.location.href =
+          "products.html?search=" +
+          encodeURIComponent(
+            search
+          );
+
+      };
+
 
   </script>
 
 </body>
 </html>
-```

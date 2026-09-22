@@ -8,7 +8,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>E&B MARKETIZA - Owner Dashboard</title>
+  <title>E&B SHOP - Owner Dashboard</title>
 
   <style>
     * {
@@ -297,6 +297,58 @@
       border-color: #111827;
     }
 
+    /* IMAGE UPLOAD */
+
+    .image-upload-box {
+      border: 2px dashed #d1d5db;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      background: #fafafa;
+    }
+
+    .image-upload-box input[type="file"] {
+      display: none;
+    }
+
+    .choose-image-btn {
+      display: inline-block;
+      background: #111827;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .image-help {
+      margin-top: 10px;
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    .image-preview {
+      display: none;
+      margin: 18px auto 0;
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #f3f4f6;
+    }
+
+    .image-preview.show {
+      display: block;
+    }
+
+    .selected-file {
+      margin-top: 10px;
+      color: #374151;
+      font-size: 13px;
+      word-break: break-word;
+    }
+
     .form-actions {
       margin-top: 20px;
       display: flex;
@@ -501,12 +553,22 @@
 
 <body>
 
+  <!-- LOADING -->
+
   <div id="loadingScreen">
+
     <div class="loading-box">
+
       <div class="spinner"></div>
+
       <p>Checking owner access...</p>
+
     </div>
+
   </div>
+
+
+  <!-- ACCESS DENIED -->
 
   <div id="accessDenied" class="hidden">
 
@@ -519,7 +581,7 @@
       <h1>Access Denied</h1>
 
       <p>
-        This page is only available to the E&B MARKETIZA owner.
+        This page is only available to the E&B SHOP owner.
       </p>
 
       <a
@@ -542,6 +604,9 @@
 
   </div>
 
+
+  <!-- DASHBOARD -->
+
   <div id="dashboard" class="hidden">
 
     <header>
@@ -553,11 +618,19 @@
         </div>
 
         <div class="brand-text">
-          <h1>E&B MARKETIZA</h1>
-          <span>Owner Dashboard</span>
+
+          <h1>
+            E&B SHOP
+          </h1>
+
+          <span>
+            Owner Dashboard
+          </span>
+
         </div>
 
       </div>
+
 
       <div class="header-actions">
 
@@ -579,11 +652,14 @@
 
     </header>
 
+
     <main>
 
       <section class="welcome">
 
-        <h2>Owner Dashboard</h2>
+        <h2>
+          Owner Dashboard
+        </h2>
 
         <p>
           Manage your products and store from here.
@@ -591,11 +667,16 @@
 
       </section>
 
+
+      <!-- STATS -->
+
       <section class="stats">
 
         <div class="stat-card">
 
-          <span>Total Products</span>
+          <span>
+            Total Products
+          </span>
 
           <strong id="totalProducts">
             0
@@ -603,9 +684,12 @@
 
         </div>
 
+
         <div class="stat-card">
 
-          <span>Total Stock</span>
+          <span>
+            Total Stock
+          </span>
 
           <strong id="totalStock">
             0
@@ -613,17 +697,25 @@
 
         </div>
 
+
         <div class="stat-card">
 
-          <span>Owner Account</span>
+          <span>
+            Owner Account
+          </span>
 
-          <strong style="font-size:15px; margin-top:12px;">
+          <strong
+            style="font-size:15px; margin-top:12px;"
+          >
             Verified
           </strong>
 
         </div>
 
       </section>
+
+
+      <!-- ADD / EDIT PRODUCT -->
 
       <section class="panel">
 
@@ -643,9 +735,13 @@
 
         </div>
 
+
         <form id="productForm">
 
           <div class="form-grid">
+
+
+            <!-- NAME -->
 
             <div class="field">
 
@@ -661,6 +757,9 @@
               >
 
             </div>
+
+
+            <!-- PRICE -->
 
             <div class="field">
 
@@ -678,6 +777,9 @@
               >
 
             </div>
+
+
+            <!-- CATEGORY -->
 
             <div class="field">
 
@@ -722,6 +824,9 @@
 
             </div>
 
+
+            <!-- STOCK -->
+
             <div class="field">
 
               <label for="productStock">
@@ -739,20 +844,51 @@
 
             </div>
 
+
+            <!-- IMAGE -->
+
             <div class="field full">
 
-              <label for="productImage">
-                Product Image URL
+              <label>
+                Product Image
               </label>
 
-              <input
-                type="url"
-                id="productImage"
-                placeholder="https://example.com/product-image.jpg"
-                required
-              >
+              <div class="image-upload-box">
+
+                <label
+                  for="productImage"
+                  class="choose-image-btn"
+                >
+                  📷 Choose Product Image
+                </label>
+
+                <input
+                  type="file"
+                  id="productImage"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                >
+
+                <p class="image-help">
+                  JPG, PNG, WEBP or GIF. Maximum 5 MB.
+                </p>
+
+                <p
+                  id="selectedFile"
+                  class="selected-file"
+                ></p>
+
+                <img
+                  id="imagePreview"
+                  class="image-preview"
+                  alt="Product preview"
+                >
+
+              </div>
 
             </div>
+
+
+            <!-- DESCRIPTION -->
 
             <div class="field full">
 
@@ -770,6 +906,7 @@
 
           </div>
 
+
           <div class="form-actions">
 
             <button
@@ -782,6 +919,7 @@
 
           </div>
 
+
           <div
             id="statusMessage"
             class="status-message"
@@ -790,6 +928,9 @@
         </form>
 
       </section>
+
+
+      <!-- PRODUCTS -->
 
       <section class="panel">
 
@@ -826,6 +967,9 @@
 
   </div>
 
+
+  <!-- FIREBASE -->
+
   <script type="module">
 
     import {
@@ -833,10 +977,12 @@
       db
     } from "./firebase-config.js";
 
+
     import {
       onAuthStateChanged,
       signOut
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
 
     import {
       collection,
@@ -848,12 +994,31 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL,
+      deleteObject
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+
+
     /* =========================
        OWNER
     ========================= */
 
     const OWNER_EMAIL =
       "mucyoemmy539@gmail.com";
+
+
+    /* =========================
+       FIREBASE STORAGE
+    ========================= */
+
+    const storage =
+      getStorage(auth.app);
+
 
     /* =========================
        ELEMENTS
@@ -892,6 +1057,12 @@
     const productImage =
       document.getElementById("productImage");
 
+    const imagePreview =
+      document.getElementById("imagePreview");
+
+    const selectedFile =
+      document.getElementById("selectedFile");
+
     const saveProductBtn =
       document.getElementById("saveProductBtn");
 
@@ -913,11 +1084,17 @@
     const statusMessage =
       document.getElementById("statusMessage");
 
+
     /* =========================
        STATE
     ========================= */
 
     let editingProductId = null;
+
+    let existingImageUrl = "";
+
+    let existingImagePath = "";
+
 
     /* =========================
        SHOW MESSAGE
@@ -925,12 +1102,14 @@
 
     function showMessage(message, type) {
 
-      statusMessage.textContent = message;
+      statusMessage.textContent =
+        message;
 
       statusMessage.className =
         "status-message " + type;
 
     }
+
 
     /* =========================
        RESET FORM
@@ -942,6 +1121,10 @@
 
       editingProductId = null;
 
+      existingImageUrl = "";
+
+      existingImagePath = "";
+
       formTitle.textContent =
         "Add New Product";
 
@@ -951,6 +1134,15 @@
       cancelEditBtn.style.display =
         "none";
 
+      imagePreview.src = "";
+
+      imagePreview.classList.remove(
+        "show"
+      );
+
+      selectedFile.textContent =
+        "";
+
       statusMessage.className =
         "status-message";
 
@@ -959,38 +1151,136 @@
 
     }
 
+
+    /* =========================
+       IMAGE PREVIEW
+    ========================= */
+
+    productImage.addEventListener(
+      "change",
+      () => {
+
+        const file =
+          productImage.files[0];
+
+        if (!file) {
+
+          selectedFile.textContent =
+            "";
+
+          return;
+        }
+
+
+        if (!file.type.startsWith("image/")) {
+
+          productImage.value = "";
+
+          selectedFile.textContent =
+            "";
+
+          showMessage(
+            "Please choose an image file.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (file.size > 5 * 1024 * 1024) {
+
+          productImage.value = "";
+
+          selectedFile.textContent =
+            "";
+
+          showMessage(
+            "Image is too large. Maximum size is 5 MB.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        selectedFile.textContent =
+          `Selected: ${file.name}`;
+
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          (event) => {
+
+            imagePreview.src =
+              event.target.result;
+
+            imagePreview.classList.add(
+              "show"
+            );
+
+          };
+
+
+        reader.readAsDataURL(file);
+
+      }
+    );
+
+
     /* =========================
        AUTH CHECK
     ========================= */
 
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(
+      auth,
+      async (user) => {
 
-      loadingScreen.classList.add("hidden");
+        loadingScreen.classList.add(
+          "hidden"
+        );
 
-      if (!user) {
 
-        accessDenied.classList.remove("hidden");
+        if (!user) {
 
-        return;
+          accessDenied.classList.remove(
+            "hidden"
+          );
+
+          return;
+        }
+
+
+        const userEmail =
+          (user.email || "").toLowerCase();
+
+
+        if (
+          userEmail !==
+          OWNER_EMAIL.toLowerCase()
+        ) {
+
+          accessDenied.classList.remove(
+            "hidden"
+          );
+
+          return;
+        }
+
+
+        dashboard.classList.remove(
+          "hidden"
+        );
+
+
+        await loadProducts();
+
       }
+    );
 
-      const userEmail =
-        (user.email || "").toLowerCase();
-
-      if (
-        userEmail !== OWNER_EMAIL.toLowerCase()
-      ) {
-
-        accessDenied.classList.remove("hidden");
-
-        return;
-      }
-
-      dashboard.classList.remove("hidden");
-
-      await loadProducts();
-
-    });
 
     /* =========================
        LOGOUT
@@ -1020,6 +1310,7 @@
       }
     );
 
+
     /* =========================
        LOAD PRODUCTS
     ========================= */
@@ -1033,21 +1324,30 @@
         </div>
       `;
 
+
       try {
 
         const snapshot =
           await getDocs(
-            collection(db, "products")
+            collection(
+              db,
+              "products"
+            )
           );
+
 
         totalProducts.textContent =
           snapshot.size;
 
+
         let stockTotal = 0;
+
 
         if (snapshot.empty) {
 
-          totalStock.textContent = "0";
+          totalStock.textContent =
+            "0";
+
 
           productsGrid.innerHTML = `
             <div class="empty-products">
@@ -1066,30 +1366,45 @@
           return;
         }
 
-        productsGrid.innerHTML = "";
 
-        snapshot.forEach((productDoc) => {
+        productsGrid.innerHTML =
+          "";
 
-          const product =
-            productDoc.data();
 
-          const stock =
-            Number(product.stock || 0);
+        snapshot.forEach(
+          (productDoc) => {
 
-          stockTotal += stock;
+            const product =
+              productDoc.data();
 
-          const card =
-            createProductCard(
-              productDoc.id,
-              product
+
+            const stock =
+              Number(
+                product.stock || 0
+              );
+
+
+            stockTotal += stock;
+
+
+            const card =
+              createProductCard(
+                productDoc.id,
+                product
+              );
+
+
+            productsGrid.appendChild(
+              card
             );
 
-          productsGrid.appendChild(card);
+          }
+        );
 
-        });
 
         totalStock.textContent =
           stockTotal;
+
 
       } catch (error) {
 
@@ -1097,6 +1412,7 @@
           "Error loading products:",
           error
         );
+
 
         productsGrid.innerHTML = `
           <div class="empty-products">
@@ -1116,6 +1432,7 @@
 
     }
 
+
     /* =========================
        CREATE PRODUCT CARD
     ========================= */
@@ -1126,104 +1443,186 @@
     ) {
 
       const card =
-        document.createElement("article");
+        document.createElement(
+          "article"
+        );
+
 
       card.className =
         "product-card";
 
+
       const image =
-        document.createElement("img");
+        document.createElement(
+          "img"
+        );
+
 
       image.className =
         "product-image";
 
+
       image.alt =
-        product.name || "Product";
+        product.name ||
+        "Product";
+
 
       image.src =
-        product.imageUrl || "";
+        product.imageUrl ||
+        "";
 
-      image.onerror = () => {
 
-        image.style.display =
-          "none";
+      image.onerror =
+        () => {
 
-      };
+          image.src =
+            "data:image/svg+xml;charset=UTF-8," +
+            encodeURIComponent(`
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   width="600"
+                   height="400">
+                <rect width="100%"
+                      height="100%"
+                      fill="#f3f4f6"/>
+                <text x="50%"
+                      y="50%"
+                      dominant-baseline="middle"
+                      text-anchor="middle"
+                      fill="#6b7280"
+                      font-size="24">
+                  No Image
+                </text>
+              </svg>
+            `);
+
+        };
+
 
       const info =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       info.className =
         "product-info";
 
+
       const category =
-        document.createElement("span");
+        document.createElement(
+          "span"
+        );
+
 
       category.className =
         "product-category";
 
+
       category.textContent =
-        product.category || "Other";
+        product.category ||
+        "Other";
+
 
       const name =
-        document.createElement("h4");
+        document.createElement(
+          "h4"
+        );
+
 
       name.textContent =
-        product.name || "Unnamed Product";
+        product.name ||
+        "Unnamed Product";
+
 
       const description =
-        document.createElement("p");
+        document.createElement(
+          "p"
+        );
+
 
       description.className =
         "product-description";
 
+
       description.textContent =
-        product.description || "";
+        product.description ||
+        "";
+
 
       const bottom =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       bottom.className =
         "product-bottom";
 
+
       const price =
-        document.createElement("span");
+        document.createElement(
+          "span"
+        );
+
 
       price.className =
         "price";
 
+
       price.textContent =
-        `${Number(product.price || 0).toFixed(2)} SEK`;
+        `${Number(
+          product.price || 0
+        ).toFixed(2)} SEK`;
+
 
       const stock =
-        document.createElement("span");
+        document.createElement(
+          "span"
+        );
+
 
       stock.className =
         "stock";
 
+
       stock.textContent =
-        `Stock: ${Number(product.stock || 0)}`;
+        `Stock: ${Number(
+          product.stock || 0
+        )}`;
+
 
       bottom.appendChild(price);
+
       bottom.appendChild(stock);
 
+
       const actions =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       actions.className =
         "product-actions";
 
+
       const editButton =
-        document.createElement("button");
+        document.createElement(
+          "button"
+        );
+
 
       editButton.className =
         "edit-btn";
 
+
       editButton.type =
         "button";
 
+
       editButton.textContent =
         "Edit";
+
 
       editButton.addEventListener(
         "click",
@@ -1237,17 +1636,24 @@
         }
       );
 
+
       const deleteButton =
-        document.createElement("button");
+        document.createElement(
+          "button"
+        );
+
 
       deleteButton.className =
         "delete-btn";
 
+
       deleteButton.type =
         "button";
 
+
       deleteButton.textContent =
         "Delete";
+
 
       deleteButton.addEventListener(
         "click",
@@ -1255,30 +1661,127 @@
 
           deleteProduct(
             productId,
-            product.name
+            product.name,
+            product.imagePath
           );
 
         }
       );
 
-      actions.appendChild(editButton);
-      actions.appendChild(deleteButton);
 
-      info.appendChild(category);
-      info.appendChild(name);
-      info.appendChild(description);
-      info.appendChild(bottom);
-      info.appendChild(actions);
+      actions.appendChild(
+        editButton
+      );
 
-      card.appendChild(image);
-      card.appendChild(info);
+      actions.appendChild(
+        deleteButton
+      );
+
+
+      info.appendChild(
+        category
+      );
+
+      info.appendChild(
+        name
+      );
+
+      info.appendChild(
+        description
+      );
+
+      info.appendChild(
+        bottom
+      );
+
+      info.appendChild(
+        actions
+      );
+
+
+      card.appendChild(
+        image
+      );
+
+      card.appendChild(
+        info
+      );
+
 
       return card;
 
     }
 
+
     /* =========================
-       ADD / UPDATE
+       UPLOAD IMAGE
+    ========================= */
+
+    async function uploadProductImage(
+      file,
+      productId
+    ) {
+
+      if (!file) {
+
+        return {
+          url: existingImageUrl,
+          path: existingImagePath
+        };
+
+      }
+
+
+      const extension =
+        file.name
+          .split(".")
+          .pop()
+          .toLowerCase();
+
+
+      const uniqueName =
+        `${Date.now()}-${Math.random()
+          .toString(36)
+          .substring(2, 10)}.${extension}`;
+
+
+      const imagePath =
+        `products/${productId}/${uniqueName}`;
+
+
+      const imageRef =
+        ref(
+          storage,
+          imagePath
+        );
+
+
+      await uploadBytes(
+        imageRef,
+        file,
+        {
+          contentType:
+            file.type
+        }
+      );
+
+
+      const downloadUrl =
+        await getDownloadURL(
+          imageRef
+        );
+
+
+      return {
+        url: downloadUrl,
+        path: imagePath
+      };
+
+    }
+
+
+    /* =========================
+       ADD / UPDATE PRODUCT
     ========================= */
 
     productForm.addEventListener(
@@ -1287,70 +1790,155 @@
 
         event.preventDefault();
 
+
+        const file =
+          productImage.files[0];
+
+
+        /*
+          New product MUST have an image.
+        */
+
+        if (
+          !editingProductId &&
+          !file
+        ) {
+
+          showMessage(
+            "Please choose a product image.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (
+          file &&
+          file.size >
+          5 * 1024 * 1024
+        ) {
+
+          showMessage(
+            "Image is too large. Maximum size is 5 MB.",
+            "error"
+          );
+
+          return;
+        }
+
+
         saveProductBtn.disabled =
           true;
+
 
         saveProductBtn.textContent =
           editingProductId
             ? "Updating..."
-            : "Adding...";
+            : "Uploading image...";
 
-        const productData = {
-
-          name:
-            productName.value.trim(),
-
-          description:
-            productDescription.value.trim(),
-
-          price:
-            Number(productPrice.value),
-
-          category:
-            productCategory.value,
-
-          stock:
-            Number(productStock.value),
-
-          imageUrl:
-            productImage.value.trim()
-
-        };
 
         try {
 
-          if (editingProductId) {
+          let imageUrl =
+            existingImageUrl;
+
+
+          let imagePath =
+            existingImagePath;
+
+
+          /*
+            CREATE NEW PRODUCT
+          */
+
+          if (!editingProductId) {
+
+            /*
+              First create Firestore document
+              so we have a unique product ID.
+            */
+
+            const productRef =
+              await addDoc(
+                collection(
+                  db,
+                  "products"
+                ),
+                {
+                  name:
+                    productName.value.trim(),
+
+                  description:
+                    productDescription.value.trim(),
+
+                  price:
+                    Number(
+                      productPrice.value
+                    ),
+
+                  category:
+                    productCategory.value,
+
+                  stock:
+                    Number(
+                      productStock.value
+                    ),
+
+                  imageUrl: "",
+
+                  imagePath: "",
+
+                  createdAt:
+                    serverTimestamp(),
+
+                  updatedAt:
+                    serverTimestamp()
+                }
+              );
+
+
+            /*
+              Upload image to Storage
+            */
+
+            saveProductBtn.textContent =
+              "Uploading image...";
+
+
+            const uploaded =
+              await uploadProductImage(
+                file,
+                productRef.id
+              );
+
+
+            imageUrl =
+              uploaded.url;
+
+
+            imagePath =
+              uploaded.path;
+
+
+            /*
+              Save image URL into Firestore
+            */
 
             await updateDoc(
-              doc(
-                db,
-                "products",
-                editingProductId
-              ),
+              productRef,
               {
-                ...productData,
+                imageUrl:
+                  imageUrl,
+
+                imagePath:
+                  imagePath,
+
                 updatedAt:
                   serverTimestamp()
               }
             );
 
-            showMessage(
-              "Product updated successfully.",
-              "success"
-            );
-
-          } else {
-
-            await addDoc(
-              collection(db, "products"),
-              {
-                ...productData,
-                createdAt:
-                  serverTimestamp(),
-                updatedAt:
-                  serverTimestamp()
-              }
-            );
 
             showMessage(
               "Product added successfully.",
@@ -1359,9 +1947,132 @@
 
           }
 
+
+          /*
+            UPDATE EXISTING PRODUCT
+          */
+
+          else {
+
+            /*
+              If owner selected a new image,
+              upload it first.
+            */
+
+            if (file) {
+
+              saveProductBtn.textContent =
+                "Uploading new image...";
+
+
+              const uploaded =
+                await uploadProductImage(
+                  file,
+                  editingProductId
+                );
+
+
+              imageUrl =
+                uploaded.url;
+
+
+              imagePath =
+                uploaded.path;
+
+
+              /*
+                Delete old image if available
+              */
+
+              if (
+                existingImagePath
+              ) {
+
+                try {
+
+                  const oldImageRef =
+                    ref(
+                      storage,
+                      existingImagePath
+                    );
+
+
+                  await deleteObject(
+                    oldImageRef
+                  );
+
+                } catch (
+                  deleteError
+                ) {
+
+                  console.warn(
+                    "Old image could not be deleted:",
+                    deleteError
+                  );
+
+                }
+
+              }
+
+            }
+
+
+            saveProductBtn.textContent =
+              "Updating product...";
+
+
+            await updateDoc(
+              doc(
+                db,
+                "products",
+                editingProductId
+              ),
+              {
+
+                name:
+                  productName.value.trim(),
+
+                description:
+                  productDescription.value.trim(),
+
+                price:
+                  Number(
+                    productPrice.value
+                  ),
+
+                category:
+                  productCategory.value,
+
+                stock:
+                  Number(
+                    productStock.value
+                  ),
+
+                imageUrl:
+                  imageUrl,
+
+                imagePath:
+                  imagePath,
+
+                updatedAt:
+                  serverTimestamp()
+
+              }
+            );
+
+
+            showMessage(
+              "Product updated successfully.",
+              "success"
+            );
+
+          }
+
+
           resetForm();
 
           await loadProducts();
+
 
         } catch (error) {
 
@@ -1370,8 +2081,21 @@
             error
           );
 
+
+          console.error(
+            "Firebase error code:",
+            error.code
+          );
+
+
+          console.error(
+            "Firebase error message:",
+            error.message
+          );
+
+
           showMessage(
-            "Could not save product. Check Firebase Authentication and Firestore Rules.",
+            "Could not save product. Check Firebase Storage and Firestore Rules.",
             "error"
           );
 
@@ -1380,15 +2104,15 @@
           saveProductBtn.disabled =
             false;
 
+
           saveProductBtn.textContent =
-            editingProductId
-              ? "Update Product"
-              : "Add Product";
+            "Add Product";
 
         }
 
       }
     );
+
 
     /* =========================
        START EDITING
@@ -1402,32 +2126,78 @@
       editingProductId =
         productId;
 
+
+      existingImageUrl =
+        product.imageUrl || "";
+
+
+      existingImagePath =
+        product.imagePath || "";
+
+
       productName.value =
         product.name || "";
+
 
       productDescription.value =
         product.description || "";
 
+
       productPrice.value =
         product.price ?? "";
+
 
       productCategory.value =
         product.category || "";
 
+
       productStock.value =
         product.stock ?? "";
 
+
       productImage.value =
-        product.imageUrl || "";
+        "";
+
+
+      selectedFile.textContent =
+        product.imageUrl
+          ? "Current product image is being used. Choose a new file to replace it."
+          : "Choose a product image.";
+
+
+      if (
+        product.imageUrl
+      ) {
+
+        imagePreview.src =
+          product.imageUrl;
+
+        imagePreview.classList.add(
+          "show"
+        );
+
+      } else {
+
+        imagePreview.src = "";
+
+        imagePreview.classList.remove(
+          "show"
+        );
+
+      }
+
 
       formTitle.textContent =
         "Edit Product";
 
+
       saveProductBtn.textContent =
         "Update Product";
 
+
       cancelEditBtn.style.display =
         "block";
+
 
       window.scrollTo({
         top: 0,
@@ -1435,6 +2205,7 @@
       });
 
     }
+
 
     /* =========================
        CANCEL EDIT
@@ -1449,13 +2220,15 @@
       }
     );
 
+
     /* =========================
        DELETE PRODUCT
     ========================= */
 
     async function deleteProduct(
       productId,
-      productName
+      productName,
+      imagePath
     ) {
 
       const confirmed =
@@ -1463,11 +2236,19 @@
           `Delete "${productName || "this product"}"?`
         );
 
+
       if (!confirmed) {
+
         return;
+
       }
 
+
       try {
+
+        /*
+          Delete Firestore product
+        */
 
         await deleteDoc(
           doc(
@@ -1477,12 +2258,48 @@
           )
         );
 
+
+        /*
+          Delete image from Storage
+        */
+
+        if (imagePath) {
+
+          try {
+
+            const imageRef =
+              ref(
+                storage,
+                imagePath
+              );
+
+
+            await deleteObject(
+              imageRef
+            );
+
+          } catch (
+            imageError
+          ) {
+
+            console.warn(
+              "Product image could not be deleted:",
+              imageError
+            );
+
+          }
+
+        }
+
+
         showMessage(
           "Product deleted successfully.",
           "success"
         );
 
+
         await loadProducts();
+
 
       } catch (error) {
 
@@ -1490,6 +2307,7 @@
           "Delete product error:",
           error
         );
+
 
         showMessage(
           "Could not delete product. Check your Firestore Rules.",

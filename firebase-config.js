@@ -12,7 +12,7 @@ import { getStorage } from
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDNEAuCOWSbjtCXp00nN_8CnNCHOuBRH1g",
+  apiKey: "AIzaSyDNEAuCOWSbjtCXp00nN_8CnNCH0uBRH1g",
   authDomain: "eb-marketiza.firebaseapp.com",
   projectId: "eb-marketiza",
   storageBucket: "eb-marketiza.firebasestorage.app",
@@ -20,7 +20,6 @@ const firebaseConfig = {
   appId: "1:1081828417462:web:1447a6f0b6fb4ed1b0eb17",
   measurementId: "G-YH1VY3Y8VQ"
 };
-
 
 const app = initializeApp(firebaseConfig);
 

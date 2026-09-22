@@ -1,0 +1,465 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Account | E&B SHOP</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 18px 20px;
+    }
+
+    .header-inner {
+      max-width: 1000px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .home-link {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .home-link:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+
+    .welcome {
+      margin-bottom: 25px;
+    }
+
+    .welcome h1 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #666;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .card h2 {
+      font-size: 20px;
+      margin-bottom: 18px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: #777;
+    }
+
+    .info-value {
+      font-weight: bold;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .orders-empty {
+      text-align: center;
+      padding: 25px 10px;
+      color: #777;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .action-button {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      padding: 13px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      color: #111;
+      background: white;
+      font-weight: bold;
+    }
+
+    .action-button:hover {
+      background: #f5f5f5;
+    }
+
+    .logout-button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #111;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .logout-button:hover {
+      background: #333;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px 20px;
+      color: #666;
+    }
+
+    #error {
+      color: #c00;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .welcome h1 {
+        font-size: 25px;
+      }
+
+      .info-row {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .info-value {
+        text-align: left;
+      }
+
+      .actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-inner">
+
+      <div class="logo">
+        E&B SHOP
+      </div>
+
+      <a
+        href="index.html"
+        class="home-link"
+      >
+        ← Back to Shop
+      </a>
+
+    </div>
+  </header>
+
+
+  <main>
+
+    <div id="loading" class="loading">
+      Loading your account...
+    </div>
+
+
+    <div id="accountContent" style="display:none;">
+
+      <div class="welcome">
+
+        <h1 id="welcomeName">
+          My Account
+        </h1>
+
+        <p>
+          Manage your E&B SHOP account.
+        </p>
+
+      </div>
+
+
+      <!-- ACCOUNT INFORMATION -->
+
+      <div class="card">
+
+        <h2>
+          Account Information
+        </h2>
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Name
+          </span>
+
+          <span
+            class="info-value"
+            id="userName"
+          >
+            —
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Email
+          </span>
+
+          <span
+            class="info-value"
+            id="userEmail"
+          >
+            —
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- ORDERS -->
+
+      <div class="card">
+
+        <h2>
+          My Orders
+        </h2>
+
+        <div class="orders-empty">
+          You don't have any orders yet.
+        </div>
+
+      </div>
+
+
+      <!-- QUICK ACTIONS -->
+
+      <div class="card">
+
+        <h2>
+          Quick Actions
+        </h2>
+
+        <div class="actions">
+
+          <a
+            href="products.html"
+            class="action-button"
+          >
+            🛍️ Browse Products
+          </a>
+
+          <a
+            href="cart.html"
+            class="action-button"
+          >
+            🛒 My Cart
+          </a>
+
+        </div>
+
+
+        <button
+          id="logoutButton"
+          class="logout-button"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div id="error"></div>
+
+  </main>
+
+
+  <script type="module">
+
+    import { auth } from "./firebase-config.js";
+
+    import {
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    /* =========================
+       ELEMENTS
+    ========================== */
+
+    const loading =
+      document.getElementById("loading");
+
+    const accountContent =
+      document.getElementById("accountContent");
+
+    const error =
+      document.getElementById("error");
+
+    const welcomeName =
+      document.getElementById("welcomeName");
+
+    const userName =
+      document.getElementById("userName");
+
+    const userEmail =
+      document.getElementById("userEmail");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+
+    /* =========================
+       CHECK LOGIN
+    ========================== */
+
+    onAuthStateChanged(
+      auth,
+      (user) => {
+
+        if (!user) {
+
+          window.location.href =
+            "login.html";
+
+          return;
+        }
+
+
+        /* =========================
+           USER INFORMATION
+        ========================== */
+
+        const name =
+          user.displayName ||
+          "Customer";
+
+        const email =
+          user.email ||
+          "No email";
+
+
+        welcomeName.textContent =
+          "Welcome, " + name;
+
+        userName.textContent =
+          name;
+
+        userEmail.textContent =
+          email;
+
+
+        loading.style.display =
+          "none";
+
+        accountContent.style.display =
+          "block";
+
+      }
+    );
+
+
+    /* =========================
+       LOGOUT
+    ========================== */
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        logoutButton.disabled = true;
+
+        logoutButton.textContent =
+          "Logging out...";
+
+
+        try {
+
+          await signOut(auth);
+
+          window.location.href =
+            "login.html";
+
+        } catch (err) {
+
+          console.error(
+            "LOGOUT ERROR:",
+            err
+          );
+
+          error.textContent =
+            err.message;
+
+          logoutButton.disabled = false;
+
+          logoutButton.textContent =
+            "Logout";
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
+```

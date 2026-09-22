@@ -1,10 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Login | E&B MARKETIZA</title>
+  <title>Login | E&B SHOP</title>
 
   <style>
     * {
@@ -86,6 +87,19 @@
       cursor: not-allowed;
     }
 
+    .forgot-button {
+      margin-top: 10px;
+      background: transparent;
+      color: #111;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      padding: 11px;
+    }
+
+    .forgot-button:hover {
+      background: #f5f5f5;
+    }
+
     #message {
       margin-top: 18px;
       text-align: center;
@@ -113,7 +127,7 @@
   <div class="login-box">
 
     <div class="logo">
-      E&B MARKETIZA
+      E&B SHOP
     </div>
 
     <div class="subtitle">
@@ -153,6 +167,14 @@
         Login
       </button>
 
+      <button
+        type="button"
+        id="forgotPasswordButton"
+        class="forgot-button"
+      >
+        Forgot Password?
+      </button>
+
     </form>
 
     <div id="message"></div>
@@ -172,7 +194,8 @@
     import { auth } from "./firebase-config.js";
 
     import {
-      signInWithEmailAndPassword
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
@@ -181,7 +204,7 @@
     ========================== */
 
     const OWNER_EMAIL =
-      "mucyoemmy539@gmail.com";
+      "mucyoemmy@gmail.com";
 
 
     /* =========================
@@ -193,6 +216,11 @@
 
     const loginButton =
       document.getElementById("loginButton");
+
+    const forgotPasswordButton =
+      document.getElementById(
+        "forgotPasswordButton"
+      );
 
     const message =
       document.getElementById("message");
@@ -208,7 +236,6 @@
 
         event.preventDefault();
 
-
         const email =
           document
             .getElementById("email")
@@ -220,10 +247,11 @@
             .getElementById("password")
             .value;
 
-
         message.textContent = "";
 
         loginButton.disabled = true;
+        forgotPasswordButton.disabled = true;
+
         loginButton.textContent =
           "Logging in...";
 
@@ -236,7 +264,6 @@
               email,
               password
             );
-
 
           const user =
             userCredential.user;
@@ -257,7 +284,6 @@
             message.textContent =
               "Login successful. Opening Admin Dashboard...";
 
-
             setTimeout(() => {
 
               window.location.href =
@@ -265,8 +291,8 @@
 
             }, 700);
 
-
           }
+
 
           /* =========================
              CUSTOMER LOGIN
@@ -279,7 +305,6 @@
             message.textContent =
               "Login successful.";
 
-
             setTimeout(() => {
 
               window.location.href =
@@ -291,10 +316,6 @@
 
 
         } catch (error) {
-
-          /* =========================
-             FIREBASE ERROR
-          ========================== */
 
           console.error(
             "LOGIN ERROR:",
@@ -311,27 +332,105 @@
             error.message
           );
 
-
           message.style.color = "red";
-
-
-          /*
-             Show the real Firebase error
-             instead of hiding it.
-          */
 
           message.textContent =
             error.code +
             " — " +
             error.message;
 
-
         } finally {
 
           loginButton.disabled = false;
+          forgotPasswordButton.disabled = false;
 
           loginButton.textContent =
             "Login";
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       FORGOT PASSWORD
+    ========================== */
+
+    forgotPasswordButton.addEventListener(
+      "click",
+      async () => {
+
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim();
+
+
+        if (!email) {
+
+          message.style.color = "red";
+
+          message.textContent =
+            "Enter your email first.";
+
+          return;
+        }
+
+
+        forgotPasswordButton.disabled = true;
+        loginButton.disabled = true;
+
+        forgotPasswordButton.textContent =
+          "Sending...";
+
+        message.textContent = "";
+
+
+        try {
+
+          await sendPasswordResetEmail(
+            auth,
+            email
+          );
+
+          message.style.color = "green";
+
+          message.textContent =
+            "Password reset email sent. Check your inbox.";
+
+        } catch (error) {
+
+          console.error(
+            "PASSWORD RESET ERROR:",
+            error
+          );
+
+          console.error(
+            "ERROR CODE:",
+            error.code
+          );
+
+          console.error(
+            "ERROR MESSAGE:",
+            error.message
+          );
+
+          message.style.color = "red";
+
+          message.textContent =
+            error.code +
+            " — " +
+            error.message;
+
+        } finally {
+
+          forgotPasswordButton.disabled = false;
+          loginButton.disabled = false;
+
+          forgotPasswordButton.textContent =
+            "Forgot Password?";
 
         }
 
@@ -342,3 +441,4 @@
 
 </body>
 </html>
+```

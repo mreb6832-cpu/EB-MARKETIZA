@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Account | E&B MARKETIZA</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6f8;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 18px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      color: white;
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .welcome {
+      margin-bottom: 25px;
+    }
+
+    .welcome h1 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .email {
+      color: #666;
+      word-break: break-word;
+    }
+
+    .admin-badge {
+      display: none;
+      margin-top: 15px;
+      background: #111;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 8px;
+      width: fit-content;
+      font-size: 14px;
+    }
+
+    .sections {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .section {
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .section p {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-dark {
+      background: #111;
+      color: white;
+    }
+
+    .btn-light {
+      background: white;
+      color: #111;
+      border: 1px solid #ddd;
+    }
+
+    .admin-section {
+      display: none;
+      margin-top: 20px;
+      background: #fff8e1;
+      border: 1px solid #f0d98c;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .admin-section h2 {
+      margin-bottom: 8px;
+    }
+
+    .admin-section p {
+      color: #666;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .logout {
+      margin-top: 30px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: #d93025;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .logout:hover {
+      background: #b42318;
+    }
+
+    #loading {
+      text-align: center;
+      padding: 50px 20px;
+      color: #555;
+    }
+
+    #errorBox {
+      display: none;
+      background: #ffe8e8;
+      color: #a40000;
+      padding: 15px;
+      border-radius: 9px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 650px) {
+      header {
+        padding: 16px;
+      }
+
+      nav {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .container {
+        margin: 20px auto;
+        padding: 15px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .sections {
+        grid-template-columns: 1fr;
+      }
+
+      .welcome h1 {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="index.html" class="logo">E&B MARKETIZA</a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="cart.html">Cart</a>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <div id="loading">
+      Checking your account...
+    </div>
+
+    <div id="errorBox"></div>
+
+    <div class="card" id="accountCard" style="display:none;">
+
+      <div class="welcome">
+        <h1>My Account</h1>
+
+        <p class="email">
+          Signed in as:
+          <strong id="userEmail"></strong>
+        </p>
+
+        <div class="admin-badge" id="adminBadge">
+          👑 Admin / Owner
+        </div>
+      </div>
+
+      <div class="sections">
+
+        <div class="section">
+          <h2>🛍️ Products</h2>
+
+          <p>
+            Browse the real products available on E&B MARKETIZA.
+          </p>
+
+          <a href="products.html" class="btn btn-dark">
+            Browse Products
+          </a>
+        </div>
+
+        <div class="section">
+          <h2>🛒 My Cart</h2>
+
+          <p>
+            View the products you have added to your shopping cart.
+          </p>
+
+          <a href="cart.html" class="btn btn-dark">
+            Open Cart
+          </a>
+        </div>
+
+      </div>
+
+      <!-- ADMIN ONLY -->
+      <div class="admin-section" id="adminSection">
+
+        <h2>👑 Admin Dashboard</h2>
+
+        <p>
+          You are signed in as the E&B MARKETIZA owner.
+          From here you can manage products and the administration area.
+        </p>
+
+        <a href="admin.html" class="btn btn-dark">
+          Open Admin Dashboard
+        </a>
+
+        <br><br>
+
+        <a href="admin-products.html" class="btn btn-light">
+          Manage Products
+        </a>
+
+      </div>
+
+      <button class="logout" id="logoutBtn">
+        Log Out
+      </button>
+
+    </div>
+
+  </main>
+
+  <script type="module">
+
+    import { auth } from "./firebase-config.js";
+
+    import {
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    // ==========================================
+    // E&B MARKETIZA ADMIN EMAIL
+    // ==========================================
+
+    const ADMIN_EMAIL = "mucyoemmy@gmail.com";
+
+
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
+
+    const loading = document.getElementById("loading");
+    const accountCard = document.getElementById("accountCard");
+    const userEmail = document.getElementById("userEmail");
+
+    const adminBadge = document.getElementById("adminBadge");
+    const adminSection = document.getElementById("adminSection");
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    const errorBox = document.getElementById("errorBox");
+
+
+    // ==========================================
+    // CHECK LOGIN
+    // ==========================================
+
+    onAuthStateChanged(auth, (user) => {
+
+      if (!user) {
+
+        window.location.href = "login.html";
+
+        return;
+      }
+
+
+      // Hide loading
+      loading.style.display = "none";
+
+      // Show account
+      accountCard.style.display = "block";
+
+
+      // Show email
+      userEmail.textContent = user.email || "Signed in user";
+
+
+      // ========================================
+      // CHECK ADMIN
+      // ========================================
+
+      const loggedInEmail =
+        (user.email || "").trim().toLowerCase();
+
+      const adminEmail =
+        ADMIN_EMAIL.trim().toLowerCase();
+
+
+      if (loggedInEmail === adminEmail) {
+
+        // Admin
+        adminBadge.style.display = "block";
+        adminSection.style.display = "block";
+
+      } else {
+
+        // Normal customer
+        adminBadge.style.display = "none";
+        adminSection.style.display = "none";
+
+      }
+
+    });
+
+
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+
+    logoutBtn.addEventListener("click", async () => {
+
+      logoutBtn.disabled = true;
+      logoutBtn.textContent = "Logging out...";
+
+      try {
+
+        await signOut(auth);
+
+        window.location.href = "login.html";
+
+      } catch (error) {
+
+        console.error(error);
+
+        errorBox.style.display = "block";
+
+        errorBox.textContent =
+          error.message || "Unable to log out.";
+
+        logoutBtn.disabled = false;
+        logoutBtn.textContent = "Log Out";
+
+      }
+
+    });
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Payment | E&B SHOP</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #111;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .payment-box {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .summary {
+      background: #f7f7f7;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 22px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+    }
+
+    .total {
+      font-size: 20px;
+      font-weight: bold;
+      border-top: 1px solid #ddd;
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+
+    .method {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 14px;
+      margin: 10px 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .method:hover {
+      background: #f8f8f8;
+    }
+
+    .method input {
+      width: 18px;
+      height: 18px;
+    }
+
+    .pay-btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .pay-btn:hover {
+      background: #333;
+    }
+
+    .pay-btn:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: #111;
+      text-decoration: none;
+    }
+
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      color: #d00;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="payment-box">
+
+      <h1>E&B SHOP</h1>
+
+      <p class="subtitle">
+        Secure Checkout
+      </p>
+
+      <div class="summary">
+
+        <div class="summary-row">
+          <span>Items</span>
+          <strong id="itemsCount">0</strong>
+        </div>
+
+        <div class="summary-row total">
+          <span>Total</span>
+          <strong id="totalPrice">0 SEK</strong>
+        </div>
+
+      </div>
+
+      <h3>Select payment method</h3>
+
+      <label class="method">
+        <input
+          type="radio"
+          name="paymentMethod"
+          value="card"
+          checked
+        >
+        <span>💳 Card</span>
+      </label>
+
+      <label class="method">
+        <input
+          type="radio"
+          name="paymentMethod"
+          value="swish"
+        >
+        <span>📱 Swish</span>
+      </label>
+
+      <label class="method">
+        <input
+          type="radio"
+          name="paymentMethod"
+          value="invoice"
+        >
+        <span>🧾 Invoice</span>
+      </label>
+
+      <button
+        id="payButton"
+        class="pay-btn"
+      >
+        Pay by Card
+      </button>
+
+      <div
+        id="message"
+        class="message"
+      ></div>
+
+      <a
+        href="cart.html"
+        class="back"
+      >
+        ← Back to Cart
+      </a>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const API_URL = "/api/create-checkout-session";
+
+    const payButton = document.getElementById("payButton");
+    const message = document.getElementById("message");
+
+    const itemsCount = document.getElementById("itemsCount");
+    const totalPrice = document.getElementById("totalPrice");
+
+    function getCart() {
+
+      try {
+
+        const cart =
+          JSON.parse(localStorage.getItem("cart")) || [];
+
+        return Array.isArray(cart) ? cart : [];
+
+      } catch (error) {
+
+        return [];
+
+      }
+
+    }
+
+    function getQuantity(item) {
+
+      return Number(
+        item.quantity ||
+        item.qty ||
+        1
+      );
+
+    }
+
+    function getTotal(cart) {
+
+      return cart.reduce((total, item) => {
+
+        const price = Number(item.price) || 0;
+
+        const quantity = getQuantity(item);
+
+        return total + (price * quantity);
+
+      }, 0);
+
+    }
+
+    function updateSummary() {
+
+      const cart = getCart();
+
+      const count = cart.reduce(
+        (total, item) =>
+          total + getQuantity(item),
+        0
+      );
+
+      const total = getTotal(cart);
+
+      itemsCount.textContent = count;
+
+      totalPrice.textContent =
+        total.toFixed(2) + " SEK";
+
+    }
+
+    document
+      .querySelectorAll('input[name="paymentMethod"]')
+      .forEach((radio) => {
+
+        radio.addEventListener("change", () => {
+
+          if (radio.checked) {
+
+            if (radio.value === "card") {
+
+              payButton.textContent =
+                "Pay by Card";
+
+            } else if (radio.value === "swish") {
+
+              payButton.textContent =
+                "Continue with Swish";
+
+            } else {
+
+              payButton.textContent =
+                "Continue with Invoice";
+
+            }
+
+          }
+
+        });
+
+      });
+
+    payButton.addEventListener("click", async () => {
+
+      const cart = getCart();
+
+      if (cart.length === 0) {
+
+        message.textContent =
+          "Your cart is empty.";
+
+        return;
+
+      }
+
+      const method =
+        document.querySelector(
+          'input[name="paymentMethod"]:checked'
+        ).value;
+
+      /*
+       * Stripe Checkout currently handles CARD payments.
+       * Swish and Invoice will be connected separately.
+       */
+
+      if (method !== "card") {
+
+        message.textContent =
+          method === "swish"
+            ? "Swish payment will be connected next."
+            : "Invoice payment will be connected next.";
+
+        return;
+
+      }
+
+      payButton.disabled = true;
+
+      payButton.textContent =
+        "Connecting to Stripe...";
+
+      message.textContent = "";
+
+      try {
+
+        const items = cart.map((item) => ({
+
+          name: item.name,
+
+          price: Number(item.price),
+
+          quantity: getQuantity(item)
+
+        }));
+
+        const response =
+          await fetch(API_URL, {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+              items: items
+            })
+
+          });
+
+        const data =
+          await response.json();
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            "Payment server error"
+          );
+
+        }
+
+        if (!data.url) {
+
+          throw new Error(
+            "Stripe Checkout URL was not returned."
+          );
+
+        }
+
+        window.location.href =
+          data.url;
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          error.message ||
+          "Unable to start payment.";
+
+        payButton.disabled = false;
+
+        payButton.textContent =
+          "Pay by Card";
+
+      }
+
+    });
+
+    updateSummary();
+
+  </script>
+
+</body>
+</html>

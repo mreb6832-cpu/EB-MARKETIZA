@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Login | E&B SHOP</title>
+  <title>Login | E&B MARKETIZA</title>
 
   <style>
     * {
@@ -126,7 +126,7 @@
   <div class="login-box">
 
     <div class="logo">
-      E&B SHOP
+      E&B MARKETIZA
     </div>
 
     <div class="subtitle">
@@ -190,25 +190,21 @@
 
   <script type="module">
 
-    import { auth } from "./firebase-config.js";
-
-    import {
-      signInWithEmailAndPassword,
-      sendPasswordResetEmail
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { supabase }
+      from "./supabaseClient.js";
 
 
-    /* =========================
-       OWNER EMAIL
-    ========================== */
+    // ==========================================
+    // ADMIN EMAIL
+    // ==========================================
 
-    const OWNER_EMAIL =
-      "mucyoemmy@gmail.com";
+    const ADMIN_EMAIL =
+      "mucyoemmy539@gmail.com";
 
 
-    /* =========================
-       ELEMENTS
-    ========================== */
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
 
     const loginForm =
       document.getElementById("loginForm");
@@ -225,9 +221,9 @@
       document.getElementById("message");
 
 
-    /* =========================
-       LOGIN
-    ========================== */
+    // ==========================================
+    // LOGIN
+    // ==========================================
 
     loginForm.addEventListener(
       "submit",
@@ -246,6 +242,7 @@
             .getElementById("password")
             .value;
 
+
         message.textContent = "";
 
         loginButton.disabled = true;
@@ -257,91 +254,137 @@
 
         try {
 
-          const userCredential =
-            await signInWithEmailAndPassword(
-              auth,
-              email,
-              password
+          // ====================================
+          // SUPABASE LOGIN
+          // ====================================
+
+          const {
+            data,
+            error
+          } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          if (!data.user) {
+            throw new Error(
+              "Login succeeded but no user session was returned."
             );
-
-          const user =
-            userCredential.user;
+          }
 
 
-          /* =========================
-             OWNER LOGIN
-          ========================== */
+          // ====================================
+          // MAKE SURE SESSION EXISTS
+          // ====================================
+
+          const {
+            data: sessionData
+          } = await supabase.auth.getSession();
+
+
+          if (!sessionData.session) {
+            throw new Error(
+              "Login succeeded but the Supabase session was not created."
+            );
+          }
+
+
+          // ====================================
+          // SUCCESS
+          // ====================================
+
+          const loggedInEmail =
+            (data.user.email || "")
+              .trim()
+              .toLowerCase();
+
+
+          const adminEmail =
+            ADMIN_EMAIL
+              .trim()
+              .toLowerCase();
+
+
+          message.style.color = "green";
+
+
+          // ====================================
+          // ADMIN
+          // ====================================
 
           if (
-            user.email &&
-            user.email.toLowerCase() ===
-            OWNER_EMAIL.toLowerCase()
+            loggedInEmail === adminEmail
           ) {
 
-            message.style.color = "green";
-
             message.textContent =
-              "Login successful. Opening Admin Dashboard...";
-
-            setTimeout(() => {
-
-              window.location.href =
-                "admin.html";
-
-            }, 700);
+              "Login successful. Opening your account...";
 
           }
 
 
-          /* =========================
-             CUSTOMER LOGIN
-          ========================== */
+          // ====================================
+          // CUSTOMER
+          // ====================================
 
           else {
 
-            message.style.color = "green";
-
             message.textContent =
-              "Login successful.";
-
-            setTimeout(() => {
-
-              window.location.href =
-                "account.html";
-
-            }, 700);
+              "Login successful. Opening your account...";
 
           }
+
+
+          // ====================================
+          // BOTH GO TO ACCOUNT
+          // ====================================
+
+          setTimeout(() => {
+
+            window.location.href =
+              "account.html";
+
+          }, 500);
 
 
         } catch (error) {
 
           console.error(
-            "LOGIN ERROR:",
+            "SUPABASE LOGIN ERROR:",
             error
           );
 
-          console.error(
-            "ERROR CODE:",
-            error.code
-          );
-
-          console.error(
-            "ERROR MESSAGE:",
-            error.message
-          );
 
           message.style.color = "red";
 
-          message.textContent =
-            error.code +
-            " — " +
-            error.message;
+
+          if (
+            error.message ===
+            "Invalid login credentials"
+          ) {
+
+            message.textContent =
+              "Incorrect email or password.";
+
+          } else {
+
+            message.textContent =
+              error.message ||
+              "Login failed.";
+
+          }
 
         } finally {
 
           loginButton.disabled = false;
-          forgotPasswordButton.disabled = false;
+
+          forgotPasswordButton.disabled =
+            false;
 
           loginButton.textContent =
             "Login";
@@ -352,9 +395,9 @@
     );
 
 
-    /* =========================
-       FORGOT PASSWORD
-    ========================== */
+    // ==========================================
+    // FORGOT PASSWORD
+    // ==========================================
 
     forgotPasswordButton.addEventListener(
       "click",
@@ -378,8 +421,11 @@
         }
 
 
-        forgotPasswordButton.disabled = true;
-        loginButton.disabled = true;
+        forgotPasswordButton.disabled =
+          true;
+
+        loginButton.disabled =
+          true;
 
         forgotPasswordButton.textContent =
           "Sending...";
@@ -389,44 +435,56 @@
 
         try {
 
-          await sendPasswordResetEmail(
-            auth,
-            email
-          );
+          // ====================================
+          // SUPABASE PASSWORD RESET
+          // ====================================
 
-          message.style.color = "green";
+          const {
+            error
+          } =
+            await supabase.auth.resetPasswordForEmail(
+              email,
+              {
+                redirectTo:
+                  `${window.location.origin}/reset-password.html`
+              }
+            );
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          message.style.color =
+            "green";
 
           message.textContent =
             "Password reset email sent. Check your inbox.";
 
+
         } catch (error) {
 
           console.error(
-            "PASSWORD RESET ERROR:",
+            "SUPABASE PASSWORD RESET ERROR:",
             error
           );
 
-          console.error(
-            "ERROR CODE:",
-            error.code
-          );
 
-          console.error(
-            "ERROR MESSAGE:",
-            error.message
-          );
-
-          message.style.color = "red";
+          message.style.color =
+            "red";
 
           message.textContent =
-            error.code +
-            " — " +
-            error.message;
+            error.message ||
+            "Could not send password reset email.";
 
         } finally {
 
-          forgotPasswordButton.disabled = false;
-          loginButton.disabled = false;
+          forgotPasswordButton.disabled =
+            false;
+
+          loginButton.disabled =
+            false;
 
           forgotPasswordButton.textContent =
             "Forgot Password?";
@@ -440,4 +498,3 @@
 
 </body>
 </html>
-```

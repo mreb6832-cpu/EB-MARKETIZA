@@ -17,6 +17,7 @@
       font-family: Arial, sans-serif;
       background: #f5f6f8;
       color: #222;
+      min-height: 100vh;
     }
 
     header {
@@ -89,6 +90,7 @@
       border-radius: 8px;
       width: fit-content;
       font-size: 14px;
+      font-weight: bold;
     }
 
     .sections {
@@ -134,15 +136,27 @@
       color: white;
     }
 
+    .btn-dark:hover {
+      background: #333;
+    }
+
     .btn-blue {
       background: #2563eb;
       color: white;
+    }
+
+    .btn-blue:hover {
+      background: #1d4ed8;
     }
 
     .btn-light {
       background: white;
       color: #111;
       border: 1px solid #ddd;
+    }
+
+    .btn-light:hover {
+      background: #f5f5f5;
     }
 
     .admin-section {
@@ -199,9 +213,11 @@
       padding: 15px;
       border-radius: 9px;
       margin-top: 20px;
+      line-height: 1.5;
     }
 
     @media (max-width: 650px) {
+
       header {
         padding: 16px;
       }
@@ -227,226 +243,285 @@
       .welcome h1 {
         font-size: 25px;
       }
+
     }
   </style>
 </head>
 
 <body>
 
-<header>
+  <!-- ==========================================
+       HEADER
+  =========================================== -->
 
-  <a href="index.html" class="logo">
-    E&B MARKETIZA
-  </a>
+  <header>
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="products.html">Products</a>
-    <a href="cart.html">Cart</a>
-  </nav>
+    <a href="index.html" class="logo">
+      E&B MARKETIZA
+    </a>
 
-</header>
+    <nav>
 
+      <a href="index.html">
+        Home
+      </a>
 
-<main class="container">
+      <a href="products.html">
+        Products
+      </a>
 
-  <div id="loading">
-    Checking your account...
-  </div>
+      <a href="cart.html">
+        Cart
+      </a>
 
-  <div id="errorBox"></div>
+    </nav>
 
-
-  <div
-    class="card"
-    id="accountCard"
-    style="display:none;"
-  >
-
-    <div class="welcome">
-
-      <h1>
-        My Account
-      </h1>
-
-      <p class="email">
-        Signed in as:
-        <strong id="userEmail"></strong>
-      </p>
+  </header>
 
 
-      <div
-        class="admin-badge"
-        id="adminBadge"
-      >
-        👑 Admin / Owner
-      </div>
+  <!-- ==========================================
+       MAIN
+  =========================================== -->
 
+  <main class="container">
+
+    <!-- Loading -->
+
+    <div id="loading">
+      Checking your account...
     </div>
 
 
-    <!-- CUSTOMER SECTIONS -->
+    <!-- Error -->
 
-    <div class="sections">
-
-      <div class="section">
-
-        <h2>
-          🛍️ Products
-        </h2>
-
-        <p>
-          Browse the real products available on E&B MARKETIZA.
-        </p>
-
-        <a
-          href="products.html"
-          class="btn btn-dark"
-        >
-          Browse Products
-        </a>
-
-      </div>
+    <div id="errorBox"></div>
 
 
-      <div class="section">
-
-        <h2>
-          🛒 My Cart
-        </h2>
-
-        <p>
-          View the products you have added to your shopping cart.
-        </p>
-
-        <a
-          href="cart.html"
-          class="btn btn-dark"
-        >
-          Open Cart
-        </a>
-
-      </div>
-
-    </div>
-
-
-    <!-- ADMIN ONLY -->
+    <!-- Account -->
 
     <div
-      class="admin-section"
-      id="adminSection"
+      class="card"
+      id="accountCard"
+      style="display: none;"
     >
 
-      <h2>
-        👑 Admin Dashboard
-      </h2>
+      <!-- ======================================
+           WELCOME
+      ======================================= -->
 
-      <p>
-        You are signed in as the E&B MARKETIZA owner.
-        Manage products, prices, stock and product photos.
-      </p>
+      <div class="welcome">
+
+        <h1>
+          My Account
+        </h1>
+
+        <p class="email">
+
+          Signed in as:
+
+          <strong id="userEmail">
+            -
+          </strong>
+
+        </p>
 
 
-      <a
-        href="admin.html"
-        class="btn btn-blue"
+        <!-- ADMIN BADGE -->
+
+        <div
+          class="admin-badge"
+          id="adminBadge"
+        >
+          👑 Admin / Owner
+        </div>
+
+      </div>
+
+
+      <!-- ======================================
+           CUSTOMER SECTIONS
+      ======================================= -->
+
+      <div class="sections">
+
+
+        <!-- PRODUCTS -->
+
+        <div class="section">
+
+          <h2>
+            🛍️ Products
+          </h2>
+
+          <p>
+            Browse the real products available
+            on E&B MARKETIZA.
+          </p>
+
+          <a
+            href="products.html"
+            class="btn btn-dark"
+          >
+            Browse Products
+          </a>
+
+        </div>
+
+
+        <!-- CART -->
+
+        <div class="section">
+
+          <h2>
+            🛒 My Cart
+          </h2>
+
+          <p>
+            View the products you have added
+            to your shopping cart.
+          </p>
+
+          <a
+            href="cart.html"
+            class="btn btn-dark"
+          >
+            Open Cart
+          </a>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- ======================================
+           ADMIN ONLY
+      ======================================= -->
+
+      <div
+        class="admin-section"
+        id="adminSection"
       >
-        🔐 Open Admin Dashboard
-      </a>
 
-      <br><br>
+        <h2>
+          👑 Admin Dashboard
+        </h2>
+
+        <p>
+          You are signed in as the
+          E&B MARKETIZA owner.
+          From here you can manage products,
+          prices, stock and product photos.
+        </p>
 
 
-      <a
-        href="admin-products.html"
-        class="btn btn-light"
+        <!-- ADMIN DASHBOARD -->
+
+        <a
+          href="admin.html"
+          class="btn btn-blue"
+        >
+          🔐 Open Admin Dashboard
+        </a>
+
+
+        <br>
+        <br>
+
+
+        <!-- ADMIN PRODUCTS -->
+
+        <a
+          href="admin-products.html"
+          class="btn btn-light"
+        >
+          📦 Manage Products
+        </a>
+
+      </div>
+
+
+      <!-- ======================================
+           LOGOUT
+      ======================================= -->
+
+      <button
+        class="logout"
+        id="logoutBtn"
       >
-        📦 Manage Products
-      </a>
+        Log Out
+      </button>
 
     </div>
 
-
-    <button
-      class="logout"
-      id="logoutBtn"
-    >
-      Log Out
-    </button>
-
-  </div>
-
-</main>
+  </main>
 
 
-<script type="module">
+  <!-- ==========================================
+       SUPABASE
+  =========================================== -->
 
-  import { supabase }
-    from "./supabaseClient.js";
+  <script type="module">
 
-
-  // ==========================================
-  // ADMIN EMAIL
-  // ==========================================
-
-  const ADMIN_EMAIL =
-    "mucyoemmy539@gmail.com";
+    import { supabase }
+      from "./supabaseClient.js";
 
 
-  // ==========================================
-  // ELEMENTS
-  // ==========================================
+    // ==========================================
+    // ADMIN EMAIL
+    // ==========================================
 
-  const loading =
-    document.getElementById("loading");
-
-  const accountCard =
-    document.getElementById("accountCard");
-
-  const userEmail =
-    document.getElementById("userEmail");
-
-  const adminBadge =
-    document.getElementById("adminBadge");
-
-  const adminSection =
-    document.getElementById("adminSection");
-
-  const logoutBtn =
-    document.getElementById("logoutBtn");
-
-  const errorBox =
-    document.getElementById("errorBox");
+    const ADMIN_EMAIL =
+      "mucyoemmy539@gmail.com";
 
 
-  // ==========================================
-  // LOAD ACCOUNT
-  // ==========================================
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
 
-  async function loadAccount() {
+    const loading =
+      document.getElementById("loading");
 
-    try {
+    const accountCard =
+      document.getElementById("accountCard");
 
-      const {
-        data: {
-          user
-        },
-        error
-      } =
-        await supabase.auth.getUser();
+    const userEmail =
+      document.getElementById("userEmail");
+
+    const adminBadge =
+      document.getElementById("adminBadge");
+
+    const adminSection =
+      document.getElementById("adminSection");
+
+    const logoutBtn =
+      document.getElementById("logoutBtn");
+
+    const errorBox =
+      document.getElementById("errorBox");
 
 
-      if (error) {
+    // ==========================================
+    // SHOW ERROR
+    // ==========================================
 
-        throw error;
+    function showError(message) {
 
-      }
+      loading.style.display = "none";
+
+      errorBox.style.display = "block";
+
+      errorBox.textContent =
+        message;
+
+    }
 
 
-      // ========================================
-      // NOT LOGGED IN
-      // ========================================
+    // ==========================================
+    // SHOW ACCOUNT
+    // ==========================================
+
+    function showAccount(user) {
 
       if (!user) {
 
@@ -458,16 +533,17 @@
       }
 
 
-      // ========================================
-      // SHOW ACCOUNT
-      // ========================================
-
       loading.style.display =
+        "none";
+
+      errorBox.style.display =
         "none";
 
       accountCard.style.display =
         "block";
 
+
+      // User email
 
       userEmail.textContent =
         user.email || "Signed in user";
@@ -510,46 +586,22 @@
 
       }
 
-    } catch (error) {
-
-      console.error(error);
-
-      loading.style.display =
-        "none";
-
-      errorBox.style.display =
-        "block";
-
-      errorBox.textContent =
-        "Could not load account: " +
-        error.message;
-
     }
 
-  }
 
+    // ==========================================
+    // LOAD SUPABASE SESSION
+    // ==========================================
 
-  // ==========================================
-  // LOGOUT
-  // ==========================================
-
-  logoutBtn.addEventListener(
-    "click",
-    async () => {
-
-      logoutBtn.disabled =
-        true;
-
-      logoutBtn.textContent =
-        "Logging out...";
-
+    async function loadAccount() {
 
       try {
 
         const {
+          data,
           error
         } =
-          await supabase.auth.signOut();
+          await supabase.auth.getSession();
 
 
         if (error) {
@@ -559,39 +611,162 @@
         }
 
 
-        window.location.href =
-          "login.html";
+        const session =
+          data?.session;
+
+
+        // ======================================
+        // NO SESSION
+        // ======================================
+
+        if (!session) {
+
+          showError(
+            "No active Supabase session. Please login again."
+          );
+
+
+          setTimeout(() => {
+
+            window.location.href =
+              "login.html";
+
+          }, 1500);
+
+          return;
+
+        }
+
+
+        // ======================================
+        // SESSION FOUND
+        // ======================================
+
+        showAccount(
+          session.user
+        );
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          "ACCOUNT ERROR:",
+          error
+        );
 
-        errorBox.style.display =
-          "block";
 
-        errorBox.textContent =
-          "Unable to log out: " +
-          error.message;
-
-        logoutBtn.disabled =
-          false;
-
-        logoutBtn.textContent =
-          "Log Out";
+        showError(
+          "Could not load account: " +
+          (
+            error.message ||
+            "Unknown error"
+          )
+        );
 
       }
 
     }
-  );
 
 
-  // ==========================================
-  // START
-  // ==========================================
+    // ==========================================
+    // AUTH STATE LISTENER
+    // ==========================================
 
-  loadAccount();
+    supabase.auth.onAuthStateChange(
+      (event, session) => {
 
-</script>
+        console.log(
+          "Supabase Auth:",
+          event
+        );
+
+
+        if (
+          session &&
+          session.user
+        ) {
+
+          showAccount(
+            session.user
+          );
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+
+    logoutBtn.addEventListener(
+      "click",
+      async () => {
+
+        logoutBtn.disabled =
+          true;
+
+        logoutBtn.textContent =
+          "Logging out...";
+
+
+        try {
+
+          const {
+            error
+          } =
+            await supabase.auth.signOut();
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          window.location.href =
+            "login.html";
+
+
+        } catch (error) {
+
+          console.error(
+            "LOGOUT ERROR:",
+            error
+          );
+
+
+          errorBox.style.display =
+            "block";
+
+          errorBox.textContent =
+            "Unable to log out: " +
+            (
+              error.message ||
+              "Unknown error"
+            );
+
+
+          logoutBtn.disabled =
+            false;
+
+          logoutBtn.textContent =
+            "Log Out";
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // START
+    // ==========================================
+
+    loadAccount();
+
+  </script>
 
 </body>
 </html>

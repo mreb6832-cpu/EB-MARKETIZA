@@ -45,6 +45,12 @@
       margin-bottom: 25px;
     }
 
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
     .summary {
       background: #f7f7f7;
       border-radius: 10px;
@@ -75,15 +81,21 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      transition: 0.2s;
     }
 
     .method:hover {
       background: #f8f8f8;
+      border-color: #aaa;
     }
 
     .method input {
       width: 18px;
       height: 18px;
+    }
+
+    .method span {
+      font-size: 16px;
     }
 
     .pay-btn {
@@ -93,7 +105,7 @@
       padding: 15px;
       margin-top: 20px;
       background: #111;
-      color: #fff;
+      color: white;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
@@ -121,682 +133,948 @@
       text-align: center;
       color: #d00;
       font-size: 14px;
+      line-height: 1.5;
     }
 
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #666;
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+    .item-name {
+      flex: 1;
+    }
+
+    .item-price {
+      font-weight: bold;
+      white-space: nowrap;
     }
   </style>
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <div class="payment-box">
+    <div class="payment-box">
 
-    <h1>E&B MARKETIZA</h1>
+      <h1>E&B MARKETIZA</h1>
 
-    <p class="subtitle">
-      Secure Checkout
-    </p>
+      <p class="subtitle">
+        Secure Checkout
+      </p>
 
-    <div id="loading" class="loading">
-      Loading your cart...
-    </div>
-
-    <div id="checkoutArea" style="display:none;">
-
-      <div class="summary">
-
-        <div class="summary-row">
-          <span>Items</span>
-          <strong id="itemsCount">0</strong>
-        </div>
-
-        <div class="summary-row">
-          <span>Delivery</span>
-          <strong>FREE</strong>
-        </div>
-
-        <div class="summary-row total">
-          <span>Total</span>
-          <strong id="totalPrice">0 SEK</strong>
-        </div>
-
+      <div id="loading" class="loading">
+        Loading your cart...
       </div>
 
+      <div id="checkoutArea" style="display:none;">
 
-      <h3>Select payment method</h3>
+        <!-- ORDER SUMMARY -->
+
+        <div class="summary">
+
+          <div id="itemsList"></div>
+
+          <div class="summary-row">
+            <span>Items</span>
+            <strong id="itemsCount">0</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Delivery</span>
+            <strong>FREE</strong>
+          </div>
+
+          <div class="summary-row total">
+            <span>Total</span>
+            <strong id="totalPrice">0 SEK</strong>
+          </div>
+
+        </div>
 
 
-      <!-- STRIPE -->
+        <!-- PAYMENT METHODS -->
 
-      <label class="method">
+        <h3>Select payment method</h3>
 
-        <input
-          type="radio"
-          name="paymentMethod"
-          value="stripe"
-          checked
+
+        <label class="method">
+
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="stripe"
+            checked
+          >
+
+          <span>
+            💳 Card / Stripe
+          </span>
+
+        </label>
+
+
+        <label class="method">
+
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="paypal"
+          >
+
+          <span>
+            🅿️ PayPal
+          </span>
+
+        </label>
+
+
+        <label class="method">
+
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="swish"
+          >
+
+          <span>
+            📱 Swish
+          </span>
+
+        </label>
+
+
+        <!-- PAY BUTTON -->
+
+        <button
+          id="payButton"
+          class="pay-btn"
         >
-
-        <span>
-          💳 Card / Stripe
-        </span>
-
-      </label>
+          Pay by Card
+        </button>
 
 
-      <!-- PAYPAL -->
+        <div
+          id="message"
+          class="message"
+        ></div>
 
-      <label class="method">
 
-        <input
-          type="radio"
-          name="paymentMethod"
-          value="paypal"
+        <a
+          href="cart.html"
+          class="back"
         >
+          ← Back to Cart
+        </a>
 
-        <span>
-          🅿️ PayPal
-        </span>
-
-      </label>
-
-
-      <button
-        id="payButton"
-        class="pay-btn"
-      >
-        Pay by Card
-      </button>
-
-
-      <div
-        id="message"
-        class="message"
-      ></div>
-
-
-      <a
-        href="cart.html"
-        class="back"
-      >
-        ← Back to Cart
-      </a>
+      </div>
 
     </div>
 
   </div>
 
-</div>
+
+  <script type="module">
+
+    import { supabase } from "./supabaseClient.js";
 
 
-<script type="module">
+    const loading =
+      document.getElementById("loading");
 
-import { supabase } from "./supabaseClient.js";
+    const checkoutArea =
+      document.getElementById("checkoutArea");
 
+    const payButton =
+      document.getElementById("payButton");
 
-const loading =
-  document.getElementById("loading");
+    const message =
+      document.getElementById("message");
 
-const checkoutArea =
-  document.getElementById("checkoutArea");
+    const itemsCount =
+      document.getElementById("itemsCount");
 
-const payButton =
-  document.getElementById("payButton");
+    const totalPrice =
+      document.getElementById("totalPrice");
 
-const message =
-  document.getElementById("message");
-
-const itemsCount =
-  document.getElementById("itemsCount");
-
-const totalPrice =
-  document.getElementById("totalPrice");
+    const itemsList =
+      document.getElementById("itemsList");
 
 
-let cartItems = [];
+    let cartItems = [];
 
-let total = 0;
+    let total = 0;
 
-
-/* =========================
-   LOAD CART
-========================= */
-
-async function loadCart() {
-
-  try {
-
-    const {
-      data: sessionData,
-      error: sessionError
-    } = await supabase.auth.getSession();
+    let currentUser = null;
 
 
-    if (sessionError) {
-      throw sessionError;
+    /* =========================
+       LOAD SESSION
+    ========================= */
+
+    async function getCurrentUser() {
+
+      const {
+        data,
+        error
+      } = await supabase.auth.getSession();
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      const session =
+        data?.session;
+
+
+      if (!session) {
+
+        window.location.href =
+          "login.html";
+
+        return null;
+      }
+
+
+      currentUser =
+        session.user;
+
+
+      return session;
     }
 
 
-    const session =
-      sessionData?.session;
+    /* =========================
+       LOAD CART
+    ========================= */
+
+    async function loadCart() {
+
+      try {
+
+        const session =
+          await getCurrentUser();
 
 
-    if (!session) {
-
-      window.location.href =
-        "login.html";
-
-      return;
-    }
+        if (!session) {
+          return;
+        }
 
 
-    /* GET CART */
+        /*
+         * IMPORTANT:
+         * Cart is loaded directly from
+         * Supabase using the logged-in
+         * user's ID.
+         */
 
-    const {
-      data: cartData,
-      error: cartError
-    } = await supabase
-      .from("cart_items")
-      .select(
-        "id, user_id, product_id, quantity"
-      )
-      .eq(
-        "user_id",
-        session.user.id
-      );
-
-
-    if (cartError) {
-      throw cartError;
-    }
-
-
-    if (
-      !cartData ||
-      cartData.length === 0
-    ) {
-
-      showMessage(
-        "Your cart is empty."
-      );
-
-      return;
-    }
+        const {
+          data: cartData,
+          error: cartError
+        } = await supabase
+          .from("cart_items")
+          .select(
+            "id, user_id, product_id, quantity"
+          )
+          .eq(
+            "user_id",
+            session.user.id
+          );
 
 
-    /* GET PRODUCT IDS */
-
-    const productIds =
-      cartData.map(
-        item =>
-          item.product_id
-      );
+        if (cartError) {
+          throw cartError;
+        }
 
 
-    /* GET PRODUCTS */
-
-    const {
-      data: products,
-      error: productsError
-    } = await supabase
-      .from("products")
-      .select(
-        "id, name, price, stock"
-      )
-      .in(
-        "id",
-        productIds
-      );
+        console.log(
+          "Cart from Supabase:",
+          cartData
+        );
 
 
-    if (productsError) {
-      throw productsError;
-    }
+        if (
+          !cartData ||
+          cartData.length === 0
+        ) {
+
+          showMessage(
+            "Your cart is empty. Go back to Cart and add a product."
+          );
+
+          return;
+        }
 
 
-    /* COMBINE */
+        /*
+         * GET PRODUCT IDS
+         */
 
-    cartItems =
-      cartData
-        .map(item => {
-
-          const product =
-            products.find(
-              p =>
-                Number(p.id) ===
-                Number(item.product_id)
-            );
+        const productIds =
+          cartData.map(
+            item =>
+              Number(item.product_id)
+          );
 
 
-          if (!product) {
-            return null;
-          }
+        /*
+         * GET PRODUCTS
+         */
+
+        const {
+          data: products,
+          error: productsError
+        } = await supabase
+          .from("products")
+          .select(
+            "id, name, price, stock"
+          )
+          .in(
+            "id",
+            productIds
+          );
 
 
-          return {
-
-            id:
-              item.id,
-
-            product_id:
-              item.product_id,
-
-            quantity:
-              Number(item.quantity),
-
-            product:
-              product
-
-          };
-
-        })
-        .filter(Boolean);
+        if (productsError) {
+          throw productsError;
+        }
 
 
-    if (
-      cartItems.length === 0
-    ) {
-
-      showMessage(
-        "Your cart is empty."
-      );
-
-      return;
-    }
+        console.log(
+          "Products:",
+          products
+        );
 
 
-    /* CALCULATE TOTAL */
+        /*
+         * COMBINE CART + PRODUCTS
+         */
 
-    total =
-      cartItems.reduce(
-        (sum, item) => {
+        cartItems =
+          cartData
+            .map(
+              item => {
 
-          return sum +
+                const product =
+                  products?.find(
+                    p =>
+                      Number(p.id) ===
+                      Number(item.product_id)
+                  );
+
+
+                if (!product) {
+                  return null;
+                }
+
+
+                return {
+
+                  id:
+                    item.id,
+
+                  user_id:
+                    item.user_id,
+
+                  product_id:
+                    item.product_id,
+
+                  quantity:
+                    Number(item.quantity),
+
+                  product:
+                    product
+
+                };
+
+              }
+            )
+            .filter(Boolean);
+
+
+        if (
+          cartItems.length === 0
+        ) {
+
+          showMessage(
+            "Your cart contains products that could not be found."
+          );
+
+          return;
+        }
+
+
+        /*
+         * CALCULATE TOTAL
+         */
+
+        total =
+          cartItems.reduce(
             (
-              Number(
-                item.product.price
-              ) *
+              sum,
+              item
+            ) => {
+
+              const price =
+                Number(
+                  item.product.price
+                ) || 0;
+
+              const quantity =
+                Number(
+                  item.quantity
+                ) || 0;
+
+              return sum +
+                (
+                  price *
+                  quantity
+                );
+
+            },
+            0
+          );
+
+
+        /*
+         * ITEM COUNT
+         */
+
+        const count =
+          cartItems.reduce(
+            (
+              sum,
+              item
+            ) =>
+              sum +
               Number(
                 item.quantity
-              )
+              ),
+            0
+          );
+
+
+        itemsCount.textContent =
+          count;
+
+
+        totalPrice.textContent =
+          formatSEK(total);
+
+
+        /*
+         * SHOW PRODUCTS
+         */
+
+        renderItems();
+
+
+        loading.style.display =
+          "none";
+
+        checkoutArea.style.display =
+          "block";
+
+
+      } catch (error) {
+
+        console.error(
+          "Payment cart error:",
+          error
+        );
+
+
+        showMessage(
+          "Could not load your cart: " +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       RENDER ITEMS
+    ========================= */
+
+    function renderItems() {
+
+      itemsList.innerHTML = "";
+
+
+      cartItems.forEach(
+        item => {
+
+          const row =
+            document.createElement(
+              "div"
             );
 
-        },
-        0
+
+          row.className =
+            "cart-item";
+
+
+          const itemTotal =
+            Number(
+              item.product.price
+            ) *
+            Number(
+              item.quantity
+            );
+
+
+          row.innerHTML = `
+
+            <span class="item-name">
+              ${escapeHTML(item.product.name)}
+              × ${item.quantity}
+            </span>
+
+            <span class="item-price">
+              ${formatSEK(itemTotal)}
+            </span>
+
+          `;
+
+
+          itemsList.appendChild(
+            row
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =========================
+       PAYMENT METHOD
+    ========================= */
+
+    document
+      .querySelectorAll(
+        'input[name="paymentMethod"]'
+      )
+      .forEach(
+        radio => {
+
+          radio.addEventListener(
+            "change",
+            () => {
+
+              if (
+                radio.value ===
+                "stripe"
+              ) {
+
+                payButton.textContent =
+                  "Pay by Card";
+
+              }
+
+              else if (
+                radio.value ===
+                "paypal"
+              ) {
+
+                payButton.textContent =
+                  "Pay with PayPal";
+
+              }
+
+              else if (
+                radio.value ===
+                "swish"
+              ) {
+
+                payButton.textContent =
+                  "Pay with Swish";
+
+              }
+
+            }
+          );
+
+        }
       );
 
 
-    const count =
-      cartItems.reduce(
-        (sum, item) =>
-          sum +
-          Number(item.quantity),
-        0
-      );
+    /* =========================
+       PAY BUTTON
+    ========================= */
+
+    payButton.addEventListener(
+      "click",
+      async () => {
+
+        if (
+          cartItems.length === 0
+        ) {
+
+          showMessage(
+            "Your cart is empty."
+          );
+
+          return;
+        }
 
 
-    itemsCount.textContent =
-      count;
+        const selected =
+          document.querySelector(
+            'input[name="paymentMethod"]:checked'
+          );
 
 
-    totalPrice.textContent =
-      formatSEK(total);
+        if (!selected) {
+
+          showMessage(
+            "Please select a payment method."
+          );
+
+          return;
+        }
 
 
-    loading.style.display =
-      "none";
-
-    checkoutArea.style.display =
-      "block";
-
-  } catch (error) {
-
-    console.error(
-      "Checkout error:",
-      error
-    );
+        const method =
+          selected.value;
 
 
-    showMessage(
-      "Could not load your cart."
-    );
+        payButton.disabled =
+          true;
 
-  }
-
-}
+        message.textContent =
+          "";
 
 
-/* =========================
-   CHANGE PAYMENT METHOD
-========================= */
+        try {
 
-document
-  .querySelectorAll(
-    'input[name="paymentMethod"]'
-  )
-  .forEach(
-    radio => {
-
-      radio.addEventListener(
-        "change",
-        () => {
+          /* =====================
+             STRIPE
+          ===================== */
 
           if (
-            radio.value ===
-            "paypal"
+            method === "stripe"
           ) {
 
             payButton.textContent =
-              "Pay with PayPal";
+              "Connecting to Stripe...";
 
-          } else {
+
+            const response =
+              await fetch(
+                "/api/create-checkout-session",
+                {
+
+                  method: "POST",
+
+                  headers: {
+                    "Content-Type":
+                      "application/json"
+                  },
+
+                  body:
+                    JSON.stringify({
+
+                      items:
+                        cartItems.map(
+                          item => ({
+
+                            name:
+                              item.product.name,
+
+                            price:
+                              Number(
+                                item.product.price
+                              ),
+
+                            quantity:
+                              Number(
+                                item.quantity
+                              )
+
+                          })
+                        )
+
+                    })
+
+                }
+              );
+
+
+            const data =
+              await response.json();
+
+
+            if (!response.ok) {
+
+              throw new Error(
+                data.error ||
+                "Stripe payment failed."
+              );
+
+            }
+
+
+            if (!data.url) {
+
+              throw new Error(
+                "Stripe Checkout URL was not returned."
+              );
+
+            }
+
+
+            window.location.href =
+              data.url;
+
+
+            return;
+          }
+
+
+          /* =====================
+             PAYPAL
+          ===================== */
+
+          if (
+            method === "paypal"
+          ) {
+
+            payButton.textContent =
+              "Connecting to PayPal...";
+
+
+            const response =
+              await fetch(
+                "/api/paypal-create-order",
+                {
+
+                  method: "POST",
+
+                  headers: {
+                    "Content-Type":
+                      "application/json"
+                  },
+
+                  body:
+                    JSON.stringify({
+
+                      items:
+                        cartItems.map(
+                          item => ({
+
+                            product_id:
+                              item.product_id,
+
+                            name:
+                              item.product.name,
+
+                            price:
+                              Number(
+                                item.product.price
+                              ),
+
+                            quantity:
+                              Number(
+                                item.quantity
+                              )
+
+                          })
+                        )
+
+                    })
+
+                }
+              );
+
+
+            const data =
+              await response.json();
+
+
+            if (!response.ok) {
+
+              throw new Error(
+                data.error ||
+                "PayPal order could not be created."
+              );
+
+            }
+
+
+            if (
+              !data.approvalUrl
+            ) {
+
+              throw new Error(
+                "PayPal approval URL was not returned."
+              );
+
+            }
+
+
+            window.location.href =
+              data.approvalUrl;
+
+
+            return;
+          }
+
+
+          /* =====================
+             SWISH
+          ===================== */
+
+          if (
+            method === "swish"
+          ) {
+
+            /*
+             * Swish requires a real
+             * Swish payment provider/
+             * merchant backend.
+             */
+
+            throw new Error(
+              "Swish payment is not connected yet."
+            );
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Payment error:",
+            error
+          );
+
+
+          message.textContent =
+            error.message ||
+            "Unable to start payment.";
+
+
+          payButton.disabled =
+            false;
+
+
+          if (
+            method === "stripe"
+          ) {
 
             payButton.textContent =
               "Pay by Card";
 
           }
 
+          else if (
+            method === "paypal"
+          ) {
+
+            payButton.textContent =
+              "Pay with PayPal";
+
+          }
+
+          else {
+
+            payButton.textContent =
+              "Pay with Swish";
+
+          }
+
         }
-      );
 
-    }
-  );
+      }
+    );
 
 
-/* =========================
-   PAYMENT
-========================= */
+    /* =========================
+       HELPERS
+    ========================= */
 
-payButton.addEventListener(
-  "click",
-  async () => {
-
-    if (
-      cartItems.length === 0
+    function formatSEK(
+      value
     ) {
 
-      showMessage(
-        "Your cart is empty."
+      return new Intl.NumberFormat(
+        "sv-SE",
+        {
+          style: "currency",
+          currency: "SEK"
+        }
+      ).format(
+        Number(value || 0)
       );
 
-      return;
     }
 
 
-    const selected =
-      document.querySelector(
-        'input[name="paymentMethod"]:checked'
-      );
+    function escapeHTML(
+      value
+    ) {
 
+      return String(value)
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
 
-    if (!selected) {
-
-      showMessage(
-        "Please select a payment method."
-      );
-
-      return;
     }
 
 
-    const method =
-      selected.value;
-
-
-    payButton.disabled =
-      true;
-
-    message.textContent =
-      "";
-
-
-    try {
-
-
-      /* =====================
-         STRIPE
-      ===================== */
-
-      if (
-        method === "stripe"
-      ) {
-
-        payButton.textContent =
-          "Connecting to Stripe...";
-
-
-        const response =
-          await fetch(
-            "/api/create-checkout-session",
-            {
-
-              method: "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify({
-
-                  items:
-                    cartItems.map(
-                      item => ({
-
-                        name:
-                          item.product.name,
-
-                        price:
-                          Number(
-                            item.product.price
-                          ),
-
-                        quantity:
-                          Number(
-                            item.quantity
-                          )
-
-                      })
-                    )
-
-                })
-
-            }
-          );
-
-
-        const data =
-          await response.json();
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            data.error ||
-            "Stripe payment failed."
-          );
-
-        }
-
-
-        if (!data.url) {
-
-          throw new Error(
-            "Stripe Checkout URL was not returned."
-          );
-
-        }
-
-
-        window.location.href =
-          data.url;
-
-        return;
-
-      }
-
-
-      /* =====================
-         PAYPAL
-      ===================== */
-
-      if (
-        method === "paypal"
-      ) {
-
-        payButton.textContent =
-          "Connecting to PayPal...";
-
-
-        const response =
-          await fetch(
-            "/api/paypal-create-order",
-            {
-
-              method: "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify({
-
-                  items:
-                    cartItems.map(
-                      item => ({
-
-                        product_id:
-                          item.product_id,
-
-                        name:
-                          item.product.name,
-
-                        price:
-                          Number(
-                            item.product.price
-                          ),
-
-                        quantity:
-                          Number(
-                            item.quantity
-                          )
-
-                      })
-                    )
-
-                })
-
-            }
-          );
-
-
-        const data =
-          await response.json();
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            data.error ||
-            "PayPal order could not be created."
-          );
-
-        }
-
-
-        if (
-          !data.approvalUrl
-        ) {
-
-          throw new Error(
-            "PayPal approval URL was not returned."
-          );
-
-        }
-
-
-        window.location.href =
-          data.approvalUrl;
-
-      }
-
-    } catch (error) {
-
-      console.error(
-        "Payment error:",
-        error
-      );
-
+    function showMessage(
+      text
+    ) {
+
+      loading.style.display =
+        "none";
+
+      checkoutArea.style.display =
+        "block";
 
       message.textContent =
-        error.message ||
-        "Unable to start payment.";
-
-
-      payButton.disabled =
-        false;
-
-
-      payButton.textContent =
-        method === "paypal"
-          ? "Pay with PayPal"
-          : "Pay by Card";
+        text;
 
     }
 
-  }
-);
 
+    /* =========================
+       START
+    ========================= */
 
-/* =========================
-   HELPERS
-========================= */
+    loadCart();
 
-function formatSEK(value) {
-
-  return new Intl.NumberFormat(
-    "sv-SE",
-    {
-      style: "currency",
-      currency: "SEK"
-    }
-  ).format(
-    Number(value || 0)
-  );
-
-}
-
-
-function showMessage(text) {
-
-  loading.style.display =
-    "none";
-
-  checkoutArea.style.display =
-    "block";
-
-  message.textContent =
-    text;
-
-}
-
-
-/* =========================
-   START
-========================= */
-
-loadCart();
-
-</script>
+  </script>
 
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Payment | E&B SHOP</title>
+  <title>Payment | E&B MARKETIZA</title>
 
   <style>
     * {
@@ -28,7 +28,7 @@
     }
 
     .payment-box {
-      background: white;
+      background: #fff;
       border-radius: 16px;
       padding: 25px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -93,7 +93,7 @@
       padding: 15px;
       margin-top: 20px;
       background: #111;
-      color: white;
+      color: #fff;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
@@ -122,26 +122,43 @@
       color: #d00;
       font-size: 14px;
     }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <div class="payment-box">
+  <div class="payment-box">
 
-      <h1>E&B SHOP</h1>
+    <h1>E&B MARKETIZA</h1>
 
-      <p class="subtitle">
-        Secure Checkout
-      </p>
+    <p class="subtitle">
+      Secure Checkout
+    </p>
+
+    <div id="loading" class="loading">
+      Loading your cart...
+    </div>
+
+    <div id="checkoutArea" style="display:none;">
 
       <div class="summary">
 
         <div class="summary-row">
           <span>Items</span>
           <strong id="itemsCount">0</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Delivery</span>
+          <strong>FREE</strong>
         </div>
 
         <div class="summary-row total">
@@ -151,35 +168,44 @@
 
       </div>
 
+
       <h3>Select payment method</h3>
 
+
+      <!-- STRIPE -->
+
       <label class="method">
+
         <input
           type="radio"
           name="paymentMethod"
-          value="card"
+          value="stripe"
           checked
         >
-        <span>💳 Card</span>
+
+        <span>
+          💳 Card / Stripe
+        </span>
+
       </label>
 
+
+      <!-- PAYPAL -->
+
       <label class="method">
+
         <input
           type="radio"
           name="paymentMethod"
-          value="swish"
+          value="paypal"
         >
-        <span>📱 Swish</span>
+
+        <span>
+          🅿️ PayPal
+        </span>
+
       </label>
 
-      <label class="method">
-        <input
-          type="radio"
-          name="paymentMethod"
-          value="invoice"
-        >
-        <span>🧾 Invoice</span>
-      </label>
 
       <button
         id="payButton"
@@ -188,10 +214,12 @@
         Pay by Card
       </button>
 
+
       <div
         id="message"
         class="message"
       ></div>
+
 
       <a
         href="cart.html"
@@ -204,186 +232,399 @@
 
   </div>
 
-  <script>
+</div>
 
-    const API_URL = "/api/create-checkout-session";
 
-    const payButton = document.getElementById("payButton");
-    const message = document.getElementById("message");
+<script type="module">
 
-    const itemsCount = document.getElementById("itemsCount");
-    const totalPrice = document.getElementById("totalPrice");
+import { supabase } from "./supabaseClient.js";
 
-    function getCart() {
 
-      try {
+const loading =
+  document.getElementById("loading");
 
-        const cart =
-          JSON.parse(localStorage.getItem("cart")) || [];
+const checkoutArea =
+  document.getElementById("checkoutArea");
 
-        return Array.isArray(cart) ? cart : [];
+const payButton =
+  document.getElementById("payButton");
 
-      } catch (error) {
+const message =
+  document.getElementById("message");
 
-        return [];
+const itemsCount =
+  document.getElementById("itemsCount");
 
-      }
+const totalPrice =
+  document.getElementById("totalPrice");
 
+
+let cartItems = [];
+
+let total = 0;
+
+
+/* =========================
+   LOAD CART
+========================= */
+
+async function loadCart() {
+
+  try {
+
+    const {
+      data: sessionData,
+      error: sessionError
+    } = await supabase.auth.getSession();
+
+
+    if (sessionError) {
+      throw sessionError;
     }
 
-    function getQuantity(item) {
 
-      return Number(
-        item.quantity ||
-        item.qty ||
-        1
+    const session =
+      sessionData?.session;
+
+
+    if (!session) {
+
+      window.location.href =
+        "login.html";
+
+      return;
+    }
+
+
+    /* GET CART */
+
+    const {
+      data: cartData,
+      error: cartError
+    } = await supabase
+      .from("cart_items")
+      .select(
+        "id, user_id, product_id, quantity"
+      )
+      .eq(
+        "user_id",
+        session.user.id
       );
 
+
+    if (cartError) {
+      throw cartError;
     }
 
-    function getTotal(cart) {
 
-      return cart.reduce((total, item) => {
+    if (
+      !cartData ||
+      cartData.length === 0
+    ) {
 
-        const price = Number(item.price) || 0;
+      showMessage(
+        "Your cart is empty."
+      );
 
-        const quantity = getQuantity(item);
-
-        return total + (price * quantity);
-
-      }, 0);
-
+      return;
     }
 
-    function updateSummary() {
 
-      const cart = getCart();
+    /* GET PRODUCT IDS */
 
-      const count = cart.reduce(
-        (total, item) =>
-          total + getQuantity(item),
+    const productIds =
+      cartData.map(
+        item =>
+          item.product_id
+      );
+
+
+    /* GET PRODUCTS */
+
+    const {
+      data: products,
+      error: productsError
+    } = await supabase
+      .from("products")
+      .select(
+        "id, name, price, stock"
+      )
+      .in(
+        "id",
+        productIds
+      );
+
+
+    if (productsError) {
+      throw productsError;
+    }
+
+
+    /* COMBINE */
+
+    cartItems =
+      cartData
+        .map(item => {
+
+          const product =
+            products.find(
+              p =>
+                Number(p.id) ===
+                Number(item.product_id)
+            );
+
+
+          if (!product) {
+            return null;
+          }
+
+
+          return {
+
+            id:
+              item.id,
+
+            product_id:
+              item.product_id,
+
+            quantity:
+              Number(item.quantity),
+
+            product:
+              product
+
+          };
+
+        })
+        .filter(Boolean);
+
+
+    if (
+      cartItems.length === 0
+    ) {
+
+      showMessage(
+        "Your cart is empty."
+      );
+
+      return;
+    }
+
+
+    /* CALCULATE TOTAL */
+
+    total =
+      cartItems.reduce(
+        (sum, item) => {
+
+          return sum +
+            (
+              Number(
+                item.product.price
+              ) *
+              Number(
+                item.quantity
+              )
+            );
+
+        },
         0
       );
 
-      const total = getTotal(cart);
 
-      itemsCount.textContent = count;
+    const count =
+      cartItems.reduce(
+        (sum, item) =>
+          sum +
+          Number(item.quantity),
+        0
+      );
 
-      totalPrice.textContent =
-        total.toFixed(2) + " SEK";
 
-    }
+    itemsCount.textContent =
+      count;
 
-    document
-      .querySelectorAll('input[name="paymentMethod"]')
-      .forEach((radio) => {
 
-        radio.addEventListener("change", () => {
+    totalPrice.textContent =
+      formatSEK(total);
 
-          if (radio.checked) {
 
-            if (radio.value === "card") {
+    loading.style.display =
+      "none";
 
-              payButton.textContent =
-                "Pay by Card";
+    checkoutArea.style.display =
+      "block";
 
-            } else if (radio.value === "swish") {
+  } catch (error) {
 
-              payButton.textContent =
-                "Continue with Swish";
+    console.error(
+      "Checkout error:",
+      error
+    );
 
-            } else {
 
-              payButton.textContent =
-                "Continue with Invoice";
+    showMessage(
+      "Could not load your cart."
+    );
 
-            }
+  }
+
+}
+
+
+/* =========================
+   CHANGE PAYMENT METHOD
+========================= */
+
+document
+  .querySelectorAll(
+    'input[name="paymentMethod"]'
+  )
+  .forEach(
+    radio => {
+
+      radio.addEventListener(
+        "change",
+        () => {
+
+          if (
+            radio.value ===
+            "paypal"
+          ) {
+
+            payButton.textContent =
+              "Pay with PayPal";
+
+          } else {
+
+            payButton.textContent =
+              "Pay by Card";
 
           }
 
-        });
+        }
+      );
 
-      });
+    }
+  );
 
-    payButton.addEventListener("click", async () => {
 
-      const cart = getCart();
+/* =========================
+   PAYMENT
+========================= */
 
-      if (cart.length === 0) {
+payButton.addEventListener(
+  "click",
+  async () => {
 
-        message.textContent =
-          "Your cart is empty.";
+    if (
+      cartItems.length === 0
+    ) {
 
-        return;
+      showMessage(
+        "Your cart is empty."
+      );
 
-      }
+      return;
+    }
 
-      const method =
-        document.querySelector(
-          'input[name="paymentMethod"]:checked'
-        ).value;
 
-      /*
-       * Stripe Checkout currently handles CARD payments.
-       * Swish and Invoice will be connected separately.
-       */
+    const selected =
+      document.querySelector(
+        'input[name="paymentMethod"]:checked'
+      );
 
-      if (method !== "card") {
 
-        message.textContent =
-          method === "swish"
-            ? "Swish payment will be connected next."
-            : "Invoice payment will be connected next.";
+    if (!selected) {
 
-        return;
+      showMessage(
+        "Please select a payment method."
+      );
 
-      }
+      return;
+    }
 
-      payButton.disabled = true;
 
-      payButton.textContent =
-        "Connecting to Stripe...";
+    const method =
+      selected.value;
 
-      message.textContent = "";
 
-      try {
+    payButton.disabled =
+      true;
 
-        const items = cart.map((item) => ({
+    message.textContent =
+      "";
 
-          name: item.name,
 
-          price: Number(item.price),
+    try {
 
-          quantity: getQuantity(item)
 
-        }));
+      /* =====================
+         STRIPE
+      ===================== */
+
+      if (
+        method === "stripe"
+      ) {
+
+        payButton.textContent =
+          "Connecting to Stripe...";
+
 
         const response =
-          await fetch(API_URL, {
+          await fetch(
+            "/api/create-checkout-session",
+            {
 
-            method: "POST",
+              method: "POST",
 
-            headers: {
-              "Content-Type": "application/json"
-            },
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
 
-            body: JSON.stringify({
-              items: items
-            })
+              body:
+                JSON.stringify({
 
-          });
+                  items:
+                    cartItems.map(
+                      item => ({
+
+                        name:
+                          item.product.name,
+
+                        price:
+                          Number(
+                            item.product.price
+                          ),
+
+                        quantity:
+                          Number(
+                            item.quantity
+                          )
+
+                      })
+                    )
+
+                })
+
+            }
+          );
+
 
         const data =
           await response.json();
+
 
         if (!response.ok) {
 
           throw new Error(
             data.error ||
-            "Payment server error"
+            "Stripe payment failed."
           );
 
         }
+
 
         if (!data.url) {
 
@@ -393,29 +634,169 @@
 
         }
 
+
         window.location.href =
           data.url;
 
-      } catch (error) {
-
-        console.error(error);
-
-        message.textContent =
-          error.message ||
-          "Unable to start payment.";
-
-        payButton.disabled = false;
-
-        payButton.textContent =
-          "Pay by Card";
+        return;
 
       }
 
-    });
 
-    updateSummary();
+      /* =====================
+         PAYPAL
+      ===================== */
 
-  </script>
+      if (
+        method === "paypal"
+      ) {
+
+        payButton.textContent =
+          "Connecting to PayPal...";
+
+
+        const response =
+          await fetch(
+            "/api/paypal-create-order",
+            {
+
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body:
+                JSON.stringify({
+
+                  items:
+                    cartItems.map(
+                      item => ({
+
+                        product_id:
+                          item.product_id,
+
+                        name:
+                          item.product.name,
+
+                        price:
+                          Number(
+                            item.product.price
+                          ),
+
+                        quantity:
+                          Number(
+                            item.quantity
+                          )
+
+                      })
+                    )
+
+                })
+
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            "PayPal order could not be created."
+          );
+
+        }
+
+
+        if (
+          !data.approvalUrl
+        ) {
+
+          throw new Error(
+            "PayPal approval URL was not returned."
+          );
+
+        }
+
+
+        window.location.href =
+          data.approvalUrl;
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        "Payment error:",
+        error
+      );
+
+
+      message.textContent =
+        error.message ||
+        "Unable to start payment.";
+
+
+      payButton.disabled =
+        false;
+
+
+      payButton.textContent =
+        method === "paypal"
+          ? "Pay with PayPal"
+          : "Pay by Card";
+
+    }
+
+  }
+);
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function formatSEK(value) {
+
+  return new Intl.NumberFormat(
+    "sv-SE",
+    {
+      style: "currency",
+      currency: "SEK"
+    }
+  ).format(
+    Number(value || 0)
+  );
+
+}
+
+
+function showMessage(text) {
+
+  loading.style.display =
+    "none";
+
+  checkoutArea.style.display =
+    "block";
+
+  message.textContent =
+    text;
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadCart();
+
+</script>
 
 </body>
 </html>

@@ -3,36 +3,58 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
-  try {
-    if (req.method !== "POST") {
-      return res.status(405).json({
-        error: "Method not allowed"
-      });
-    }
+  // Only POST is allowed
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
+  }
 
+  try {
     const { items } = req.body || {};
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
+    // Check cart items
+    if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
         error: "No items provided"
       });
     }
 
-    const lineItems = items.map((item) => ({
-      price_data: {
-        currency: "sek",
-        product_data: {
-          name: item.name
+    // Create Stripe line items
+    const lineItems = items.map((item) => {
+      const price = Number(item.price);
+      const quantity = Number(item.quantity);
+
+      if (
+        !item.name ||
+        !Number.isFinite(price) ||
+        price <= 0 ||
+        !Number.isInteger(quantity) ||
+        quantity <= 0
+      ) {
+        throw new Error("Invalid product information");
+      }
+
+      return {
+        price_data: {
+          currency: "sek",
+
+          product_data: {
+            name: String(item.name)
+          },
+
+          unit_amount: Math.round(price * 100)
         },
-        unit_amount: Math.round(Number(item.price) * 100)
-      },
-      quantity: Number(item.quantity) || 1
-    }));
+
+        quantity
+      };
+    });
 
     const frontendUrl =
       process.env.FRONTEND_URL ||
       "https://ebshop.vercel.app";
 
+    // Create Stripe Checkout Session
     const session =
       await stripe.checkout.sessions.create({
         mode: "payment",
@@ -43,15 +65,7 @@ export default async function handler(req, res) {
           `${frontendUrl}/payment-success.html?session_id={CHECKOUT_SESSION_ID}`,
 
         cancel_url:
-          `${frontendUrl}/payment.html`,
-
-        shipping_address_collection: {
-          allowed_countries: ["SE"]
-        },
-
-        metadata: {
-          store: "EB SHOP"
-        }
+          `${frontendUrl}/payment.html`
       });
 
     return res.status(200).json({
@@ -60,10 +74,12 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
-    console.error("Stripe error:", error);
+    console.error("Stripe checkout error:", error);
 
     return res.status(500).json({
-      error: error.message || "Stripe checkout failed"
+      error:
+        error?.message ||
+        "Unable to create Stripe checkout session"
     });
   }
 }

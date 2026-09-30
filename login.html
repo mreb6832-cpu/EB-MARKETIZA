@@ -159,10 +159,7 @@
         required
       >
 
-      <button
-        type="submit"
-        id="loginButton"
-      >
+      <button type="submit" id="loginButton">
         Login
       </button>
 
@@ -178,33 +175,15 @@
 
     <div id="message"></div>
 
-    <a
-      href="index.html"
-      class="back"
-    >
+    <a href="index.html" class="back">
       ← Back to Home
     </a>
 
   </div>
 
-
   <script type="module">
 
-    import { supabase }
-      from "./supabaseClient.js";
-
-
-    // ==========================================
-    // ADMIN EMAIL
-    // ==========================================
-
-    const ADMIN_EMAIL =
-      "mucyoemmy539@gmail.com";
-
-
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
+    import { supabase } from "./supabaseClient.js";
 
     const loginForm =
       document.getElementById("loginForm");
@@ -221,9 +200,49 @@
       document.getElementById("message");
 
 
-    // ==========================================
-    // LOGIN
-    // ==========================================
+    // Check if the user is already logged in
+
+    async function checkExistingSession() {
+
+      try {
+
+        const {
+          data,
+          error
+        } = await supabase.auth.getSession();
+
+        if (error) {
+          console.error(
+            "Session check error:",
+            error
+          );
+          return;
+        }
+
+        if (data.session) {
+
+          window.location.replace(
+            "account.html"
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Session check error:",
+          error
+        );
+
+      }
+
+    }
+
+
+    checkExistingSession();
+
+
+    // Login
 
     loginForm.addEventListener(
       "submit",
@@ -242,10 +261,10 @@
             .getElementById("password")
             .value;
 
-
         message.textContent = "";
 
         loginButton.disabled = true;
+
         forgotPasswordButton.disabled = true;
 
         loginButton.textContent =
@@ -254,17 +273,14 @@
 
         try {
 
-          // ====================================
-          // SUPABASE LOGIN
-          // ====================================
-
           const {
             data,
             error
-          } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-          });
+          } =
+            await supabase.auth.signInWithPassword({
+              email: email,
+              password: password
+            });
 
 
           if (error) {
@@ -274,80 +290,41 @@
 
           if (!data.user) {
             throw new Error(
-              "Login succeeded but no user session was returned."
+              "Login succeeded but no user was returned."
             );
           }
 
 
-          // ====================================
-          // MAKE SURE SESSION EXISTS
-          // ====================================
-
           const {
-            data: sessionData
-          } = await supabase.auth.getSession();
+            data: sessionData,
+            error: sessionError
+          } =
+            await supabase.auth.getSession();
+
+
+          if (sessionError) {
+            throw sessionError;
+          }
 
 
           if (!sessionData.session) {
             throw new Error(
-              "Login succeeded but the Supabase session was not created."
+              "Login succeeded but no session was created."
             );
           }
 
 
-          // ====================================
-          // SUCCESS
-          // ====================================
-
-          const loggedInEmail =
-            (data.user.email || "")
-              .trim()
-              .toLowerCase();
-
-
-          const adminEmail =
-            ADMIN_EMAIL
-              .trim()
-              .toLowerCase();
-
-
           message.style.color = "green";
 
+          message.textContent =
+            "Login successful. Opening your account...";
 
-          // ====================================
-          // ADMIN
-          // ====================================
-
-          if (
-            loggedInEmail === adminEmail
-          ) {
-
-            message.textContent =
-              "Login successful. Opening your account...";
-
-          }
-
-
-          // ====================================
-          // CUSTOMER
-          // ====================================
-
-          else {
-
-            message.textContent =
-              "Login successful. Opening your account...";
-
-          }
-
-
-          // ====================================
-          // BOTH GO TO ACCOUNT
-          // ====================================
 
           setTimeout(() => {
 
-            window.location.href =
-              "account.html";
+            window.location.replace(
+              "account.html"
+            );
 
           }, 500);
 
@@ -355,10 +332,9 @@
         } catch (error) {
 
           console.error(
-            "SUPABASE LOGIN ERROR:",
+            "Supabase login error:",
             error
           );
-
 
           message.style.color = "red";
 
@@ -395,9 +371,7 @@
     );
 
 
-    // ==========================================
-    // FORGOT PASSWORD
-    // ==========================================
+    // Forgot password
 
     forgotPasswordButton.addEventListener(
       "click",
@@ -418,6 +392,7 @@
             "Enter your email first.";
 
           return;
+
         }
 
 
@@ -435,20 +410,17 @@
 
         try {
 
-          // ====================================
-          // SUPABASE PASSWORD RESET
-          // ====================================
-
           const {
             error
           } =
-            await supabase.auth.resetPasswordForEmail(
-              email,
-              {
-                redirectTo:
-                  `${window.location.origin}/reset-password.html`
-              }
-            );
+            await supabase.auth
+              .resetPasswordForEmail(
+                email,
+                {
+                  redirectTo:
+                    `${window.location.origin}/reset-password.html`
+                }
+              );
 
 
           if (error) {
@@ -466,10 +438,9 @@
         } catch (error) {
 
           console.error(
-            "SUPABASE PASSWORD RESET ERROR:",
+            "Password reset error:",
             error
           );
-
 
           message.style.color =
             "red";
@@ -494,7 +465,23 @@
       }
     );
 
+
+    // Keep the user logged in.
+    // No automatic sign-out is performed.
+
+    supabase.auth.onAuthStateChange(
+      (event, session) => {
+
+        console.log(
+          "Auth event:",
+          event
+        );
+
+      }
+    );
+
   </script>
 
 </body>
 </html>
+

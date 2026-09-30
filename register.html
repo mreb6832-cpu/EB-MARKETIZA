@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Register | E&B SHOP</title>
+  <title>Register | E&B MARKETIZA</title>
 
   <style>
     * {
@@ -39,6 +39,10 @@
       margin-bottom: 8px;
     }
 
+    .logo span {
+      color: #00d084;
+    }
+
     .subtitle {
       text-align: center;
       color: #777;
@@ -62,7 +66,7 @@
 
     input:focus {
       outline: none;
-      border-color: #111;
+      border-color: #00d084;
     }
 
     button {
@@ -94,30 +98,43 @@
       word-break: break-word;
     }
 
-    .login-link {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      color: #111;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .login-link:hover {
-      text-decoration: underline;
-    }
-
+    .login-link,
     .back {
       display: block;
       text-align: center;
+      text-decoration: none;
+    }
+
+    .login-link {
+      margin-top: 20px;
+      color: #111;
+      font-weight: bold;
+    }
+
+    .back {
       margin-top: 15px;
       color: #777;
-      text-decoration: none;
       font-size: 14px;
     }
 
+    .login-link:hover,
     .back:hover {
       text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      .register-box {
+        padding: 25px 20px;
+        border-radius: 14px;
+      }
+
+      .logo {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
@@ -127,13 +144,12 @@
   <div class="register-box">
 
     <div class="logo">
-      E&B SHOP
+      E&B <span>MARKETIZA</span>
     </div>
 
     <div class="subtitle">
       Create your account
     </div>
-
 
     <form id="registerForm">
 
@@ -149,7 +165,6 @@
         required
       >
 
-
       <label for="email">
         Email
       </label>
@@ -161,7 +176,6 @@
         autocomplete="email"
         required
       >
-
 
       <label for="password">
         Password
@@ -176,7 +190,6 @@
         required
       >
 
-
       <label for="confirmPassword">
         Confirm Password
       </label>
@@ -190,7 +203,6 @@
         required
       >
 
-
       <button
         type="submit"
         id="registerButton"
@@ -200,9 +212,7 @@
 
     </form>
 
-
     <div id="message"></div>
-
 
     <a
       href="login.html"
@@ -210,7 +220,6 @@
     >
       Already have an account? Login
     </a>
-
 
     <a
       href="index.html"
@@ -224,17 +233,8 @@
 
   <script type="module">
 
-    import { auth } from "./firebase-config.js";
+    import { supabase } from "./supabaseClient.js";
 
-    import {
-      createUserWithEmailAndPassword,
-      updateProfile
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-
-    /* =========================
-       ELEMENTS
-    ========================== */
 
     const registerForm =
       document.getElementById("registerForm");
@@ -245,10 +245,6 @@
     const message =
       document.getElementById("message");
 
-
-    /* =========================
-       REGISTRATION
-    ========================== */
 
     registerForm.addEventListener(
       "submit",
@@ -283,10 +279,6 @@
         message.textContent = "";
 
 
-        /* =========================
-           PASSWORD CHECK
-        ========================== */
-
         if (password !== confirmPassword) {
 
           message.style.color = "red";
@@ -295,6 +287,7 @@
             "Passwords do not match.";
 
           return;
+
         }
 
 
@@ -306,12 +299,9 @@
             "Password must be at least 6 characters.";
 
           return;
+
         }
 
-
-        /* =========================
-           START REGISTRATION
-        ========================== */
 
         registerButton.disabled = true;
 
@@ -321,81 +311,119 @@
 
         try {
 
-          const userCredential =
-            await createUserWithEmailAndPassword(
-              auth,
-              email,
-              password
-            );
+          const {
+            data,
+            error
+          } =
+            await supabase.auth.signUp({
+
+              email: email,
+
+              password: password,
+
+              options: {
+
+                data: {
+                  full_name: name
+                },
+
+                emailRedirectTo:
+                  `${window.location.origin}/login.html`
+
+              }
+
+            });
 
 
-          const user =
-            userCredential.user;
+          if (error) {
+            throw error;
+          }
 
 
-          /* =========================
-             SAVE USER NAME
-          ========================== */
+          /*
+            Supabase may return a user without
+            a session when email confirmation
+            is enabled.
+          */
 
-          await updateProfile(
-            user,
-            {
-              displayName: name
-            }
-          );
+          if (
+            data.user &&
+            !data.session
+          ) {
+
+            message.style.color =
+              "green";
+
+            message.innerHTML =
+              "Account created successfully.<br><br>" +
+              "Please check your email and click the verification link " +
+              "to verify your account.<br><br>" +
+              "After verification, return here and log in.";
+
+            registerForm.reset();
+
+            return;
+
+          }
 
 
-          message.style.color = "green";
+          /*
+            If email confirmation is disabled,
+            the user can be logged in immediately.
+          */
 
-          message.textContent =
-            "Account created successfully. Opening your account...";
+          if (data.session) {
+
+            message.style.color =
+              "green";
+
+            message.textContent =
+              "Account created successfully. Opening your account...";
 
 
-          /* =========================
-             GO TO ACCOUNT
-          ========================== */
+            setTimeout(() => {
 
-          setTimeout(() => {
+              window.location.href =
+                "account.html";
 
-            window.location.href =
-              "account.html";
+            }, 1000);
 
-          }, 800);
+          }
 
 
         } catch (error) {
 
-          /* =========================
-             FIREBASE ERROR
-          ========================== */
-
           console.error(
-            "REGISTRATION ERROR:",
+            "SUPABASE REGISTRATION ERROR:",
             error
           );
 
-          console.error(
-            "ERROR CODE:",
-            error.code
-          );
 
-          console.error(
-            "ERROR MESSAGE:",
+          message.style.color =
+            "red";
+
+
+          if (
             error.message
-          );
+              .toLowerCase()
+              .includes("already registered")
+          ) {
 
+            message.textContent =
+              "This email is already registered. Please log in.";
 
-          message.style.color = "red";
+          } else {
 
-          message.textContent =
-            error.code +
-            " — " +
-            error.message;
+            message.textContent =
+              error.message ||
+              "Registration failed.";
 
+          }
 
         } finally {
 
-          registerButton.disabled = false;
+          registerButton.disabled =
+            false;
 
           registerButton.textContent =
             "Create Account";
@@ -409,4 +437,3 @@
 
 </body>
 </html>
-```

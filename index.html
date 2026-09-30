@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>E&B MARKETIZA</title>
+  <title>E&B MARKETIZA | Online Store</title>
 
   <style>
     * {
@@ -19,50 +19,50 @@
 
     body {
       font-family: Arial, Helvetica, sans-serif;
-      background: #f7f7f7;
+      background: #f6f6f6;
       color: #111;
       overflow-x: hidden;
     }
 
-    img {
-      max-width: 100%;
-      display: block;
+    a {
+      text-decoration: none;
+      color: inherit;
     }
 
     button,
-    input,
-    select {
+    input {
       font: inherit;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    img {
+      max-width: 100%;
     }
 
     /* HEADER */
 
     header {
+      background: #050505;
+      color: white;
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: #050505;
-      color: white;
       border-bottom: 1px solid #222;
     }
 
-    .header-inner {
+    .header-container {
       width: 100%;
-      min-height: 64px;
+      max-width: 1250px;
+      margin: auto;
+      min-height: 68px;
       padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 15px;
     }
 
     .logo {
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 900;
       white-space: nowrap;
     }
@@ -71,7 +71,7 @@
       color: #00d084;
     }
 
-    .menu-btn {
+    .menu-button {
       width: 44px;
       height: 44px;
       border: 1px solid #333;
@@ -79,22 +79,20 @@
       color: white;
       border-radius: 10px;
       cursor: pointer;
-      font-size: 23px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-size: 22px;
     }
 
     nav {
       display: none;
-      padding: 8px 16px 16px;
+      width: 100%;
       background: #050505;
+      padding: 5px 16px 16px;
+      flex-direction: column;
+      gap: 5px;
     }
 
-    nav.active {
+    nav.open {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
     }
 
     nav a {
@@ -107,7 +105,7 @@
       background: #151515;
     }
 
-    .cart-link {
+    nav .cart {
       background: #00d084;
       color: #000;
       font-weight: bold;
@@ -115,18 +113,19 @@
 
     /* SEARCH */
 
-    .search-area {
-      padding: 12px 16px;
+    .search-section {
       background: white;
       border-bottom: 1px solid #e5e5e5;
+      padding: 12px 16px;
     }
 
-    .search-box {
+    .search-container {
       width: 100%;
-      position: relative;
+      max-width: 1250px;
+      margin: auto;
     }
 
-    .search-box input {
+    #searchInput {
       width: 100%;
       height: 46px;
       border: 1px solid #ddd;
@@ -136,7 +135,7 @@
       outline: none;
     }
 
-    .search-box input:focus {
+    #searchInput:focus {
       border-color: #00d084;
     }
 
@@ -145,21 +144,20 @@
     .hero {
       background: #050505;
       color: white;
-      padding: 42px 20px;
     }
 
-    .hero-content {
+    .hero-container {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1250px;
       margin: auto;
+      padding: 55px 18px;
     }
 
     .hero h1 {
-      font-size: clamp(36px, 11vw, 76px);
+      font-size: clamp(40px, 10vw, 82px);
       line-height: .95;
-      font-weight: 900;
-      letter-spacing: -2px;
-      margin-bottom: 18px;
+      letter-spacing: -3px;
+      margin-bottom: 20px;
     }
 
     .hero h1 span {
@@ -167,64 +165,65 @@
     }
 
     .hero p {
-      color: #ccc;
+      max-width: 650px;
+      color: #c8c8c8;
       font-size: 16px;
       line-height: 1.6;
-      max-width: 600px;
       margin-bottom: 25px;
     }
 
-    .hero-btn {
+    .shop-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-height: 48px;
-      padding: 0 22px;
+      padding: 0 23px;
       border-radius: 10px;
       background: #00d084;
       color: #000;
       font-weight: 800;
     }
 
-    /* CATEGORIES */
+    /* MAIN */
 
     .section {
       width: 100%;
-      max-width: 1200px;
+      max-width: 1250px;
       margin: auto;
       padding: 35px 16px;
     }
 
     .section-title {
-      font-size: 25px;
+      font-size: 26px;
       margin-bottom: 18px;
     }
 
+    /* CATEGORIES */
+
     .categories {
       display: flex;
-      gap: 10px;
+      gap: 9px;
       overflow-x: auto;
-      padding-bottom: 5px;
       scrollbar-width: none;
+      padding-bottom: 4px;
     }
 
     .categories::-webkit-scrollbar {
       display: none;
     }
 
-    .category {
+    .category-button {
       flex: 0 0 auto;
       border: 1px solid #ddd;
       background: white;
+      color: #111;
       border-radius: 999px;
       padding: 11px 17px;
       cursor: pointer;
-      white-space: nowrap;
       font-weight: 600;
     }
 
-    .category.active,
-    .category:hover {
+    .category-button.active {
       background: #111;
       color: white;
       border-color: #111;
@@ -238,9 +237,9 @@
       gap: 12px;
     }
 
-    .product {
+    .product-card {
       background: white;
-      border: 1px solid #e5e5e5;
+      border: 1px solid #e4e4e4;
       border-radius: 14px;
       overflow: hidden;
       min-width: 0;
@@ -249,105 +248,120 @@
     .product-image {
       width: 100%;
       aspect-ratio: 1 / 1;
-      background: #eee;
       object-fit: cover;
+      background: #eee;
     }
 
-    .product-info {
+    .product-content {
       padding: 12px;
     }
 
     .product-name {
       font-size: 15px;
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.35;
+      min-height: 40px;
+      margin-bottom: 6px;
+    }
+
+    .product-category {
+      color: #777;
+      font-size: 12px;
       margin-bottom: 7px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
 
     .product-price {
       font-size: 17px;
       font-weight: 900;
-      margin-bottom: 10px;
+      margin-bottom: 11px;
     }
 
-    .product-button {
+    .view-button {
       width: 100%;
       min-height: 42px;
       border: none;
       border-radius: 9px;
       background: #111;
       color: white;
-      font-weight: bold;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    .product-button:active {
-      transform: scale(.98);
+    .view-button:hover {
+      background: #333;
     }
 
-    /* INFO */
+    .no-products {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 15px;
+      color: #777;
+      background: white;
+      border-radius: 14px;
+    }
 
-    .info-grid {
+    /* FEATURES */
+
+    .features {
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
     }
 
-    .info-card {
+    .feature {
       background: white;
-      padding: 22px;
-      border: 1px solid #e5e5e5;
+      border: 1px solid #e4e4e4;
       border-radius: 14px;
+      padding: 22px;
     }
 
-    .info-card h3 {
+    .feature h3 {
       margin-bottom: 8px;
+      font-size: 18px;
     }
 
-    .info-card p {
+    .feature p {
       color: #666;
       line-height: 1.6;
+      font-size: 14px;
     }
 
     /* FOOTER */
 
     footer {
-      margin-top: 25px;
-      padding: 30px 16px;
       background: #050505;
       color: white;
+      margin-top: 20px;
     }
 
-    .footer-inner {
-      max-width: 1200px;
+    .footer-container {
+      width: 100%;
+      max-width: 1250px;
       margin: auto;
+      padding: 35px 16px;
     }
 
     .footer-logo {
       font-size: 22px;
       font-weight: 900;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .footer-logo span {
       color: #00d084;
     }
 
-    footer p {
+    .footer-text {
       color: #aaa;
-      line-height: 1.6;
       font-size: 14px;
+      line-height: 1.6;
     }
 
     .footer-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 18px;
+      gap: 15px;
+      margin-top: 20px;
     }
 
     .footer-links a {
@@ -355,16 +369,24 @@
       font-size: 14px;
     }
 
+    .copyright {
+      margin-top: 25px;
+      padding-top: 18px;
+      border-top: 1px solid #222;
+      color: #777;
+      font-size: 13px;
+    }
+
     /* TABLET */
 
     @media (min-width: 600px) {
 
-      .header-inner {
+      .header-container {
         padding: 12px 24px;
       }
 
-      .hero {
-        padding: 70px 30px;
+      .hero-container {
+        padding: 75px 28px;
       }
 
       .section {
@@ -376,49 +398,46 @@
         gap: 18px;
       }
 
-      .info-grid {
+      .features {
         grid-template-columns: repeat(2, 1fr);
       }
 
+      .footer-container {
+        padding: 45px 24px;
+      }
     }
 
     /* DESKTOP */
 
     @media (min-width: 900px) {
 
-      .header-inner {
-        max-width: 1200px;
-        margin: auto;
+      .header-container {
+        padding: 12px 30px;
       }
 
-      .menu-btn {
+      .menu-button {
         display: none;
       }
 
       nav {
         display: flex;
-        position: absolute;
-        right: 20px;
-        top: 10px;
+        width: auto;
         padding: 0;
-        gap: 4px;
+        flex-direction: row;
         align-items: center;
+        gap: 4px;
+        background: transparent;
       }
 
       nav a {
         padding: 10px 12px;
       }
 
-      .search-area {
-        padding: 14px 24px;
+      .search-section {
+        padding: 14px 30px;
       }
 
-      .search-box {
-        max-width: 1200px;
-        margin: auto;
-      }
-
-      .hero {
+      .hero-container {
         padding: 100px 30px;
       }
 
@@ -430,37 +449,68 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 20px;
       }
+
+      .features {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .footer-container {
+        padding: 50px 30px;
+      }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- HEADER -->
+
   <header>
 
-    <div class="header-inner">
+    <div class="header-container">
 
       <a href="index.html" class="logo">
         E&B <span>MARKETIZA</span>
       </a>
 
       <button
-        class="menu-btn"
-        id="menuBtn"
-        aria-label="Open menu"
-        aria-expanded="false"
+        type="button"
+        class="menu-button"
+        id="menuButton"
+        aria-label="Open navigation"
       >
         ☰
       </button>
 
       <nav id="mainNav">
 
-        <a href="index.html">Home</a>
-        <a href="products.html">Products</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-        <a href="account.html">Account</a>
-        <a href="cart.html" class="cart-link">Cart</a>
+        <a href="index.html">
+          Home
+        </a>
+
+        <a href="products.html">
+          Products
+        </a>
+
+        <a href="about.html">
+          About
+        </a>
+
+        <a href="contact.html">
+          Contact
+        </a>
+
+        <a href="account.html">
+          Account
+        </a>
+
+        <a href="orders.html">
+          Orders
+        </a>
+
+        <a href="cart.html" class="cart">
+          Cart
+        </a>
 
       </nav>
 
@@ -469,9 +519,11 @@
   </header>
 
 
-  <div class="search-area">
+  <!-- SEARCH -->
 
-    <div class="search-box">
+  <section class="search-section">
+
+    <div class="search-container">
 
       <input
         type="search"
@@ -482,14 +534,16 @@
 
     </div>
 
-  </div>
+  </section>
 
+
+  <!-- HERO -->
 
   <main>
 
     <section class="hero">
 
-      <div class="hero-content">
+      <div class="hero-container">
 
         <h1>
           SHOP.<br>
@@ -498,11 +552,15 @@
         </h1>
 
         <p>
-          Discover products, shop easily, and manage your orders
-          from your phone, tablet, or computer.
+          Discover products and shop easily with E&B MARKETIZA.
+          Everything you see on this website is available on both
+          phone and computer.
         </p>
 
-        <a href="products.html" class="hero-btn">
+        <a
+          href="products.html"
+          class="shop-button"
+        >
           Shop Now
         </a>
 
@@ -510,6 +568,8 @@
 
     </section>
 
+
+    <!-- CATEGORIES -->
 
     <section class="section">
 
@@ -519,31 +579,59 @@
 
       <div class="categories">
 
-        <button class="category active" data-category="all">
+        <button
+          type="button"
+          class="category-button active"
+          data-category="all"
+        >
           All
         </button>
 
-        <button class="category" data-category="electronics">
+        <button
+          type="button"
+          class="category-button"
+          data-category="electronics"
+        >
           Electronics
         </button>
 
-        <button class="category" data-category="fashion">
+        <button
+          type="button"
+          class="category-button"
+          data-category="fashion"
+        >
           Fashion
         </button>
 
-        <button class="category" data-category="home">
+        <button
+          type="button"
+          class="category-button"
+          data-category="home"
+        >
           Home
         </button>
 
-        <button class="category" data-category="beauty">
+        <button
+          type="button"
+          class="category-button"
+          data-category="beauty"
+        >
           Beauty
         </button>
 
-        <button class="category" data-category="sports">
+        <button
+          type="button"
+          class="category-button"
+          data-category="sports"
+        >
           Sports
         </button>
 
-        <button class="category" data-category="other">
+        <button
+          type="button"
+          class="category-button"
+          data-category="other"
+        >
           Other
         </button>
 
@@ -552,6 +640,8 @@
     </section>
 
 
+    <!-- PRODUCTS -->
+
     <section class="section">
 
       <h2 class="section-title">
@@ -559,34 +649,14 @@
       </h2>
 
       <div
-        id="productsGrid"
         class="products-grid"
+        id="productsGrid"
       >
 
-        <div class="product" data-category="electronics">
+        <!-- Products from Supabase will appear here -->
 
-          <img
-            class="product-image"
-            src="https://via.placeholder.com/600x600?text=Product"
-            alt="Product"
-          >
-
-          <div class="product-info">
-
-            <div class="product-name">
-              Product
-            </div>
-
-            <div class="product-price">
-              0 SEK
-            </div>
-
-            <button class="product-button">
-              View Product
-            </button>
-
-          </div>
-
+        <div class="no-products" id="loadingMessage">
+          Loading products...
         </div>
 
       </div>
@@ -594,54 +664,60 @@
     </section>
 
 
+    <!-- FEATURES -->
+
     <section class="section">
 
-      <div class="info-grid">
+      <div class="features">
 
-        <div class="info-card">
+        <div class="feature">
 
           <h3>
             Easy Shopping
           </h3>
 
           <p>
-            Browse products easily from any mobile device.
+            Browse and shop from your phone,
+            tablet, or computer.
           </p>
 
         </div>
 
-        <div class="info-card">
+        <div class="feature">
 
           <h3>
             Secure Checkout
           </h3>
 
           <p>
-            Complete your order through a secure checkout experience.
+            Complete your order through our
+            secure checkout system.
           </p>
 
         </div>
 
-        <div class="info-card">
+        <div class="feature">
 
           <h3>
             Your Account
           </h3>
 
           <p>
-            Manage your account and orders from one place.
+            Access your account and manage
+            your orders from any device.
           </p>
 
         </div>
 
-        <div class="info-card">
+        <div class="feature">
 
           <h3>
             Sweden
           </h3>
 
           <p>
-            E&B MARKETIZA is designed for customers in Sweden.
+            E&B MARKETIZA is built for
+            customers in Sweden.
           </p>
 
         </div>
@@ -653,26 +729,54 @@
   </main>
 
 
+  <!-- FOOTER -->
+
   <footer>
 
-    <div class="footer-inner">
+    <div class="footer-container">
 
       <div class="footer-logo">
         E&B <span>MARKETIZA</span>
       </div>
 
-      <p>
+      <p class="footer-text">
         Shop. Easy. Secure.
       </p>
 
       <div class="footer-links">
 
-        <a href="index.html">Home</a>
-        <a href="products.html">Products</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-        <a href="account.html">Account</a>
+        <a href="index.html">
+          Home
+        </a>
 
+        <a href="products.html">
+          Products
+        </a>
+
+        <a href="about.html">
+          About
+        </a>
+
+        <a href="contact.html">
+          Contact
+        </a>
+
+        <a href="account.html">
+          Account
+        </a>
+
+        <a href="orders.html">
+          Orders
+        </a>
+
+        <a href="cart.html">
+          Cart
+        </a>
+
+      </div>
+
+      <div class="copyright">
+        © 2026 E&B MARKETIZA. All rights reserved.
       </div>
 
     </div>
@@ -680,122 +784,482 @@
   </footer>
 
 
-  <script>
+  <script type="module">
 
-    const menuBtn =
-      document.getElementById("menuBtn");
+    import { supabase } from "./supabaseClient.js";
+
+
+    /*
+      MOBILE MENU
+    */
+
+    const menuButton =
+      document.getElementById("menuButton");
 
     const mainNav =
       document.getElementById("mainNav");
 
 
-    menuBtn.addEventListener("click", () => {
-
-      const isOpen =
-        mainNav.classList.toggle("active");
-
-      menuBtn.setAttribute(
-        "aria-expanded",
-        isOpen
-      );
-
-      menuBtn.textContent =
-        isOpen ? "✕" : "☰";
-
-    });
-
-
-    document.querySelectorAll(
-      "#mainNav a"
-    ).forEach(link => {
-
-      link.addEventListener("click", () => {
-
-        mainNav.classList.remove("active");
-
-        menuBtn.setAttribute(
-          "aria-expanded",
-          "false"
-        );
-
-        menuBtn.textContent = "☰";
-
-      });
-
-    });
-
-
-    const searchInput =
-      document.getElementById("searchInput");
-
-    searchInput.addEventListener(
-      "input",
+    menuButton.addEventListener(
+      "click",
       () => {
 
-        const search =
-          searchInput.value
-            .toLowerCase()
-            .trim();
+        mainNav.classList.toggle("open");
 
-        document
-          .querySelectorAll(".product")
-          .forEach(product => {
+        const opened =
+          mainNav.classList.contains("open");
 
-            const name =
-              product
-                .querySelector(".product-name")
-                ?.textContent
-                .toLowerCase() || "";
-
-            product.style.display =
-              name.includes(search)
-                ? ""
-                : "none";
-
-          });
+        menuButton.textContent =
+          opened ? "✕" : "☰";
 
       }
     );
 
 
-    document.querySelectorAll(
-      ".category"
-    ).forEach(button => {
+    /*
+      CLOSE MOBILE MENU AFTER CLICK
+    */
 
-      button.addEventListener(
-        "click",
-        () => {
+    document
+      .querySelectorAll("#mainNav a")
+      .forEach(link => {
 
-          document
-            .querySelectorAll(".category")
-            .forEach(item => {
-              item.classList.remove("active");
-            });
+        link.addEventListener(
+          "click",
+          () => {
 
-          button.classList.add("active");
+            mainNav.classList.remove("open");
 
-          const category =
-            button.dataset.category;
+            menuButton.textContent = "☰";
 
-          document
-            .querySelectorAll(".product")
-            .forEach(product => {
+          }
+        );
 
-              if (
-                category === "all" ||
-                product.dataset.category === category
-              ) {
-                product.style.display = "";
-              } else {
-                product.style.display = "none";
-              }
+      });
 
-            });
 
+    /*
+      PRODUCTS
+    */
+
+    const productsGrid =
+      document.getElementById("productsGrid");
+
+    const searchInput =
+      document.getElementById("searchInput");
+
+    let products = [];
+
+
+    async function loadProducts() {
+
+      productsGrid.innerHTML = `
+        <div class="no-products">
+          Loading products...
+        </div>
+      `;
+
+
+      try {
+
+        const {
+          data,
+          error
+        } = await supabase
+          .from("products")
+          .select("*")
+          .order("created_at", {
+            ascending: false
+          });
+
+
+        if (error) {
+          throw error;
         }
+
+
+        products = data || [];
+
+
+        renderProducts(products);
+
+
+      } catch (error) {
+
+        console.error(
+          "Products error:",
+          error
+        );
+
+
+        productsGrid.innerHTML = `
+          <div class="no-products">
+            Could not load products.
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    /*
+      GET PRODUCT IMAGE
+    */
+
+    function getProductImage(product) {
+
+      if (
+        product.image_url &&
+        typeof product.image_url === "string"
+      ) {
+
+        return product.image_url;
+
+      }
+
+
+      if (
+        product.image &&
+        typeof product.image === "string"
+      ) {
+
+        return product.image;
+
+      }
+
+
+      if (
+        Array.isArray(product.images) &&
+        product.images.length > 0
+      ) {
+
+        return product.images[0];
+
+      }
+
+
+      return "https://via.placeholder.com/600x600?text=E%26B+MARKETIZA";
+
+    }
+
+
+    /*
+      GET PRODUCT CATEGORY
+    */
+
+    function getCategory(product) {
+
+      return String(
+        product.category ||
+        "other"
+      ).toLowerCase();
+
+    }
+
+
+    /*
+      GET PRODUCT NAME
+    */
+
+    function getName(product) {
+
+      return (
+        product.name ||
+        product.title ||
+        "Product"
       );
 
-    });
+    }
+
+
+    /*
+      GET PRODUCT PRICE
+    */
+
+    function getPrice(product) {
+
+      const price =
+        Number(product.price);
+
+      if (
+        !Number.isFinite(price)
+      ) {
+
+        return "0 SEK";
+
+      }
+
+      return (
+        price.toLocaleString(
+          "sv-SE",
+          {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+          }
+        ) + " SEK"
+      );
+
+    }
+
+
+    /*
+      RENDER PRODUCTS
+    */
+
+    function renderProducts(list) {
+
+      if (!list.length) {
+
+        productsGrid.innerHTML = `
+          <div class="no-products">
+            No products found.
+          </div>
+        `;
+
+        return;
+
+      }
+
+
+      productsGrid.innerHTML = "";
+
+
+      list.forEach(product => {
+
+        const card =
+          document.createElement("article");
+
+        card.className =
+          "product-card";
+
+        card.dataset.category =
+          getCategory(product);
+
+
+        const image =
+          document.createElement("img");
+
+        image.className =
+          "product-image";
+
+        image.src =
+          getProductImage(product);
+
+        image.alt =
+          getName(product);
+
+        image.loading =
+          "lazy";
+
+
+        const content =
+          document.createElement("div");
+
+        content.className =
+          "product-content";
+
+
+        const name =
+          document.createElement("div");
+
+        name.className =
+          "product-name";
+
+        name.textContent =
+          getName(product);
+
+
+        const category =
+          document.createElement("div");
+
+        category.className =
+          "product-category";
+
+        category.textContent =
+          getCategory(product);
+
+
+        const price =
+          document.createElement("div");
+
+        price.className =
+          "product-price";
+
+        price.textContent =
+          getPrice(product);
+
+
+        const button =
+          document.createElement("button");
+
+        button.type =
+          "button";
+
+        button.className =
+          "view-button";
+
+        button.textContent =
+          "View Product";
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const id =
+              product.id;
+
+            if (id) {
+
+              window.location.href =
+                `product-details.html?id=${encodeURIComponent(id)}`;
+
+            } else {
+
+              window.location.href =
+                "products.html";
+
+            }
+
+          }
+        );
+
+
+        content.appendChild(name);
+
+        content.appendChild(category);
+
+        content.appendChild(price);
+
+        content.appendChild(button);
+
+
+        card.appendChild(image);
+
+        card.appendChild(content);
+
+
+        productsGrid.appendChild(card);
+
+      });
+
+    }
+
+
+    /*
+      SEARCH
+    */
+
+    searchInput.addEventListener(
+      "input",
+      () => {
+
+        const query =
+          searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+        if (!query) {
+
+          renderProducts(products);
+
+          return;
+
+        }
+
+
+        const filtered =
+          products.filter(product => {
+
+            const name =
+              getName(product)
+                .toLowerCase();
+
+            const category =
+              getCategory(product)
+                .toLowerCase();
+
+
+            return (
+              name.includes(query) ||
+              category.includes(query)
+            );
+
+          });
+
+
+        renderProducts(filtered);
+
+      }
+    );
+
+
+    /*
+      CATEGORY FILTER
+    */
+
+    document
+      .querySelectorAll(".category-button")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            document
+              .querySelectorAll(
+                ".category-button"
+              )
+              .forEach(item => {
+
+                item.classList.remove(
+                  "active"
+                );
+
+              });
+
+
+            button.classList.add(
+              "active"
+            );
+
+
+            const category =
+              button.dataset.category;
+
+
+            if (category === "all") {
+
+              renderProducts(products);
+
+              return;
+
+            }
+
+
+            const filtered =
+              products.filter(
+                product =>
+                  getCategory(product) ===
+                  category
+              );
+
+
+            renderProducts(filtered);
+
+          }
+        );
+
+      });
+
+
+    /*
+      START
+    */
+
+    loadProducts();
 
   </script>
 

@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>E&B MARKETIZA | Online Store</title>
+  <meta
+    name="description"
+    content="E&B MARKETIZA - Shop easy and securely online."
+  >
 
   <style>
     * {
@@ -19,9 +23,9 @@
 
     body {
       font-family: Arial, Helvetica, sans-serif;
-      background: #f6f6f6;
+      background: #fff;
       color: #111;
-      overflow-x: hidden;
+      min-height: 100vh;
     }
 
     a {
@@ -34,36 +38,36 @@
       font: inherit;
     }
 
-    img {
-      max-width: 100%;
-    }
-
-    /* HEADER */
+    /* =========================
+       HEADER
+    ========================= */
 
     header {
-      background: #050505;
-      color: white;
       position: sticky;
       top: 0;
       z-index: 1000;
+      background: #050505;
+      color: #fff;
       border-bottom: 1px solid #222;
     }
 
-    .header-container {
+    .header-main {
       width: 100%;
       max-width: 1250px;
-      margin: auto;
-      min-height: 68px;
-      padding: 10px 16px;
+      min-height: 70px;
+      margin: 0 auto;
+      padding: 12px 20px;
+
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 15px;
+      gap: 20px;
     }
 
     .logo {
-      font-size: 21px;
+      flex-shrink: 0;
+      font-size: 22px;
       font-weight: 900;
+      letter-spacing: -0.5px;
       white-space: nowrap;
     }
 
@@ -71,391 +75,665 @@
       color: #00d084;
     }
 
-    .menu-button {
-      width: 44px;
-      height: 44px;
-      border: 1px solid #333;
-      background: #111;
-      color: white;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 22px;
+    /* Search */
+
+    .search-area {
+      flex: 1;
+      max-width: 520px;
+      margin-left: auto;
     }
 
-    nav {
-      display: none;
+    .search-area input {
       width: 100%;
-      background: #050505;
-      padding: 5px 16px 16px;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    nav.open {
-      display: flex;
-    }
-
-    nav a {
-      padding: 13px 12px;
-      border-radius: 8px;
-      font-size: 15px;
-    }
-
-    nav a:hover {
-      background: #151515;
-    }
-
-    nav .cart {
-      background: #00d084;
-      color: #000;
-      font-weight: bold;
-    }
-
-    /* SEARCH */
-
-    .search-section {
-      background: white;
-      border-bottom: 1px solid #e5e5e5;
-      padding: 12px 16px;
-    }
-
-    .search-container {
-      width: 100%;
-      max-width: 1250px;
-      margin: auto;
-    }
-
-    #searchInput {
-      width: 100%;
-      height: 46px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
+      height: 42px;
       padding: 0 15px;
-      font-size: 16px;
+
+      background: #111;
+      color: #fff;
+
+      border: 1px solid #333;
+      border-radius: 8px;
       outline: none;
     }
 
-    #searchInput:focus {
+    .search-area input::placeholder {
+      color: #999;
+    }
+
+    .search-area input:focus {
       border-color: #00d084;
     }
 
-    /* HERO */
+    /* Login / Register */
 
-    .hero {
-      background: #050505;
-      color: white;
+    .desktop-auth {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
-    .hero-container {
-      width: 100%;
+    .auth-link {
+      min-height: 40px;
+      padding: 10px 15px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 7px;
+      border: 1px solid #00d084;
+
+      font-size: 14px;
+      font-weight: 700;
+
+      transition: 0.2s ease;
+    }
+
+    .login-link {
+      color: #00d084;
+      background: transparent;
+    }
+
+    .register-link {
+      color: #000;
+      background: #00d084;
+    }
+
+    .auth-link:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    /* Mobile button */
+
+    .menu-button {
+      display: none;
+
+      width: 42px;
+      height: 42px;
+
+      border: 1px solid #333;
+      border-radius: 8px;
+
+      background: #111;
+      color: #fff;
+
+      font-size: 23px;
+      cursor: pointer;
+    }
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    .desktop-nav {
+      background: #0b0b0b;
+      border-top: 1px solid #1c1c1c;
+    }
+
+    .nav-inner {
       max-width: 1250px;
-      margin: auto;
-      padding: 55px 18px;
+      margin: 0 auto;
+      padding: 0 20px;
+
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-list {
+      list-style: none;
+
+      display: flex;
+      align-items: center;
+      gap: 25px;
+
+      min-height: 46px;
+    }
+
+    .nav-list a {
+      color: #d7d7d7;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .nav-list a:hover {
+      color: #00d084;
+    }
+
+    /* =========================
+       MOBILE MENU
+    ========================= */
+
+    .mobile-menu {
+      display: none;
+      background: #080808;
+      border-top: 1px solid #222;
+      padding: 10px 20px 20px;
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+
+      padding: 14px 0;
+
+      color: #fff;
+      font-weight: 700;
+
+      border-bottom: 1px solid #222;
+    }
+
+    .mobile-menu a:hover {
+      color: #00d084;
+    }
+
+    .mobile-auth {
+      display: flex;
+      gap: 10px;
+      padding-top: 15px;
+    }
+
+    .mobile-auth a {
+      width: 50%;
+      text-align: center;
+
+      border: 1px solid #00d084;
+      border-radius: 7px;
+
+      padding: 11px 10px;
+    }
+
+    .mobile-auth .mobile-register {
+      background: #00d084;
+      color: #000;
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      background: #f4f4f4;
+      padding: 75px 20px;
+    }
+
+    .hero-inner {
+      max-width: 1250px;
+      margin: 0 auto;
     }
 
     .hero h1 {
-      font-size: clamp(40px, 10vw, 82px);
-      line-height: .95;
-      letter-spacing: -3px;
-      margin-bottom: 20px;
+      max-width: 850px;
+
+      font-size: clamp(48px, 8vw, 88px);
+      line-height: 0.92;
+      letter-spacing: -4px;
+
+      margin-bottom: 25px;
     }
 
     .hero h1 span {
-      color: #00d084;
+      color: #00b871;
     }
 
     .hero p {
       max-width: 650px;
-      color: #c8c8c8;
-      font-size: 16px;
-      line-height: 1.6;
-      margin-bottom: 25px;
+
+      color: #555;
+      font-size: 18px;
+      line-height: 1.65;
+
+      margin-bottom: 30px;
     }
 
-    .shop-button {
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+
       min-height: 48px;
-      padding: 0 23px;
-      border-radius: 10px;
-      background: #00d084;
-      color: #000;
+      padding: 13px 20px;
+
+      border-radius: 8px;
+
       font-weight: 800;
+
+      transition: 0.2s ease;
     }
 
-    /* MAIN */
+    .hero-primary {
+      background: #00d084;
+      color: #000;
+    }
+
+    .hero-secondary {
+      background: #111;
+      color: #fff;
+    }
+
+    .hero-button:hover {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
+    /* =========================
+       GENERAL SECTION
+    ========================= */
 
     .section {
       width: 100%;
       max-width: 1250px;
-      margin: auto;
-      padding: 35px 16px;
+      margin: 0 auto;
+      padding: 60px 20px;
     }
 
     .section-title {
-      font-size: 26px;
-      margin-bottom: 18px;
+      font-size: 30px;
+      margin-bottom: 25px;
     }
 
-    /* CATEGORIES */
+    /* =========================
+       CATEGORIES
+    ========================= */
 
     .categories {
-      display: flex;
-      gap: 9px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding-bottom: 4px;
-    }
-
-    .categories::-webkit-scrollbar {
-      display: none;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
     }
 
     .category-button {
-      flex: 0 0 auto;
+      min-height: 110px;
+
+      padding: 20px;
+
       border: 1px solid #ddd;
-      background: white;
+      border-radius: 11px;
+
+      background: #fff;
       color: #111;
-      border-radius: 999px;
-      padding: 11px 17px;
+
+      text-align: center;
       cursor: pointer;
-      font-weight: 600;
+
+      transition: 0.2s ease;
     }
 
+    .category-button:hover,
     .category-button.active {
-      background: #111;
-      color: white;
-      border-color: #111;
+      border-color: #00d084;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
     }
 
-    /* PRODUCTS */
+    .category-button strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .category-button small {
+      color: #777;
+    }
+
+    /* =========================
+       PRODUCTS
+    ========================= */
+
+    .products-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+
+      margin-bottom: 25px;
+    }
+
+    .products-heading .section-title {
+      margin: 0;
+    }
+
+    .show-all-button {
+      padding: 10px 14px;
+
+      background: #fff;
+      color: #111;
+
+      border: 1px solid #ccc;
+      border-radius: 7px;
+
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .show-all-button:hover {
+      border-color: #00d084;
+    }
 
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
     }
 
     .product-card {
-      background: white;
-      border: 1px solid #e4e4e4;
-      border-radius: 14px;
       overflow: hidden;
-      min-width: 0;
+
+      background: #fff;
+
+      border: 1px solid #e1e1e1;
+      border-radius: 12px;
+
+      transition: 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
     .product-image {
       width: 100%;
-      aspect-ratio: 1 / 1;
+      height: 220px;
+
+      display: block;
+
       object-fit: cover;
-      background: #eee;
+
+      background: #f1f1f1;
     }
 
     .product-content {
-      padding: 12px;
-    }
-
-    .product-name {
-      font-size: 15px;
-      font-weight: 700;
-      line-height: 1.35;
-      min-height: 40px;
-      margin-bottom: 6px;
+      padding: 16px;
     }
 
     .product-category {
-      color: #777;
-      font-size: 12px;
       margin-bottom: 7px;
+
+      color: #00a866;
+
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .product-price {
-      font-size: 17px;
-      font-weight: 900;
-      margin-bottom: 11px;
-    }
-
-    .view-button {
-      width: 100%;
+    .product-name {
       min-height: 42px;
-      border: none;
-      border-radius: 9px;
-      background: #111;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
 
-    .view-button:hover {
-      background: #333;
-    }
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.3;
 
-    .no-products {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 40px 15px;
-      color: #777;
-      background: white;
-      border-radius: 14px;
-    }
-
-    /* FEATURES */
-
-    .features {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    .feature {
-      background: white;
-      border: 1px solid #e4e4e4;
-      border-radius: 14px;
-      padding: 22px;
-    }
-
-    .feature h3 {
-      margin-bottom: 8px;
-      font-size: 18px;
-    }
-
-    .feature p {
-      color: #666;
-      line-height: 1.6;
-      font-size: 14px;
-    }
-
-    /* FOOTER */
-
-    footer {
-      background: #050505;
-      color: white;
-      margin-top: 20px;
-    }
-
-    .footer-container {
-      width: 100%;
-      max-width: 1250px;
-      margin: auto;
-      padding: 35px 16px;
-    }
-
-    .footer-logo {
-      font-size: 22px;
-      font-weight: 900;
       margin-bottom: 10px;
     }
 
-    .footer-logo span {
-      color: #00d084;
+    .product-price {
+      margin-bottom: 14px;
+
+      font-size: 19px;
+      font-weight: 900;
     }
 
-    .footer-text {
-      color: #aaa;
+    .view-product {
+      width: 100%;
+      min-height: 42px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: #111;
+      color: #fff;
+
+      border-radius: 7px;
+
       font-size: 14px;
+      font-weight: 800;
+    }
+
+    .view-product:hover {
+      background: #00d084;
+      color: #000;
+    }
+
+    .loading,
+    .empty-products {
+      grid-column: 1 / -1;
+
+      padding: 50px 20px;
+
+      text-align: center;
+      color: #666;
+    }
+
+    /* =========================
+       FEATURES
+    ========================= */
+
+    .features-section {
+      background: #050505;
+      color: #fff;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      padding: 25px;
+
+      border: 1px solid #292929;
+      border-radius: 11px;
+    }
+
+    .feature-card h3 {
+      color: #00d084;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: #aaa;
       line-height: 1.6;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      background: #050505;
+      color: #999;
+
+      border-top: 1px solid #222;
+
+      padding: 30px 20px;
+    }
+
+    .footer-inner {
+      max-width: 1250px;
+      margin: 0 auto;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+
+      flex-wrap: wrap;
     }
 
     .footer-links {
       display: flex;
+      gap: 18px;
       flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 20px;
     }
 
-    .footer-links a {
-      color: #ddd;
-      font-size: 14px;
+    .footer-links a:hover {
+      color: #00d084;
     }
 
-    .copyright {
-      margin-top: 25px;
-      padding-top: 18px;
-      border-top: 1px solid #222;
-      color: #777;
-      font-size: 13px;
-    }
+    /* =========================
+       RESPONSIVE
+    ========================= */
 
-    /* TABLET */
-
-    @media (min-width: 600px) {
-
-      .header-container {
-        padding: 12px 24px;
-      }
-
-      .hero-container {
-        padding: 75px 28px;
-      }
-
-      .section {
-        padding: 45px 24px;
-      }
-
+    @media (max-width: 1050px) {
       .products-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 18px;
+        grid-template-columns: repeat(3, 1fr);
       }
 
-      .features {
+      .categories {
         grid-template-columns: repeat(2, 1fr);
       }
-
-      .footer-container {
-        padding: 45px 24px;
-      }
     }
 
-    /* DESKTOP */
+    @media (max-width: 800px) {
 
-    @media (min-width: 900px) {
-
-      .header-container {
-        padding: 12px 30px;
+      .header-main {
+        min-height: 64px;
+        padding: 10px 15px;
       }
 
-      .menu-button {
+      .logo {
+        font-size: 19px;
+      }
+
+      .search-area,
+      .desktop-auth,
+      .desktop-nav {
         display: none;
       }
 
-      nav {
-        display: flex;
-        width: auto;
-        padding: 0;
-        flex-direction: row;
-        align-items: center;
-        gap: 4px;
-        background: transparent;
+      .menu-button {
+        display: block;
+        margin-left: auto;
       }
 
-      nav a {
-        padding: 10px 12px;
+      .hero {
+        padding: 55px 15px;
       }
 
-      .search-section {
-        padding: 14px 30px;
+      .hero h1 {
+        font-size: clamp(46px, 15vw, 72px);
+        letter-spacing: -3px;
       }
 
-      .hero-container {
-        padding: 100px 30px;
+      .hero p {
+        font-size: 16px;
       }
 
       .section {
-        padding: 60px 30px;
+        padding: 45px 15px;
       }
 
       .products-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 13px;
       }
 
-      .features {
-        grid-template-columns: repeat(4, 1fr);
+      .product-image {
+        height: 175px;
       }
 
-      .footer-container {
-        padding: 50px 30px;
+      .product-content {
+        padding: 12px;
+      }
+
+      .product-name {
+        font-size: 15px;
+      }
+
+      .product-price {
+        font-size: 17px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 500px) {
+
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .category-button {
+        min-height: 95px;
+        padding: 15px 8px;
+      }
+
+      .products-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .product-image {
+        height: 155px;
+      }
+
+      .product-content {
+        padding: 10px;
+      }
+
+      .product-category {
+        font-size: 10px;
+      }
+
+      .product-name {
+        font-size: 14px;
+        min-height: 38px;
+      }
+
+      .product-price {
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .view-product {
+        min-height: 38px;
+        font-size: 13px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .hero-button {
+        width: 100%;
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 360px) {
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-image {
+        height: 210px;
       }
     }
   </style>
@@ -463,113 +741,191 @@
 
 <body>
 
-  <!-- HEADER -->
+  <!-- =========================
+       HEADER
+  ========================= -->
 
   <header>
 
-    <div class="header-container">
+    <div class="header-main">
 
       <a href="index.html" class="logo">
         E&B <span>MARKETIZA</span>
       </a>
 
+      <div class="search-area">
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search products..."
+          autocomplete="off"
+        >
+      </div>
+
+      <!-- Desktop Login/Register -->
+      <div class="desktop-auth">
+
+        <a
+          href="login.html"
+          class="auth-link login-link"
+        >
+          Login
+        </a>
+
+        <a
+          href="register.html"
+          class="auth-link register-link"
+        >
+          Register
+        </a>
+
+      </div>
+
+      <!-- Mobile menu button -->
       <button
-        type="button"
-        class="menu-button"
         id="menuButton"
-        aria-label="Open navigation"
+        class="menu-button"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
       >
         ☰
       </button>
 
-      <nav id="mainNav">
+    </div>
 
-        <a href="index.html">
-          Home
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+
+      <div class="nav-inner">
+
+        <ul class="nav-list">
+
+          <li>
+            <a href="index.html">Home</a>
+          </li>
+
+          <li>
+            <a href="products.html">Products</a>
+          </li>
+
+          <li>
+            <a href="about.html">About</a>
+          </li>
+
+          <li>
+            <a href="contact.html">Contact</a>
+          </li>
+
+          <li>
+            <a href="orders.html">Orders</a>
+          </li>
+
+          <li>
+            <a href="cart.html">Cart</a>
+          </li>
+
+          <li>
+            <a href="account.html">Account</a>
+          </li>
+
+        </ul>
+
+      </div>
+
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div
+      id="mobileMenu"
+      class="mobile-menu"
+    >
+
+      <a href="index.html">Home</a>
+
+      <a href="products.html">Products</a>
+
+      <a href="about.html">About</a>
+
+      <a href="contact.html">Contact</a>
+
+      <a href="orders.html">Orders</a>
+
+      <a href="cart.html">Cart</a>
+
+      <a href="account.html">Account</a>
+
+      <div class="mobile-auth">
+
+        <a
+          href="login.html"
+          class="mobile-login"
+        >
+          Login
         </a>
 
-        <a href="products.html">
-          Products
+        <a
+          href="register.html"
+          class="mobile-register"
+        >
+          Register
         </a>
 
-        <a href="about.html">
-          About
-        </a>
-
-        <a href="contact.html">
-          Contact
-        </a>
-
-        <a href="account.html">
-          Account
-        </a>
-
-        <a href="orders.html">
-          Orders
-        </a>
-
-        <a href="cart.html" class="cart">
-          Cart
-        </a>
-
-      </nav>
+      </div>
 
     </div>
 
   </header>
 
 
-  <!-- SEARCH -->
-
-  <section class="search-section">
-
-    <div class="search-container">
-
-      <input
-        type="search"
-        id="searchInput"
-        placeholder="Search products..."
-        autocomplete="off"
-      >
-
-    </div>
-
-  </section>
-
-
-  <!-- HERO -->
+  <!-- =========================
+       HERO
+  ========================= -->
 
   <main>
 
     <section class="hero">
 
-      <div class="hero-container">
+      <div class="hero-inner">
 
         <h1>
           SHOP.<br>
-          EASY.<br>
-          <span>SECURE.</span>
+          <span>EASY.</span><br>
+          SECURE.
         </h1>
 
         <p>
-          Discover products and shop easily with E&B MARKETIZA.
-          Everything you see on this website is available on both
-          phone and computer.
+          Welcome to E&B MARKETIZA.
+          Discover products, shop securely,
+          and enjoy a simple online shopping experience.
         </p>
 
-        <a
-          href="products.html"
-          class="shop-button"
-        >
-          Shop Now
-        </a>
+        <div class="hero-buttons">
+
+          <a
+            href="products.html"
+            class="hero-button hero-primary"
+          >
+            Shop Products
+          </a>
+
+          <a
+            href="register.html"
+            class="hero-button hero-secondary"
+          >
+            Create Account
+          </a>
+
+        </div>
 
       </div>
 
     </section>
 
 
-    <!-- CATEGORIES -->
+    <!-- =========================
+         CATEGORIES
+    ========================= -->
 
     <section class="section">
 
@@ -580,59 +936,39 @@
       <div class="categories">
 
         <button
-          type="button"
           class="category-button active"
           data-category="all"
+          type="button"
         >
-          All
+          <strong>All Products</strong>
+          <small>Everything</small>
         </button>
 
         <button
-          type="button"
           class="category-button"
           data-category="electronics"
+          type="button"
         >
-          Electronics
+          <strong>Electronics</strong>
+          <small>Tech & devices</small>
         </button>
 
         <button
-          type="button"
           class="category-button"
           data-category="fashion"
+          type="button"
         >
-          Fashion
+          <strong>Fashion</strong>
+          <small>Clothing & style</small>
         </button>
 
         <button
-          type="button"
           class="category-button"
           data-category="home"
-        >
-          Home
-        </button>
-
-        <button
           type="button"
-          class="category-button"
-          data-category="beauty"
         >
-          Beauty
-        </button>
-
-        <button
-          type="button"
-          class="category-button"
-          data-category="sports"
-        >
-          Sports
-        </button>
-
-        <button
-          type="button"
-          class="category-button"
-          data-category="other"
-        >
-          Other
+          <strong>Home</strong>
+          <small>Home products</small>
         </button>
 
       </div>
@@ -640,22 +976,34 @@
     </section>
 
 
-    <!-- PRODUCTS -->
+    <!-- =========================
+         PRODUCTS
+    ========================= -->
 
     <section class="section">
 
-      <h2 class="section-title">
-        Products
-      </h2>
+      <div class="products-heading">
+
+        <h2 class="section-title">
+          Latest Products
+        </h2>
+
+        <button
+          id="showAllButton"
+          class="show-all-button"
+          type="button"
+        >
+          Show All
+        </button>
+
+      </div>
 
       <div
-        class="products-grid"
         id="productsGrid"
+        class="products-grid"
       >
 
-        <!-- Products from Supabase will appear here -->
-
-        <div class="no-products" id="loadingMessage">
+        <div class="loading">
           Loading products...
         </div>
 
@@ -664,61 +1012,56 @@
     </section>
 
 
-    <!-- FEATURES -->
+    <!-- =========================
+         FEATURES
+    ========================= -->
 
-    <section class="section">
+    <section class="features-section">
 
-      <div class="features">
+      <div class="section">
 
-        <div class="feature">
+        <div class="features-grid">
 
-          <h3>
-            Easy Shopping
-          </h3>
+          <div class="feature-card">
 
-          <p>
-            Browse and shop from your phone,
-            tablet, or computer.
-          </p>
+            <h3>
+              Secure Shopping
+            </h3>
 
-        </div>
+            <p>
+              Shop through a simple and secure
+              checkout experience.
+            </p>
 
-        <div class="feature">
+          </div>
 
-          <h3>
-            Secure Checkout
-          </h3>
+          <div class="feature-card">
 
-          <p>
-            Complete your order through our
-            secure checkout system.
-          </p>
+            <h3>
+              Easy Account
+            </h3>
 
-        </div>
+            <p>
+              Create an account and manage your
+              shopping experience from your phone
+              or computer.
+            </p>
 
-        <div class="feature">
+          </div>
 
-          <h3>
-            Your Account
-          </h3>
+          <div class="feature-card">
 
-          <p>
-            Access your account and manage
-            your orders from any device.
-          </p>
+            <h3>
+              Sweden
+            </h3>
 
-        </div>
+            <p>
+              E&B MARKETIZA is designed for
+              customers in Sweden with prices
+              displayed in SEK.
+            </p>
 
-        <div class="feature">
-
-          <h3>
-            Sweden
-          </h3>
-
-          <p>
-            E&B MARKETIZA is built for
-            customers in Sweden.
-          </p>
+          </div>
 
         </div>
 
@@ -729,29 +1072,19 @@
   </main>
 
 
-  <!-- FOOTER -->
+  <!-- =========================
+       FOOTER
+  ========================= -->
 
   <footer>
 
-    <div class="footer-container">
+    <div class="footer-inner">
 
-      <div class="footer-logo">
-        E&B <span>MARKETIZA</span>
+      <div>
+        © 2026 E&B MARKETIZA
       </div>
 
-      <p class="footer-text">
-        Shop. Easy. Secure.
-      </p>
-
       <div class="footer-links">
-
-        <a href="index.html">
-          Home
-        </a>
-
-        <a href="products.html">
-          Products
-        </a>
 
         <a href="about.html">
           About
@@ -761,22 +1094,14 @@
           Contact
         </a>
 
-        <a href="account.html">
-          Account
+        <a href="login.html">
+          Login
         </a>
 
-        <a href="orders.html">
-          Orders
+        <a href="register.html">
+          Register
         </a>
 
-        <a href="cart.html">
-          Cart
-        </a>
-
-      </div>
-
-      <div class="copyright">
-        © 2026 E&B MARKETIZA. All rights reserved.
       </div>
 
     </div>
@@ -784,63 +1109,18 @@
   </footer>
 
 
+  <!-- =========================
+       JAVASCRIPT
+  ========================= -->
+
   <script type="module">
 
     import { supabase } from "./supabaseClient.js";
 
 
-    /*
-      MOBILE MENU
-    */
-
-    const menuButton =
-      document.getElementById("menuButton");
-
-    const mainNav =
-      document.getElementById("mainNav");
-
-
-    menuButton.addEventListener(
-      "click",
-      () => {
-
-        mainNav.classList.toggle("open");
-
-        const opened =
-          mainNav.classList.contains("open");
-
-        menuButton.textContent =
-          opened ? "✕" : "☰";
-
-      }
-    );
-
-
-    /*
-      CLOSE MOBILE MENU AFTER CLICK
-    */
-
-    document
-      .querySelectorAll("#mainNav a")
-      .forEach(link => {
-
-        link.addEventListener(
-          "click",
-          () => {
-
-            mainNav.classList.remove("open");
-
-            menuButton.textContent = "☰";
-
-          }
-        );
-
-      });
-
-
-    /*
-      PRODUCTS
-    */
+    /* =========================
+       ELEMENTS
+    ========================= */
 
     const productsGrid =
       document.getElementById("productsGrid");
@@ -848,13 +1128,288 @@
     const searchInput =
       document.getElementById("searchInput");
 
-    let products = [];
+    const showAllButton =
+      document.getElementById("showAllButton");
 
+    const categoryButtons =
+      document.querySelectorAll(".category-button");
+
+    const menuButton =
+      document.getElementById("menuButton");
+
+    const mobileMenu =
+      document.getElementById("mobileMenu");
+
+
+    /* =========================
+       STATE
+    ========================= */
+
+    let allProducts = [];
+
+    let selectedCategory = "all";
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHTML(value) {
+
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+
+    /* =========================
+       PRODUCT NAME
+    ========================= */
+
+    function getProductName(product) {
+
+      return (
+        product.name ||
+        product.title ||
+        "Product"
+      );
+    }
+
+
+    /* =========================
+       PRODUCT CATEGORY
+    ========================= */
+
+    function getProductCategory(product) {
+
+      return String(
+        product.category || "Other"
+      ).trim();
+    }
+
+
+    /* =========================
+       PRODUCT IMAGE
+    ========================= */
+
+    function getProductImage(product) {
+
+      if (product.image_url) {
+        return product.image_url;
+      }
+
+      if (product.image) {
+        return product.image;
+      }
+
+      if (
+        Array.isArray(product.images) &&
+        product.images.length > 0
+      ) {
+        return product.images[0];
+      }
+
+      if (
+        typeof product.images === "string" &&
+        product.images.trim()
+      ) {
+
+        try {
+
+          const parsed =
+            JSON.parse(product.images);
+
+          if (
+            Array.isArray(parsed) &&
+            parsed.length > 0
+          ) {
+            return parsed[0];
+          }
+
+        } catch {
+
+          return product.images;
+        }
+      }
+
+      return "";
+    }
+
+
+    /* =========================
+       PRODUCT PRICE
+    ========================= */
+
+    function getProductPrice(product) {
+
+      const price =
+        Number(product.price);
+
+      if (!Number.isFinite(price)) {
+        return "0.00 SEK";
+      }
+
+      return (
+        price.toFixed(2) +
+        " SEK"
+      );
+    }
+
+
+    /* =========================
+       RENDER PRODUCTS
+    ========================= */
+
+    function renderProducts(products) {
+
+      if (!products.length) {
+
+        productsGrid.innerHTML = `
+          <div class="empty-products">
+            No products found.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      productsGrid.innerHTML =
+        products.map(product => {
+
+          const id =
+            encodeURIComponent(
+              product.id
+            );
+
+          const name =
+            getProductName(product);
+
+          const category =
+            getProductCategory(product);
+
+          const image =
+            getProductImage(product);
+
+
+          const imageHTML = image
+            ? `
+              <img
+                class="product-image"
+                src="${escapeHTML(image)}"
+                alt="${escapeHTML(name)}"
+                loading="lazy"
+                onerror="this.style.display='none'"
+              >
+            `
+            : `
+              <div
+                class="product-image"
+                style="
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  color:#777;
+                "
+              >
+                No image
+              </div>
+            `;
+
+
+          return `
+            <article class="product-card">
+
+              ${imageHTML}
+
+              <div class="product-content">
+
+                <div class="product-category">
+                  ${escapeHTML(category)}
+                </div>
+
+                <div class="product-name">
+                  ${escapeHTML(name)}
+                </div>
+
+                <div class="product-price">
+                  ${getProductPrice(product)}
+                </div>
+
+                <a
+                  class="view-product"
+                  href="product-details.html?id=${id}"
+                >
+                  View Product
+                </a>
+
+              </div>
+
+            </article>
+          `;
+
+        }).join("");
+    }
+
+
+    /* =========================
+       FILTER PRODUCTS
+    ========================= */
+
+    function filterProducts() {
+
+      const search =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+
+      const filtered =
+        allProducts.filter(product => {
+
+          const name =
+            getProductName(product)
+              .toLowerCase();
+
+          const category =
+            getProductCategory(product)
+              .toLowerCase();
+
+
+          const matchesSearch =
+            !search ||
+            name.includes(search) ||
+            category.includes(search);
+
+
+          const matchesCategory =
+            selectedCategory === "all" ||
+            category ===
+              selectedCategory.toLowerCase();
+
+
+          return (
+            matchesSearch &&
+            matchesCategory
+          );
+        });
+
+
+      renderProducts(filtered);
+    }
+
+
+    /* =========================
+       LOAD PRODUCTS
+    ========================= */
 
     async function loadProducts() {
 
       productsGrid.innerHTML = `
-        <div class="no-products">
+        <div class="loading">
           Loading products...
         </div>
       `;
@@ -868,9 +1423,12 @@
         } = await supabase
           .from("products")
           .select("*")
-          .order("created_at", {
-            ascending: false
-          });
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
 
 
         if (error) {
@@ -878,11 +1436,9 @@
         }
 
 
-        products = data || [];
+        allProducts = data || [];
 
-
-        renderProducts(products);
-
+        renderProducts(allProducts);
 
       } catch (error) {
 
@@ -893,371 +1449,165 @@
 
 
         productsGrid.innerHTML = `
-          <div class="no-products">
-            Could not load products.
+          <div class="empty-products">
+            <strong>
+              Could not load products.
+            </strong>
+            <br><br>
+            Please try again later.
           </div>
         `;
-
       }
-
     }
 
 
-    /*
-      GET PRODUCT IMAGE
-    */
-
-    function getProductImage(product) {
-
-      if (
-        product.image_url &&
-        typeof product.image_url === "string"
-      ) {
-
-        return product.image_url;
-
-      }
-
-
-      if (
-        product.image &&
-        typeof product.image === "string"
-      ) {
-
-        return product.image;
-
-      }
-
-
-      if (
-        Array.isArray(product.images) &&
-        product.images.length > 0
-      ) {
-
-        return product.images[0];
-
-      }
-
-
-      return "https://via.placeholder.com/600x600?text=E%26B+MARKETIZA";
-
-    }
-
-
-    /*
-      GET PRODUCT CATEGORY
-    */
-
-    function getCategory(product) {
-
-      return String(
-        product.category ||
-        "other"
-      ).toLowerCase();
-
-    }
-
-
-    /*
-      GET PRODUCT NAME
-    */
-
-    function getName(product) {
-
-      return (
-        product.name ||
-        product.title ||
-        "Product"
-      );
-
-    }
-
-
-    /*
-      GET PRODUCT PRICE
-    */
-
-    function getPrice(product) {
-
-      const price =
-        Number(product.price);
-
-      if (
-        !Number.isFinite(price)
-      ) {
-
-        return "0 SEK";
-
-      }
-
-      return (
-        price.toLocaleString(
-          "sv-SE",
-          {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-          }
-        ) + " SEK"
-      );
-
-    }
-
-
-    /*
-      RENDER PRODUCTS
-    */
-
-    function renderProducts(list) {
-
-      if (!list.length) {
-
-        productsGrid.innerHTML = `
-          <div class="no-products">
-            No products found.
-          </div>
-        `;
-
-        return;
-
-      }
-
-
-      productsGrid.innerHTML = "";
-
-
-      list.forEach(product => {
-
-        const card =
-          document.createElement("article");
-
-        card.className =
-          "product-card";
-
-        card.dataset.category =
-          getCategory(product);
-
-
-        const image =
-          document.createElement("img");
-
-        image.className =
-          "product-image";
-
-        image.src =
-          getProductImage(product);
-
-        image.alt =
-          getName(product);
-
-        image.loading =
-          "lazy";
-
-
-        const content =
-          document.createElement("div");
-
-        content.className =
-          "product-content";
-
-
-        const name =
-          document.createElement("div");
-
-        name.className =
-          "product-name";
-
-        name.textContent =
-          getName(product);
-
-
-        const category =
-          document.createElement("div");
-
-        category.className =
-          "product-category";
-
-        category.textContent =
-          getCategory(product);
-
-
-        const price =
-          document.createElement("div");
-
-        price.className =
-          "product-price";
-
-        price.textContent =
-          getPrice(product);
-
-
-        const button =
-          document.createElement("button");
-
-        button.type =
-          "button";
-
-        button.className =
-          "view-button";
-
-        button.textContent =
-          "View Product";
-
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            const id =
-              product.id;
-
-            if (id) {
-
-              window.location.href =
-                `product-details.html?id=${encodeURIComponent(id)}`;
-
-            } else {
-
-              window.location.href =
-                "products.html";
-
+    /* =========================
+       SEARCH
+    ========================= */
+
+    searchInput.addEventListener(
+      "input",
+      filterProducts
+    );
+
+
+    /* =========================
+       CATEGORIES
+    ========================= */
+
+    categoryButtons.forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          categoryButtons.forEach(
+            item => {
+              item.classList.remove(
+                "active"
+              );
             }
+          );
 
+
+          button.classList.add(
+            "active"
+          );
+
+
+          selectedCategory =
+            button.dataset.category ||
+            "all";
+
+
+          filterProducts();
+        }
+      );
+
+    });
+
+
+    /* =========================
+       SHOW ALL
+    ========================= */
+
+    showAllButton.addEventListener(
+      "click",
+      () => {
+
+        searchInput.value = "";
+
+        selectedCategory = "all";
+
+
+        categoryButtons.forEach(
+          button => {
+            button.classList.remove(
+              "active"
+            );
           }
         );
 
 
-        content.appendChild(name);
-
-        content.appendChild(category);
-
-        content.appendChild(price);
-
-        content.appendChild(button);
+        const allButton =
+          document.querySelector(
+            '[data-category="all"]'
+          );
 
 
-        card.appendChild(image);
-
-        card.appendChild(content);
-
-
-        productsGrid.appendChild(card);
-
-      });
-
-    }
-
-
-    /*
-      SEARCH
-    */
-
-    searchInput.addEventListener(
-      "input",
-      () => {
-
-        const query =
-          searchInput.value
-            .trim()
-            .toLowerCase();
-
-
-        if (!query) {
-
-          renderProducts(products);
-
-          return;
-
+        if (allButton) {
+          allButton.classList.add(
+            "active"
+          );
         }
 
 
-        const filtered =
-          products.filter(product => {
-
-            const name =
-              getName(product)
-                .toLowerCase();
-
-            const category =
-              getCategory(product)
-                .toLowerCase();
-
-
-            return (
-              name.includes(query) ||
-              category.includes(query)
-            );
-
-          });
-
-
-        renderProducts(filtered);
-
+        renderProducts(
+          allProducts
+        );
       }
     );
 
 
-    /*
-      CATEGORY FILTER
-    */
+    /* =========================
+       MOBILE MENU
+    ========================= */
 
-    document
-      .querySelectorAll(".category-button")
-      .forEach(button => {
+    menuButton.addEventListener(
+      "click",
+      () => {
 
-        button.addEventListener(
+        const isOpen =
+          mobileMenu.classList.toggle(
+            "open"
+          );
+
+
+        menuButton.setAttribute(
+          "aria-expanded",
+          String(isOpen)
+        );
+
+
+        menuButton.textContent =
+          isOpen ? "✕" : "☰";
+      }
+    );
+
+
+    /* =========================
+       CLOSE MOBILE MENU
+       AFTER LINK CLICK
+    ========================= */
+
+    mobileMenu
+      .querySelectorAll("a")
+      .forEach(link => {
+
+        link.addEventListener(
           "click",
           () => {
 
-            document
-              .querySelectorAll(
-                ".category-button"
-              )
-              .forEach(item => {
-
-                item.classList.remove(
-                  "active"
-                );
-
-              });
-
-
-            button.classList.add(
-              "active"
+            mobileMenu.classList.remove(
+              "open"
             );
 
+            menuButton.setAttribute(
+              "aria-expanded",
+              "false"
+            );
 
-            const category =
-              button.dataset.category;
-
-
-            if (category === "all") {
-
-              renderProducts(products);
-
-              return;
-
-            }
-
-
-            const filtered =
-              products.filter(
-                product =>
-                  getCategory(product) ===
-                  category
-              );
-
-
-            renderProducts(filtered);
-
+            menuButton.textContent =
+              "☰";
           }
         );
 
       });
 
 
-    /*
-      START
-    */
+    /* =========================
+       START
+    ========================= */
 
     loadProducts();
 
@@ -1265,3 +1615,4 @@
 
 </body>
 </html>
+

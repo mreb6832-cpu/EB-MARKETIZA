@@ -46,11 +46,14 @@ export default async function handler(req, res) {
       return {
         price_data: {
           currency: "sek",
+
           product_data: {
             name: name
           },
+
           unit_amount: Math.round(price * 100)
         },
+
         quantity: quantity
       };
     });
@@ -58,6 +61,11 @@ export default async function handler(req, res) {
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+
+      // Disable Stripe Managed Payments
+      managed_payments: {
+        enabled: false
+      },
 
       line_items: line_items,
 
@@ -68,7 +76,7 @@ export default async function handler(req, res) {
         "https://mreb6832-cpu.github.io/EB-MARKETIZA/payment.html?canceled=true"
     });
 
-    // Return JSON to frontend
+    // Return JSON
     return res.status(200).json({
       success: true,
       url: session.url,

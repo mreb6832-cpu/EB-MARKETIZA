@@ -736,6 +736,37 @@
         height: 210px;
       }
     }
+    /* =========================
+       RUMBLE VIDEO
+    ========================= */
+
+    .rumble-section {
+      width: 100%;
+      background: #fff;
+      padding: 60px 20px;
+    }
+
+    .rumble-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .rumble-inner h2 {
+      font-size: 30px;
+      margin-bottom: 25px;
+    }
+
+    .rumble-video {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #000;
+    }
+
+    .rumble-video > div {
+      width: 100%;
+    }
+
   </style>
 </head>
 
@@ -922,6 +953,48 @@
 
     </section>
 
+
+    <!-- =========================
+         RUMBLE VIDEO
+    ========================= -->
+
+    <section class="rumble-section">
+      <div class="rumble-inner">
+
+        <h2>Featured Video</h2>
+
+        <div class="rumble-video">
+          <div id="rumble_v7e565k"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <script>
+      !function(r,u,m,b,l,e){
+        r._Rumble=b,
+        r[b]||(r[b]=function(){
+          (r[b]._=r[b]._||[]).push(arguments);
+          if(r[b]._.length==1){
+            l=u.createElement(m),
+            e=u.getElementsByTagName(m)[0],
+            l.async=1,
+            l.src="https://rumble.com/embedJS/u4pm1om"+
+              (arguments[1].video?'.'+arguments[1].video:'')+
+              "/?url="+encodeURIComponent(location.href)+
+              "&args="+encodeURIComponent(
+                JSON.stringify([].slice.apply(arguments))
+              ),
+            e.parentNode.insertBefore(l,e)
+          }
+        })
+      }(window,document,"script","Rumble");
+
+      Rumble("play", {
+        "video":"v7e565k",
+        "div":"rumble_v7e565k"
+      });
+    </script>
 
     <!-- =========================
          CATEGORIES
@@ -1615,4 +1688,3 @@
 
 </body>
 </html>
-```

@@ -1,525 +1,2046 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Products | EB MARKETIZA</title>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <!-- =========================
+       GOOGLE SEARCH CONSOLE
+       DON'T REMOVE
+  ========================= -->
+  <meta
+    name="google-site-verification"
+    content="w1xjlGEr733FoAZAauHPqOYr5VTdH4t9pbAeVH5VR0s"
+  >
+
+  <!-- =========================
+       SEO
+  ========================= -->
+
+  <title>
+    Shop Clothing & Fashion | E&B MARKETIZA
+  </title>
+
+  <meta
+    name="description"
+    content="Shop clothing and fashion online at E&B MARKETIZA. Discover stylish clothing products with prices in SEK and a simple shopping experience in Sweden."
+  >
+
+  <meta
+    name="keywords"
+    content="online clothing store Sweden, clothes Sweden, fashion Sweden, clothing online, buy clothes online, fashion products, SEK clothing"
+  >
+
+  <meta
+    name="robots"
+    content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+  >
+
+  <meta
+    name="author"
+    content="E&B MARKETIZA"
+  >
+
+  <meta
+    name="language"
+    content="English"
+  >
+
+  <meta
+    name="revisit-after"
+    content="7 days"
+  >
+
+  <!-- Canonical -->
+  <link
+    rel="canonical"
+    href="https://ebmarketiza.vercel.app/products.html"
+  >
+
+  <!-- =========================
+       OPEN GRAPH
+  ========================= -->
+
+  <meta
+    property="og:type"
+    content="website"
+  >
+
+  <meta
+    property="og:site_name"
+    content="E&B MARKETIZA"
+  >
+
+  <meta
+    property="og:title"
+    content="Shop Clothing & Fashion | E&B MARKETIZA"
+  >
+
+  <meta
+    property="og:description"
+    content="Discover clothing and fashion products at E&B MARKETIZA. Shop online in Sweden with prices displayed in SEK."
+  >
+
+  <meta
+    property="og:url"
+    content="https://ebmarketiza.vercel.app/products.html"
+  >
+
+  <meta
+    property="og:locale"
+    content="en_SE"
+  >
+
+  <!-- =========================
+       TWITTER / X
+  ========================= -->
+
+  <meta
+    name="twitter:card"
+    content="summary_large_image"
+  >
+
+  <meta
+    name="twitter:title"
+    content="Shop Clothing & Fashion | E&B MARKETIZA"
+  >
+
+  <meta
+    name="twitter:description"
+    content="Shop clothing and fashion online at E&B MARKETIZA in Sweden. Prices displayed in SEK."
+  >
+
+  <meta
+    name="theme-color"
+    content="#050505"
+  >
+
+  <!-- =========================
+       STRUCTURED DATA
+  ========================= -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Shop Clothing & Fashion",
+    "url": "https://ebmarketiza.vercel.app/products.html",
+    "description": "Browse clothing and fashion products available at E&B MARKETIZA.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "E&B MARKETIZA",
+      "url": "https://ebmarketiza.vercel.app/"
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "Clothing and Fashion"
+    },
+    "inLanguage": "en-SE"
+  }
+  </script>
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      color: #111827;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff;
+      color: #111;
+      min-height: 100vh;
     }
 
-    nav {
-      background: #111827;
-      color: white;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    nav a {
-      color: white;
+    a {
       text-decoration: none;
-      margin-left: 15px;
+      color: inherit;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 30px auto;
-      padding: 20px;
+    button,
+    input {
+      font: inherit;
     }
 
-    .top {
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+
+      background: #050505;
+      color: #fff;
+
+      border-bottom: 1px solid #222;
+    }
+
+    .header-main {
+      width: 100%;
+      max-width: 1250px;
+      min-height: 70px;
+
+      margin: 0 auto;
+      padding: 12px 20px;
+
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 15px;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-    }
-
-    .top h1 {
-      font-size: 30px;
-    }
-
-    .filters {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    input,
-    select {
-      padding: 11px 13px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background: white;
-      font-size: 15px;
-    }
-
-    #resultCount {
-      color: #6b7280;
-      margin-bottom: 20px;
-    }
-
-    .products {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
     }
 
-    .card {
-      background: white;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 4px 18px rgba(0,0,0,.07);
-      cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
+    .logo {
+      flex-shrink: 0;
+
+      font-size: 22px;
+      font-weight: 900;
+
+      letter-spacing: -0.5px;
+      white-space: nowrap;
     }
 
-    .card:hover {
+    .logo span {
+      color: #00d084;
+    }
+
+    /* Search */
+
+    .search-area {
+      flex: 1;
+      max-width: 520px;
+      margin-left: auto;
+    }
+
+    .search-area input {
+      width: 100%;
+      height: 42px;
+
+      padding: 0 15px;
+
+      background: #111;
+      color: #fff;
+
+      border: 1px solid #333;
+      border-radius: 8px;
+
+      outline: none;
+    }
+
+    .search-area input::placeholder {
+      color: #999;
+    }
+
+    .search-area input:focus {
+      border-color: #00d084;
+    }
+
+    /* Login / Register */
+
+    .desktop-auth {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      flex-shrink: 0;
+    }
+
+    .auth-link {
+      min-height: 40px;
+
+      padding: 10px 15px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 7px;
+      border: 1px solid #00d084;
+
+      font-size: 14px;
+      font-weight: 700;
+
+      transition: 0.2s ease;
+    }
+
+    .login-link {
+      color: #00d084;
+      background: transparent;
+    }
+
+    .register-link {
+      color: #000;
+      background: #00d084;
+    }
+
+    .auth-link:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    /* Mobile button */
+
+    .menu-button {
+      display: none;
+
+      width: 42px;
+      height: 42px;
+
+      border: 1px solid #333;
+      border-radius: 8px;
+
+      background: #111;
+      color: #fff;
+
+      font-size: 23px;
+      cursor: pointer;
+    }
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    .desktop-nav {
+      background: #0b0b0b;
+      border-top: 1px solid #1c1c1c;
+    }
+
+    .nav-inner {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 0 20px;
+
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-list {
+      list-style: none;
+
+      display: flex;
+      align-items: center;
+      gap: 25px;
+
+      min-height: 46px;
+    }
+
+    .nav-list a {
+      color: #d7d7d7;
+
+      font-size: 14px;
+      font-weight: 700;
+
+      transition: 0.2s ease;
+    }
+
+    .nav-list a:hover {
+      color: #00d084;
+    }
+
+    /* =========================
+       MOBILE MENU
+    ========================= */
+
+    .mobile-menu {
+      display: none;
+
+      background: #080808;
+
+      border-top: 1px solid #222;
+
+      padding: 10px 20px 20px;
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+
+      padding: 14px 0;
+
+      color: #fff;
+      font-weight: 700;
+
+      border-bottom: 1px solid #222;
+    }
+
+    .mobile-menu a:hover {
+      color: #00d084;
+    }
+
+    .mobile-auth {
+      display: flex;
+      gap: 10px;
+
+      padding-top: 15px;
+    }
+
+    .mobile-auth a {
+      width: 50%;
+
+      text-align: center;
+
+      border: 1px solid #00d084;
+      border-radius: 7px;
+
+      padding: 11px 10px;
+    }
+
+    .mobile-auth .mobile-register {
+      background: #00d084;
+      color: #000;
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      background: #f4f4f4;
+      padding: 75px 20px;
+    }
+
+    .hero-inner {
+      max-width: 1250px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      max-width: 850px;
+
+      font-size: clamp(48px, 8vw, 88px);
+      line-height: 0.92;
+
+      letter-spacing: -4px;
+
+      margin-bottom: 25px;
+    }
+
+    .hero h1 span {
+      color: #00b871;
+    }
+
+    .hero p {
+      max-width: 650px;
+
+      color: #555;
+
+      font-size: 18px;
+      line-height: 1.65;
+
+      margin-bottom: 30px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 48px;
+
+      padding: 13px 20px;
+
+      border-radius: 8px;
+
+      font-weight: 800;
+
+      transition: 0.2s ease;
+    }
+
+    .hero-primary {
+      background: #00d084;
+      color: #000;
+    }
+
+    .hero-secondary {
+      background: #111;
+      color: #fff;
+    }
+
+    .hero-button:hover {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
+    /* =========================
+       GENERAL SECTION
+    ========================= */
+
+    .section {
+      width: 100%;
+      max-width: 1250px;
+
+      margin: 0 auto;
+
+      padding: 60px 20px;
+    }
+
+    .section-title {
+      font-size: 30px;
+      margin-bottom: 25px;
+    }
+
+    /* =========================
+       CATEGORIES
+    ========================= */
+
+    .categories {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 15px;
+    }
+
+    .category-button {
+      min-height: 110px;
+
+      padding: 20px;
+
+      border: 1px solid #ddd;
+      border-radius: 11px;
+
+      background: #fff;
+      color: #111;
+
+      text-align: center;
+
+      cursor: pointer;
+
+      transition: 0.2s ease;
+    }
+
+    .category-button:hover,
+    .category-button.active {
+      border-color: #00d084;
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .category-button strong {
+      display: block;
+
+      margin-bottom: 8px;
+
+      font-size: 16px;
+    }
+
+    .category-button small {
+      color: #777;
+    }
+
+    /* =========================
+       PRODUCTS
+    ========================= */
+
+    .products-heading {
+      display: flex;
+
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 15px;
+
+      margin-bottom: 25px;
+    }
+
+    .products-heading .section-title {
+      margin: 0;
+    }
+
+    .show-all-button {
+      padding: 10px 14px;
+
+      background: #fff;
+      color: #111;
+
+      border: 1px solid #ccc;
+      border-radius: 7px;
+
+      cursor: pointer;
+
+      font-weight: 700;
+    }
+
+    .show-all-button:hover {
+      border-color: #00d084;
+    }
+
+    .products-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 20px;
+    }
+
+    .product-card {
+      overflow: hidden;
+
+      background: #fff;
+
+      border: 1px solid #e1e1e1;
+      border-radius: 12px;
+
+      transition: 0.2s ease;
+    }
+
+    .product-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0,0,0,.12);
+
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
     .product-image {
       width: 100%;
-      height: 230px;
-      object-fit: contain;
-      background: #f3f4f6;
+      height: 220px;
+
+      display: block;
+
+      object-fit: cover;
+
+      background: #f1f1f1;
     }
 
-    .card-body {
+    .product-content {
       padding: 16px;
     }
 
-    .category {
-      display: inline-block;
-      background: #e5edff;
-      color: #2563eb;
-      padding: 5px 9px;
-      border-radius: 15px;
-      font-size: 12px;
+    .product-category {
+      margin-bottom: 7px;
+
+      color: #00a866;
+
+      font-size: 11px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.5px;
+    }
+
+    .product-name {
+      min-height: 42px;
+
+      font-size: 17px;
+      font-weight: 800;
+
+      line-height: 1.3;
+
       margin-bottom: 10px;
     }
 
-    .name {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
+    .product-price {
+      margin-bottom: 14px;
 
-    .price {
-      color: #2563eb;
       font-size: 19px;
-      font-weight: bold;
-      margin-bottom: 8px;
+      font-weight: 900;
     }
 
-    .stock {
-      color: #6b7280;
+    .view-product {
+      width: 100%;
+      min-height: 42px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      background: #111;
+      color: #fff;
+
+      border-radius: 7px;
+
       font-size: 14px;
+      font-weight: 800;
     }
 
-    .empty,
-    .error {
-      background: white;
-      padding: 50px 20px;
-      border-radius: 14px;
-      text-align: center;
+    .view-product:hover {
+      background: #00d084;
+      color: #000;
+    }
+
+    .loading,
+    .empty-products {
       grid-column: 1 / -1;
+
+      padding: 50px 20px;
+
+      text-align: center;
+
+      color: #666;
     }
 
-    .error {
-      color: #dc2626;
+    /* =========================
+       FEATURES
+    ========================= */
+
+    .features-section {
+      background: #050505;
+      color: #fff;
     }
 
-    @media (max-width: 1000px) {
-      .products {
-        grid-template-columns: repeat(3, 1fr);
+    .features-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 20px;
+    }
+
+    .feature-card {
+      padding: 25px;
+
+      border: 1px solid #292929;
+      border-radius: 11px;
+    }
+
+    .feature-card h3 {
+      color: #00d084;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      background: #050505;
+      color: #999;
+
+      border-top: 1px solid #222;
+
+      padding: 30px 20px;
+    }
+
+    .footer-inner {
+      max-width: 1250px;
+
+      margin: 0 auto;
+
+      display: flex;
+
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+
+      gap: 18px;
+
+      flex-wrap: wrap;
+    }
+
+    .footer-links a:hover {
+      color: #00d084;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 1050px) {
+
+      .products-grid {
+        grid-template-columns:
+          repeat(3, 1fr);
       }
+
+      .categories {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
     }
 
-    @media (max-width: 700px) {
-      .products {
-        grid-template-columns: repeat(2, 1fr);
+    @media (max-width: 800px) {
+
+      .header-main {
+        min-height: 64px;
+
+        padding: 10px 15px;
+      }
+
+      .logo {
+        font-size: 19px;
+      }
+
+      .search-area,
+      .desktop-auth,
+      .desktop-nav {
+        display: none;
+      }
+
+      .menu-button {
+        display: block;
+
+        margin-left: auto;
+      }
+
+      .hero {
+        padding: 55px 15px;
+      }
+
+      .hero h1 {
+        font-size:
+          clamp(46px, 15vw, 72px);
+
+        letter-spacing: -3px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .section {
+        padding: 45px 15px;
+      }
+
+      .products-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+
+        gap: 13px;
       }
 
       .product-image {
-        height: 190px;
+        height: 175px;
       }
 
-      nav {
-        flex-direction: column;
-        gap: 12px;
+      .product-content {
+        padding: 12px;
       }
-    }
 
-    @media (max-width: 450px) {
-      .products {
+      .product-name {
+        font-size: 15px;
+      }
+
+      .product-price {
+        font-size: 17px;
+      }
+
+      .features-grid {
         grid-template-columns: 1fr;
       }
+
     }
+
+    @media (max-width: 500px) {
+
+      .categories {
+        grid-template-columns:
+          repeat(2, 1fr);
+
+        gap: 10px;
+      }
+
+      .category-button {
+        min-height: 95px;
+
+        padding: 15px 8px;
+      }
+
+      .products-heading {
+        align-items: flex-start;
+
+        flex-direction: column;
+      }
+
+      .products-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .product-image {
+        height: 155px;
+      }
+
+      .product-content {
+        padding: 10px;
+      }
+
+      .product-category {
+        font-size: 10px;
+      }
+
+      .product-name {
+        font-size: 14px;
+
+        min-height: 38px;
+      }
+
+      .product-price {
+        font-size: 16px;
+
+        margin-bottom: 10px;
+      }
+
+      .view-product {
+        min-height: 38px;
+
+        font-size: 13px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .hero-button {
+        width: 100%;
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+
+        flex-direction: column;
+      }
+
+    }
+
+    @media (max-width: 360px) {
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-image {
+        height: 210px;
+      }
+
+    }
+
   </style>
+
 </head>
 
 <body>
 
-<nav>
+  <!-- =========================
+       HEADER
+  ========================= -->
 
-  <div class="logo">
-    EB MARKETIZA
-  </div>
+  <header>
 
-  <div>
-    <a href="index.html">Home</a>
-    <a href="products.html">Products</a>
-    <a href="cart.html">Cart 🛒</a>
-    <a href="account.html">Account</a>
-  </div>
+    <div class="header-main">
 
-</nav>
-
-
-<div class="container">
-
-  <div class="top">
-
-    <h1>Products</h1>
-
-    <div class="filters">
-
-      <input
-        type="search"
-        id="productSearch"
-        placeholder="Search products..."
+      <a
+        href="index.html"
+        class="logo"
       >
+        E&B <span>MARKETIZA</span>
+      </a>
 
-      <select id="categoryFilter">
+      <div class="search-area">
 
-        <option value="">
-          All Categories
-        </option>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search clothing..."
+          autocomplete="off"
+          aria-label="Search clothing products"
+        >
 
-      </select>
+      </div>
+
+      <!-- Desktop Login/Register -->
+
+      <div class="desktop-auth">
+
+        <a
+          href="login.html"
+          class="auth-link login-link"
+        >
+          Login
+        </a>
+
+        <a
+          href="register.html"
+          class="auth-link register-link"
+        >
+          Register
+        </a>
+
+      </div>
+
+      <!-- Mobile menu button -->
+
+      <button
+        id="menuButton"
+        class="menu-button"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
 
     </div>
 
-  </div>
+    <!-- Desktop Navigation -->
 
+    <nav class="desktop-nav">
 
-  <div id="resultCount"></div>
+      <div class="nav-inner">
 
+        <ul class="nav-list">
 
-  <div
-    id="productGrid"
-    class="products"
-  ></div>
+          <li>
+            <a href="index.html">
+              Home
+            </a>
+          </li>
 
-</div>
+          <li>
+            <a href="products.html">
+              Products
+            </a>
+          </li>
 
+          <li>
+            <a href="about.html">
+              About
+            </a>
+          </li>
 
-<script type="module">
+          <li>
+            <a href="contact.html">
+              Contact
+            </a>
+          </li>
 
-import { supabase } from "./supabaseClient.js";
+          <li>
+            <a href="orders.html">
+              Orders
+            </a>
+          </li>
 
+          <li>
+            <a href="cart.html">
+              Cart
+            </a>
+          </li>
 
-const productGrid =
-  document.getElementById("productGrid");
+          <li>
+            <a href="account.html">
+              Account
+            </a>
+          </li>
 
-const productSearch =
-  document.getElementById("productSearch");
+        </ul>
 
-const categoryFilter =
-  document.getElementById("categoryFilter");
-
-const resultCount =
-  document.getElementById("resultCount");
-
-
-let products = [];
-
-
-/* =========================
-   LOAD PRODUCTS
-========================= */
-
-async function loadProducts() {
-
-  const {
-    data,
-    error
-  } = await supabase
-    .from("products")
-    .select(`
-      id,
-      name,
-      description,
-      price,
-      category,
-      stock,
-      image,
-      created_at
-    `)
-    .order("created_at", {
-      ascending: false
-    });
-
-
-  if (error) {
-
-    console.error(error);
-
-    productGrid.innerHTML = `
-      <div class="error">
-        Could not load products.
-        <br><br>
-        ${escapeHtml(error.message)}
       </div>
-    `;
 
-    resultCount.textContent = "";
+    </nav>
 
-    return;
-  }
+    <!-- Mobile Navigation -->
 
+    <div
+      id="mobileMenu"
+      class="mobile-menu"
+    >
 
-  products = data || [];
+      <a href="index.html">
+        Home
+      </a>
 
-  createCategories();
+      <a href="products.html">
+        Products
+      </a>
 
-  renderProducts();
-}
+      <a href="about.html">
+        About
+      </a>
 
+      <a href="contact.html">
+        Contact
+      </a>
 
-/* =========================
-   CATEGORIES
-========================= */
+      <a href="orders.html">
+        Orders
+      </a>
 
-function createCategories() {
+      <a href="cart.html">
+        Cart
+      </a>
 
-  const categories = [
-    ...new Set(
-      products
-        .map(product => product.category)
-        .filter(Boolean)
-    )
-  ].sort();
+      <a href="account.html">
+        Account
+      </a>
 
+      <div class="mobile-auth">
 
-  categoryFilter.innerHTML = `
-    <option value="">
-      All Categories
-    </option>
-  `;
-
-
-  categories.forEach(category => {
-
-    const option =
-      document.createElement("option");
-
-    option.value = category;
-    option.textContent = category;
-
-    categoryFilter.appendChild(option);
-  });
-}
-
-
-/* =========================
-   RENDER PRODUCTS
-========================= */
-
-function renderProducts() {
-
-  const search =
-    productSearch.value
-      .trim()
-      .toLowerCase();
-
-  const category =
-    categoryFilter.value;
-
-
-  const filtered =
-    products.filter(product => {
-
-      const matchesSearch =
-        !search ||
-        product.name
-          .toLowerCase()
-          .includes(search) ||
-        (product.description || "")
-          .toLowerCase()
-          .includes(search);
-
-
-      const matchesCategory =
-        !category ||
-        product.category === category;
-
-
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
-    });
-
-
-  resultCount.textContent =
-    `${filtered.length} product${filtered.length === 1 ? "" : "s"}`;
-
-
-  if (filtered.length === 0) {
-
-    productGrid.innerHTML = `
-      <div class="empty">
-        <h2>No products found</h2>
-        <p>
-          Try another search or category.
-        </p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  productGrid.innerHTML =
-    filtered.map(product => {
-
-      const image =
-        product.image || "";
-
-
-      const stock =
-        Number(product.stock || 0);
-
-
-      return `
-
-        <div
-          class="card"
-          onclick="openProduct(${product.id})"
+        <a
+          href="login.html"
+          class="mobile-login"
         >
+          Login
+        </a>
 
-          <img
-            class="product-image"
-            src="${escapeHtml(image)}"
-            alt="${escapeHtml(product.name)}"
-            onerror="this.style.display='none'"
+        <a
+          href="register.html"
+          class="mobile-register"
+        >
+          Register
+        </a>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN
+  ========================= -->
+
+  <main>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+      <div class="hero-inner">
+
+        <h1>
+          SHOP.<br>
+          <span>FASHION.</span><br>
+          EASY.
+        </h1>
+
+        <p>
+          Discover clothing and fashion
+          products at E&B MARKETIZA.
+          Shop online in Sweden with
+          prices displayed in SEK.
+        </p>
+
+        <div class="hero-buttons">
+
+          <a
+            href="#products"
+            class="hero-button hero-primary"
           >
+            Shop Clothing
+          </a>
+
+          <a
+            href="register.html"
+            class="hero-button hero-secondary"
+          >
+            Create Account
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
 
 
-          <div class="card-body">
+    <!-- =========================
+         CATEGORIES
+    ========================= -->
 
-            ${
-              product.category
-              ? `
-                <span class="category">
-                  ${escapeHtml(product.category)}
-                </span>
-              `
-              : ""
-            }
+    <section class="section">
+
+      <h2 class="section-title">
+        Clothing Categories
+      </h2>
+
+      <div class="categories">
+
+        <button
+          class="category-button active"
+          data-category="all"
+          type="button"
+        >
+          <strong>
+            All Clothing
+          </strong>
+
+          <small>
+            View everything
+          </small>
+        </button>
+
+        <button
+          class="category-button"
+          data-category="fashion"
+          type="button"
+        >
+          <strong>
+            Fashion
+          </strong>
+
+          <small>
+            Clothing & style
+          </small>
+        </button>
+
+        <button
+          class="category-button"
+          data-category="men"
+          type="button"
+        >
+          <strong>
+            Men
+          </strong>
+
+          <small>
+            Men's clothing
+          </small>
+        </button>
+
+        <button
+          class="category-button"
+          data-category="women"
+          type="button"
+        >
+          <strong>
+            Women
+          </strong>
+
+          <small>
+            Women's clothing
+          </small>
+        </button>
+
+      </div>
+
+    </section>
 
 
-            <div class="name">
-              ${escapeHtml(product.name)}
-            </div>
+    <!-- =========================
+         PRODUCTS
+    ========================= -->
+
+    <section
+      class="section"
+      id="products"
+    >
+
+      <div class="products-heading">
+
+        <h2 class="section-title">
+          Latest Clothing
+        </h2>
+
+        <button
+          id="showAllButton"
+          class="show-all-button"
+          type="button"
+        >
+          Show All
+        </button>
+
+      </div>
+
+      <div
+        id="productsGrid"
+        class="products-grid"
+      >
+
+        <div class="loading">
+          Loading products...
+        </div>
+
+      </div>
+
+    </section>
 
 
-            <div class="price">
-              ${Number(product.price).toFixed(2)} SEK
-            </div>
+    <!-- =========================
+         FEATURES
+    ========================= -->
 
+    <section class="features-section">
 
-            <div class="stock">
-              ${
-                stock > 0
-                ? `${stock} in stock`
-                : "Out of stock"
-              }
-            </div>
+      <div class="section">
+
+        <div class="features-grid">
+
+          <div class="feature-card">
+
+            <h3>
+              Secure Shopping
+            </h3>
+
+            <p>
+              Shop clothing through a simple
+              and secure online shopping
+              experience.
+            </p>
+
+          </div>
+
+          <div class="feature-card">
+
+            <h3>
+              Easy Account
+            </h3>
+
+            <p>
+              Create an account and manage
+              your shopping experience from
+              your phone or computer.
+            </p>
+
+          </div>
+
+          <div class="feature-card">
+
+            <h3>
+              Sweden
+            </h3>
+
+            <p>
+              E&B MARKETIZA is designed for
+              customers in Sweden with prices
+              displayed in SEK.
+            </p>
 
           </div>
 
         </div>
 
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       FOOTER
+  ========================= -->
+
+  <footer>
+
+    <div class="footer-inner">
+
+      <div>
+        © 2026 E&B MARKETIZA
+      </div>
+
+      <div class="footer-links">
+
+        <a href="about.html">
+          About
+        </a>
+
+        <a href="contact.html">
+          Contact
+        </a>
+
+        <a href="login.html">
+          Login
+        </a>
+
+        <a href="register.html">
+          Register
+        </a>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- =========================
+       SUPABASE JAVASCRIPT
+       DON'T REMOVE
+  ========================= -->
+
+  <script type="module">
+
+    import {
+      supabase
+    } from "./supabaseClient.js";
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const productsGrid =
+      document.getElementById(
+        "productsGrid"
+      );
+
+    const searchInput =
+      document.getElementById(
+        "searchInput"
+      );
+
+    const showAllButton =
+      document.getElementById(
+        "showAllButton"
+      );
+
+    const categoryButtons =
+      document.querySelectorAll(
+        ".category-button"
+      );
+
+    const menuButton =
+      document.getElementById(
+        "menuButton"
+      );
+
+    const mobileMenu =
+      document.getElementById(
+        "mobileMenu"
+      );
+
+
+    /* =========================
+       VARIABLES
+    ========================= */
+
+    let allProducts = [];
+
+    let selectedCategory = "all";
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHTML(value) {
+
+      return String(value ?? "")
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    }
+
+
+    /* =========================
+       PRODUCT NAME
+    ========================= */
+
+    function getProductName(product) {
+
+      return (
+        product.name ||
+        product.title ||
+        "Product"
+      );
+
+    }
+
+
+    /* =========================
+       PRODUCT CATEGORY
+    ========================= */
+
+    function getProductCategory(product) {
+
+      return (
+        product.category ||
+        "Fashion"
+      );
+
+    }
+
+
+    /* =========================
+       PRODUCT IMAGE
+    ========================= */
+
+    function getProductImage(product) {
+
+      if (
+        product.image &&
+        typeof product.image === "string"
+      ) {
+
+        return product.image;
+
+      }
+
+
+      if (
+        Array.isArray(
+          product.images
+        ) &&
+        product.images.length > 0
+      ) {
+
+        return product.images[0];
+
+      }
+
+
+      if (
+        typeof product.images === "string" &&
+        product.images.trim()
+      ) {
+
+        try {
+
+          const parsed =
+            JSON.parse(
+              product.images
+            );
+
+          if (
+            Array.isArray(parsed) &&
+            parsed.length > 0
+          ) {
+
+            return parsed[0];
+
+          }
+
+        } catch {
+
+          return product.images;
+
+        }
+
+      }
+
+      return "";
+
+    }
+
+
+    /* =========================
+       PRODUCT PRICE
+    ========================= */
+
+    function getProductPrice(product) {
+
+      const price =
+        Number(product.price);
+
+      if (
+        !Number.isFinite(price)
+      ) {
+
+        return "0.00 SEK";
+
+      }
+
+      return (
+        price.toFixed(2) +
+        " SEK"
+      );
+
+    }
+
+
+    /* =========================
+       RENDER PRODUCTS
+    ========================= */
+
+    function renderProducts(
+      products
+    ) {
+
+      if (!products.length) {
+
+        productsGrid.innerHTML = `
+
+          <div class="empty-products">
+
+            <strong>
+              No clothing products found.
+            </strong>
+
+            <br><br>
+
+            Try another search
+            or category.
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      productsGrid.innerHTML =
+        products
+          .map(product => {
+
+            const id =
+              encodeURIComponent(
+                product.id
+              );
+
+            const name =
+              getProductName(
+                product
+              );
+
+            const category =
+              getProductCategory(
+                product
+              );
+
+            const image =
+              getProductImage(
+                product
+              );
+
+
+            const imageHTML = image
+
+              ? `
+
+                <img
+                  class="product-image"
+                  src="${escapeHTML(image)}"
+                  alt="${escapeHTML(name)} clothing"
+                  loading="lazy"
+                  onerror="this.style.display='none'"
+                >
+
+              `
+
+              : `
+
+                <div
+                  class="product-image"
+                  style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    color:#777;
+                  "
+                >
+                  No image
+                </div>
+
+              `;
+
+
+            return `
+
+              <article
+                class="product-card"
+                itemscope
+                itemtype="https://schema.org/Product"
+              >
+
+                ${imageHTML}
+
+                <div class="product-content">
+
+                  <div class="product-category">
+                    ${escapeHTML(category)}
+                  </div>
+
+                  <div
+                    class="product-name"
+                    itemprop="name"
+                  >
+                    ${escapeHTML(name)}
+                  </div>
+
+                  <div
+                    class="product-price"
+                    itemprop="offers"
+                    itemscope
+                    itemtype="https://schema.org/Offer"
+                  >
+
+                    <span
+                      itemprop="price"
+                      content="${Number(product.price) || 0}"
+                    >
+                      ${getProductPrice(product)}
+                    </span>
+
+                    <meta
+                      itemprop="priceCurrency"
+                      content="SEK"
+                    >
+
+                    <link
+                      itemprop="availability"
+                      href="https://schema.org/InStock"
+                    >
+
+                  </div>
+
+                  <a
+                    class="view-product"
+                    href="product-details.html?id=${id}"
+                    aria-label="View ${escapeHTML(name)}"
+                  >
+                    View Product
+                  </a>
+
+                </div>
+
+              </article>
+
+            `;
+
+          })
+          .join("");
+
+    }
+
+
+    /* =========================
+       FILTER PRODUCTS
+    ========================= */
+
+    function filterProducts() {
+
+      const search =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+
+      const filtered =
+        allProducts.filter(
+          product => {
+
+            const name =
+              getProductName(
+                product
+              )
+              .toLowerCase();
+
+            const category =
+              getProductCategory(
+                product
+              )
+              .toLowerCase();
+
+
+            const matchesSearch =
+              !search ||
+              name.includes(search) ||
+              category.includes(search);
+
+
+            const matchesCategory =
+              selectedCategory === "all" ||
+              category ===
+                selectedCategory.toLowerCase();
+
+
+            return (
+              matchesSearch &&
+              matchesCategory
+            );
+
+          }
+        );
+
+
+      renderProducts(
+        filtered
+      );
+
+    }
+
+
+    /* =========================
+       LOAD PRODUCTS
+       SUPABASE
+    ========================= */
+
+    async function loadProducts() {
+
+      productsGrid.innerHTML = `
+
+        <div class="loading">
+          Loading products...
+        </div>
+
       `;
 
-    }).join("");
-}
+
+      try {
+
+        const {
+          data,
+          error
+        } = await supabase
+          .from("products")
+          .select("*")
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
 
 
-/* =========================
-   OPEN PRODUCT DETAILS
-========================= */
+        if (error) {
 
-window.openProduct = function(id) {
+          throw error;
 
-  window.location.href =
-    `product-details.html?id=${encodeURIComponent(id)}`;
-};
+        }
 
 
-/* =========================
-   SEARCH
-========================= */
-
-productSearch.addEventListener(
-  "input",
-  renderProducts
-);
+        allProducts =
+          data || [];
 
 
-/* =========================
-   CATEGORY
-========================= */
-
-categoryFilter.addEventListener(
-  "change",
-  renderProducts
-);
+        renderProducts(
+          allProducts
+        );
 
 
-/* =========================
-   ESCAPE HTML
-========================= */
+      } catch (error) {
 
-function escapeHtml(value) {
-
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+        console.error(
+          "Products error:",
+          error
+        );
 
 
-/* START */
+        productsGrid.innerHTML = `
 
-loadProducts();
+          <div class="empty-products">
 
-</script>
+            <strong>
+              Could not load products.
+            </strong>
+
+            <br><br>
+
+            Please try again later.
+
+          </div>
+
+        `;
+
+      }
+
+    }
+
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    searchInput.addEventListener(
+      "input",
+      filterProducts
+    );
+
+
+    /* =========================
+       CATEGORIES
+    ========================= */
+
+    categoryButtons.forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            categoryButtons.forEach(
+              item => {
+
+                item.classList.remove(
+                  "active"
+                );
+
+              }
+            );
+
+
+            button.classList.add(
+              "active"
+            );
+
+
+            selectedCategory =
+              button.dataset.category ||
+              "all";
+
+
+            filterProducts();
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =========================
+       SHOW ALL
+    ========================= */
+
+    showAllButton.addEventListener(
+      "click",
+      () => {
+
+        searchInput.value = "";
+
+        selectedCategory = "all";
+
+
+        categoryButtons.forEach(
+          button => {
+
+            button.classList.remove(
+              "active"
+            );
+
+          }
+        );
+
+
+        const allButton =
+          document.querySelector(
+            '[data-category="all"]'
+          );
+
+
+        if (allButton) {
+
+          allButton.classList.add(
+            "active"
+          );
+
+        }
+
+
+        renderProducts(
+          allProducts
+        );
+
+      }
+    );
+
+
+    /* =========================
+       MOBILE MENU
+    ========================= */
+
+    menuButton.addEventListener(
+      "click",
+      () => {
+
+        const isOpen =
+          mobileMenu.classList.toggle(
+            "open"
+          );
+
+
+        menuButton.setAttribute(
+          "aria-expanded",
+          String(isOpen)
+        );
+
+
+        menuButton.setAttribute(
+          "aria-label",
+          isOpen
+            ? "Close menu"
+            : "Open menu"
+        );
+
+      }
+    );
+
+
+    /* =========================
+       CLOSE MOBILE MENU
+    ========================= */
+
+    mobileMenu
+      .querySelectorAll("a")
+      .forEach(link => {
+
+        link.addEventListener(
+          "click",
+          () => {
+
+            mobileMenu.classList.remove(
+              "open"
+            );
+
+            menuButton.setAttribute(
+              "aria-expanded",
+              "false"
+            );
+
+          }
+        );
+
+      });
+
+
+    /* =========================
+       START
+    ========================= */
+
+    loadProducts();
+
+  </script>
 
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>EB SHOP - Payment</title>
+  <title>EB MARKETIZA - Secure Checkout</title>
 
   <style>
     * {
@@ -26,20 +26,19 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 12px rgba(0,0,0,.08);
     }
 
     .logo {
       font-size: 25px;
       font-weight: 800;
-      letter-spacing: 0.5px;
     }
 
     .back-btn {
       color: white;
       text-decoration: none;
       font-weight: 600;
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,.15);
       padding: 9px 15px;
       border-radius: 9px;
     }
@@ -66,7 +65,7 @@
 
     .checkout {
       display: grid;
-      grid-template-columns: 1.3fr 0.8fr;
+      grid-template-columns: 1.3fr .8fr;
       gap: 25px;
       align-items: start;
     }
@@ -75,13 +74,44 @@
       background: white;
       border-radius: 18px;
       padding: 24px;
-      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.07);
+      box-shadow: 0 8px 25px rgba(15,23,42,.07);
       border: 1px solid #e7edf5;
+      margin-bottom: 20px;
     }
 
     .card h2 {
       font-size: 20px;
       margin-bottom: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 7px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 9px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #2563eb;
     }
 
     .product {
@@ -146,13 +176,11 @@
       border: 2px solid #e5e7eb;
       border-radius: 13px;
       cursor: pointer;
-      transition: 0.2s;
       background: white;
     }
 
     .payment-label:hover {
       border-color: #93c5fd;
-      background: #f8fbff;
     }
 
     .payment-option input:checked + .payment-label {
@@ -232,18 +260,15 @@
       font-weight: 800;
       cursor: pointer;
       margin-top: 20px;
-      transition: 0.2s;
     }
 
     .pay-btn:hover {
       background: #1d4ed8;
-      transform: translateY(-1px);
     }
 
     .pay-btn:disabled {
       background: #94a3b8;
       cursor: not-allowed;
-      transform: none;
     }
 
     .secure {
@@ -276,6 +301,19 @@
       border: 1px solid #bfdbfe;
     }
 
+    .message.success {
+      display: block;
+      background: #f0fdf4;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 35px;
+      color: #64748b;
+    }
+
     .empty {
       text-align: center;
       padding: 35px 10px;
@@ -293,10 +331,8 @@
       font-weight: 700;
     }
 
-    .loading {
-      text-align: center;
-      padding: 35px;
-      color: #64748b;
+    .required {
+      color: #dc2626;
     }
 
     @media (max-width: 800px) {
@@ -304,8 +340,12 @@
         grid-template-columns: 1fr;
       }
 
-      .container {
-        margin-top: 25px;
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
       }
 
       .title h1 {
@@ -347,7 +387,7 @@
 <body>
 
 <header>
-  <div class="logo">EB SHOP</div>
+  <div class="logo">EB MARKETIZA</div>
   <a href="cart.html" class="back-btn">← Cart</a>
 </header>
 
@@ -355,7 +395,7 @@
 
   <div class="title">
     <h1>Secure Checkout</h1>
-    <p>Choose your preferred payment method</p>
+    <p>Enter your delivery information and choose payment</p>
   </div>
 
   <div id="loading" class="loading">
@@ -364,41 +404,178 @@
 
   <div id="emptyCart" class="empty" style="display:none;">
     <h2>Your cart is empty</h2>
-    <p>Add products to your cart before checkout.</p>
+    <p>Add products before checkout.</p>
     <a href="products.html">Browse Products</a>
   </div>
 
   <div id="checkout" class="checkout" style="display:none;">
 
-    <!-- LEFT -->
-    <div class="card">
+    <!-- LEFT SIDE -->
 
-      <h2>🛒 Your Order</h2>
+    <div>
 
-      <div id="productList"></div>
+      <!-- DELIVERY ADDRESS -->
 
-      <div class="summary">
+      <div class="card">
 
-        <div class="summary-row">
-          <span>Products</span>
-          <span id="subtotal">0 SEK</span>
+        <h2>📍 Delivery Information</h2>
+
+        <div class="form-grid">
+
+          <div>
+            <label for="customerName">
+              Full Name <span class="required">*</span>
+            </label>
+
+            <input
+              id="customerName"
+              type="text"
+              placeholder="John Doe"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="customerPhone">
+              Phone Number <span class="required">*</span>
+            </label>
+
+            <input
+              id="customerPhone"
+              type="tel"
+              placeholder="070 123 45 67"
+              required
+            >
+          </div>
+
+          <div class="full">
+            <label for="customerEmail">
+              Email <span class="required">*</span>
+            </label>
+
+            <input
+              id="customerEmail"
+              type="email"
+              placeholder="john@example.com"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="street">
+              Street / Road <span class="required">*</span>
+            </label>
+
+            <input
+              id="street"
+              type="text"
+              placeholder="Examplegatan"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="houseNumber">
+              House Number <span class="required">*</span>
+            </label>
+
+            <input
+              id="houseNumber"
+              type="text"
+              placeholder="12"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="apartment">
+              Apartment
+            </label>
+
+            <input
+              id="apartment"
+              type="text"
+              placeholder="4B"
+            >
+          </div>
+
+          <div>
+            <label for="postalCode">
+              Postal Code <span class="required">*</span>
+            </label>
+
+            <input
+              id="postalCode"
+              type="text"
+              placeholder="123 45"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="city">
+              City <span class="required">*</span>
+            </label>
+
+            <input
+              id="city"
+              type="text"
+              placeholder="Stockholm"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="country">
+              Country
+            </label>
+
+            <input
+              id="country"
+              type="text"
+              value="Sweden"
+            >
+          </div>
+
         </div>
 
-        <div class="summary-row">
-          <span>Delivery</span>
-          <span class="free">FREE</span>
-        </div>
+      </div>
 
-        <div class="summary-row total">
-          <span>Total</span>
-          <span id="total">0 SEK</span>
+
+      <!-- ORDER -->
+
+      <div class="card">
+
+        <h2>🛒 Your Order</h2>
+
+        <div id="productList"></div>
+
+        <div class="summary">
+
+          <div class="summary-row">
+            <span>Products</span>
+            <span id="subtotal">0 SEK</span>
+          </div>
+
+          <div class="summary-row">
+            <span>Delivery</span>
+            <span class="free">FREE</span>
+          </div>
+
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="total">0 SEK</span>
+          </div>
+
         </div>
 
       </div>
 
     </div>
 
-    <!-- RIGHT -->
+
+    <!-- RIGHT SIDE -->
+
     <div class="card">
 
       <h2>💳 Payment Method</h2>
@@ -406,7 +583,9 @@
       <div class="payment-methods">
 
         <!-- STRIPE -->
+
         <div class="payment-option">
+
           <input
             type="radio"
             id="stripe"
@@ -415,13 +594,17 @@
             checked
           >
 
-          <label for="stripe" class="payment-label">
+          <label
+            for="stripe"
+            class="payment-label"
+          >
 
             <div class="payment-icon">
               💳
             </div>
 
             <div class="payment-text">
+
               <div class="payment-name">
                 Card
               </div>
@@ -429,15 +612,20 @@
               <div class="payment-description">
                 Secure payment with Stripe
               </div>
+
             </div>
 
             <div class="check"></div>
 
           </label>
+
         </div>
 
+
         <!-- PAYPAL -->
+
         <div class="payment-option">
+
           <input
             type="radio"
             id="paypal"
@@ -445,13 +633,17 @@
             value="paypal"
           >
 
-          <label for="paypal" class="payment-label">
+          <label
+            for="paypal"
+            class="payment-label"
+          >
 
             <div class="payment-icon">
               🅿️
             </div>
 
             <div class="payment-text">
+
               <div class="payment-name">
                 PayPal
               </div>
@@ -459,15 +651,20 @@
               <div class="payment-description">
                 Pay securely with PayPal
               </div>
+
             </div>
 
             <div class="check"></div>
 
           </label>
+
         </div>
 
+
         <!-- SWISH -->
+
         <div class="payment-option">
+
           <input
             type="radio"
             id="swish"
@@ -475,13 +672,17 @@
             value="swish"
           >
 
-          <label for="swish" class="payment-label">
+          <label
+            for="swish"
+            class="payment-label"
+          >
 
             <div class="payment-icon">
               📱
             </div>
 
             <div class="payment-text">
+
               <div class="payment-name">
                 Swish
               </div>
@@ -489,23 +690,32 @@
               <div class="payment-description">
                 Pay with Swish
               </div>
+
             </div>
 
             <div class="check"></div>
 
           </label>
+
         </div>
 
       </div>
 
+
       <div id="message" class="message"></div>
 
-      <button id="payButton" class="pay-btn">
+
+      <button
+        id="payButton"
+        class="pay-btn"
+        type="button"
+      >
         Pay Now
       </button>
 
+
       <div class="secure">
-        🔒 Secure checkout • EB SHOP
+        🔒 Secure checkout • EB MARKETIZA
       </div>
 
     </div>
@@ -514,34 +724,96 @@
 
 </div>
 
+
 <script type="module">
 
   import { supabase } from "./supabaseClient.js";
 
-  const loading = document.getElementById("loading");
-  const emptyCart = document.getElementById("emptyCart");
-  const checkout = document.getElementById("checkout");
-  const productList = document.getElementById("productList");
 
-  const subtotalEl = document.getElementById("subtotal");
-  const totalEl = document.getElementById("total");
+  /* ELEMENTS */
 
-  const payButton = document.getElementById("payButton");
-  const message = document.getElementById("message");
+  const loading =
+    document.getElementById("loading");
+
+  const emptyCart =
+    document.getElementById("emptyCart");
+
+  const checkout =
+    document.getElementById("checkout");
+
+  const productList =
+    document.getElementById("productList");
+
+  const subtotalEl =
+    document.getElementById("subtotal");
+
+  const totalEl =
+    document.getElementById("total");
+
+  const payButton =
+    document.getElementById("payButton");
+
+  const message =
+    document.getElementById("message");
+
+
+  const customerName =
+    document.getElementById("customerName");
+
+  const customerEmail =
+    document.getElementById("customerEmail");
+
+  const customerPhone =
+    document.getElementById("customerPhone");
+
+  const street =
+    document.getElementById("street");
+
+  const houseNumber =
+    document.getElementById("houseNumber");
+
+  const apartment =
+    document.getElementById("apartment");
+
+  const postalCode =
+    document.getElementById("postalCode");
+
+  const city =
+    document.getElementById("city");
+
+  const country =
+    document.getElementById("country");
+
 
   let cartItems = [];
   let products = [];
   let total = 0;
+  let currentUser = null;
+
+
+  /* MESSAGE */
 
   function showMessage(text, type = "error") {
+
     message.textContent = text;
-    message.className = "message " + type;
+
+    message.className =
+      "message " + type;
+
   }
 
+
   function clearMessage() {
+
     message.textContent = "";
-    message.className = "message";
+
+    message.className =
+      "message";
+
   }
+
+
+  /* LOAD CHECKOUT */
 
   async function loadCheckout() {
 
@@ -551,74 +823,131 @@
         data: {
           session
         }
-      } = await supabase.auth.getSession();
+      } =
+        await supabase.auth.getSession();
+
 
       if (!session) {
-        window.location.href = "login.html";
+
+        window.location.href =
+          "login.html";
+
         return;
+
       }
 
-      const userId = session.user.id;
+
+      currentUser =
+        session.user;
+
+
+      customerEmail.value =
+        currentUser.email || "";
+
 
       const {
         data: cartData,
         error: cartError
-      } = await supabase
-        .from("cart_items")
-        .select("id, product_id, quantity")
-        .eq("user_id", userId);
+      } =
+        await supabase
+          .from("cart_items")
+          .select(
+            "id, product_id, quantity"
+          )
+          .eq(
+            "user_id",
+            currentUser.id
+          );
+
 
       if (cartError) {
+
         throw cartError;
+
       }
 
-      if (!cartData || cartData.length === 0) {
 
-        loading.style.display = "none";
-        emptyCart.style.display = "block";
+      if (
+        !cartData ||
+        cartData.length === 0
+      ) {
+
+        loading.style.display =
+          "none";
+
+        emptyCart.style.display =
+          "block";
 
         return;
+
       }
 
-      cartItems = cartData;
 
-      const productIds = cartItems.map(
-        item => item.product_id
-      );
+      cartItems =
+        cartData;
+
+
+      const productIds =
+        cartItems.map(
+          item => item.product_id
+        );
+
 
       const {
         data: productData,
         error: productError
-      } = await supabase
-        .from("products")
-        .select("*")
-        .in("id", productIds);
+      } =
+        await supabase
+          .from("products")
+          .select("*")
+          .in(
+            "id",
+            productIds
+          );
+
 
       if (productError) {
+
         throw productError;
+
       }
 
-      products = productData || [];
+
+      products =
+        productData || [];
+
 
       renderCart();
 
-      loading.style.display = "none";
-      checkout.style.display = "grid";
+
+      loading.style.display =
+        "none";
+
+      checkout.style.display =
+        "grid";
 
     } catch (error) {
 
       console.error(error);
 
-      loading.style.display = "none";
+      loading.style.display =
+        "none";
+
+      checkout.style.display =
+        "grid";
 
       showMessage(
-        "Unable to load your cart. Please try again.",
+        error.message ||
+        "Unable to load your cart.",
         "error"
       );
 
-      checkout.style.display = "grid";
     }
+
   }
+
+
+  /* RENDER CART */
 
   function renderCart() {
 
@@ -626,28 +955,47 @@
 
     total = 0;
 
+
     cartItems.forEach(item => {
 
-      const product = products.find(
-        p => Number(p.id) === Number(item.product_id)
-      );
+      const product =
+        products.find(
+          p =>
+            String(p.id) ===
+            String(item.product_id)
+        );
+
 
       if (!product) return;
 
-      const quantity = Number(item.quantity) || 1;
-      const price = Number(product.price) || 0;
-      const itemTotal = price * quantity;
+
+      const quantity =
+        Number(item.quantity) || 1;
+
+      const price =
+        Number(product.price) || 0;
+
+      const itemTotal =
+        price * quantity;
+
 
       total += itemTotal;
 
-      const div = document.createElement("div");
 
-      div.className = "product";
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "product";
+
 
       div.innerHTML = `
 
         <img
-          src="${product.image || "https://via.placeholder.com/100"}"
+          src="${
+            product.image ||
+            "https://via.placeholder.com/100"
+          }"
           alt="${escapeHtml(product.name)}"
         >
 
@@ -669,220 +1017,622 @@
 
       `;
 
+
       productList.appendChild(div);
+
     });
+
 
     subtotalEl.textContent =
       total.toFixed(2) + " SEK";
 
     totalEl.textContent =
       total.toFixed(2) + " SEK";
+
   }
+
+
+  /* VALIDATE ADDRESS */
+
+  function validateAddress() {
+
+    const fields = [
+      [customerName, "Full name"],
+      [customerEmail, "Email"],
+      [customerPhone, "Phone number"],
+      [street, "Street / Road"],
+      [houseNumber, "House number"],
+      [postalCode, "Postal code"],
+      [city, "City"]
+    ];
+
+
+    for (const [field, name] of fields) {
+
+      if (!field.value.trim()) {
+
+        field.focus();
+
+        throw new Error(
+          `${name} is required.`
+        );
+
+      }
+
+    }
+
+
+    if (
+      !customerEmail.value
+        .trim()
+        .includes("@")
+    ) {
+
+      customerEmail.focus();
+
+      throw new Error(
+        "Please enter a valid email address."
+      );
+
+    }
+
+  }
+
+
+  /* CREATE ORDER */
+
+  async function createOrder(paymentMethod) {
+
+    const orderData = {
+
+      customer_name:
+        customerName.value.trim(),
+
+      customer_email:
+        customerEmail.value.trim(),
+
+      customer_phone:
+        customerPhone.value.trim(),
+
+      street:
+        street.value.trim(),
+
+      house_number:
+        houseNumber.value.trim(),
+
+      apartment:
+        apartment.value.trim() || null,
+
+      postal_code:
+        postalCode.value.trim(),
+
+      city:
+        city.value.trim(),
+
+      country:
+        country.value.trim() || "Sweden",
+
+      subtotal:
+        Number(total.toFixed(2)),
+
+      delivery_fee:
+        0,
+
+      total:
+        Number(total.toFixed(2)),
+
+      payment_status:
+        "pending",
+
+      order_status:
+        "new",
+
+      payment_reference:
+        null,
+
+      notes:
+        `Payment method: ${paymentMethod}`
+
+    };
+
+
+    const {
+      data: order,
+      error: orderError
+    } =
+      await supabase
+        .from("orders")
+        .insert(orderData)
+        .select()
+        .single();
+
+
+    if (orderError) {
+
+      throw orderError;
+
+    }
+
+
+    const orderItems =
+      cartItems
+        .map(cartItem => {
+
+          const product =
+            products.find(
+              p =>
+                String(p.id) ===
+                String(cartItem.product_id)
+            );
+
+
+          if (!product) return null;
+
+
+          const quantity =
+            Number(cartItem.quantity) || 1;
+
+          const price =
+            Number(product.price) || 0;
+
+
+          return {
+
+            order_id:
+              order.id,
+
+            product_id:
+              product.id,
+
+            product_name:
+              product.name,
+
+            product_image:
+              product.image || null,
+
+            quantity,
+
+            unit_price:
+              price,
+
+            line_total:
+              Number(
+                (price * quantity)
+                  .toFixed(2)
+              )
+
+          };
+
+        })
+        .filter(Boolean);
+
+
+    if (
+      orderItems.length === 0
+    ) {
+
+      throw new Error(
+        "No valid products found for this order."
+      );
+
+    }
+
+
+    const {
+      error: itemError
+    } =
+      await supabase
+        .from("order_items")
+        .insert(orderItems);
+
+
+    if (itemError) {
+
+      throw itemError;
+
+    }
+
+
+    return order;
+
+  }
+
+
+  /* PAY BUTTON */
+
+  payButton.addEventListener(
+    "click",
+    async () => {
+
+      clearMessage();
+
+
+      try {
+
+        validateAddress();
+
+
+        if (
+          cartItems.length === 0
+        ) {
+
+          throw new Error(
+            "Your cart is empty."
+          );
+
+        }
+
+
+        const selected =
+          document.querySelector(
+            'input[name="payment"]:checked'
+          );
+
+
+        if (!selected) {
+
+          throw new Error(
+            "Please choose a payment method."
+          );
+
+        }
+
+
+        payButton.disabled = true;
+
+        payButton.textContent =
+          "Creating order...";
+
+
+        /*
+         * CREATE ORDER IN SUPABASE
+         */
+
+        const order =
+          await createOrder(
+            selected.value
+          );
+
+
+        /*
+         * STRIPE
+         */
+
+        if (
+          selected.value ===
+          "stripe"
+        ) {
+
+          const items =
+            cartItems
+              .map(cartItem => {
+
+                const product =
+                  products.find(
+                    p =>
+                      String(p.id) ===
+                      String(
+                        cartItem.product_id
+                      )
+                  );
+
+
+                if (!product) {
+                  return null;
+                }
+
+
+                return {
+
+                  product_id:
+                    product.id,
+
+                  name:
+                    product.name,
+
+                  price:
+                    Number(
+                      product.price
+                    ),
+
+                  quantity:
+                    Number(
+                      cartItem.quantity
+                    ),
+
+                  order_id:
+                    order.id
+
+                };
+
+              })
+              .filter(Boolean);
+
+
+          const response =
+            await fetch(
+              "/api/create-checkout-session",
+              {
+
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+                  items,
+                  orderId:
+                    order.id
+                })
+
+              }
+            );
+
+
+          const contentType =
+            response.headers
+              .get("content-type") || "";
+
+
+          if (
+            !contentType
+              .includes("application/json")
+          ) {
+
+            throw new Error(
+              "Stripe API did not return JSON. Check your Vercel API endpoint."
+            );
+
+          }
+
+
+          const data =
+            await response.json();
+
+
+          if (!response.ok) {
+
+            throw new Error(
+              data.error ||
+              "Stripe checkout failed."
+            );
+
+          }
+
+
+          if (!data.url) {
+
+            throw new Error(
+              "Stripe checkout URL was not returned."
+            );
+
+          }
+
+
+          /*
+           * GO TO STRIPE
+           */
+
+          window.location.href =
+            data.url;
+
+          return;
+
+        }
+
+
+        /*
+         * PAYPAL
+         */
+
+        if (
+          selected.value ===
+          "paypal"
+        ) {
+
+          const items =
+            cartItems
+              .map(cartItem => {
+
+                const product =
+                  products.find(
+                    p =>
+                      String(p.id) ===
+                      String(
+                        cartItem.product_id
+                      )
+                  );
+
+
+                if (!product) {
+                  return null;
+                }
+
+
+                return {
+
+                  product_id:
+                    product.id,
+
+                  name:
+                    product.name,
+
+                  price:
+                    Number(
+                      product.price
+                    ),
+
+                  quantity:
+                    Number(
+                      cartItem.quantity
+                    ),
+
+                  order_id:
+                    order.id
+
+                };
+
+              })
+              .filter(Boolean);
+
+
+          const response =
+            await fetch(
+              "/api/paypal-create-order",
+              {
+
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+                  items,
+                  orderId:
+                    order.id
+                })
+
+              }
+            );
+
+
+          const contentType =
+            response.headers
+              .get("content-type") || "";
+
+
+          if (
+            !contentType
+              .includes("application/json")
+          ) {
+
+            throw new Error(
+              "PayPal API did not return JSON."
+            );
+
+          }
+
+
+          const data =
+            await response.json();
+
+
+          if (!response.ok) {
+
+            throw new Error(
+              data.error ||
+              "PayPal checkout failed."
+            );
+
+          }
+
+
+          if (!data.approvalUrl) {
+
+            throw new Error(
+              "PayPal approval URL was not returned."
+            );
+
+          }
+
+
+          window.location.href =
+            data.approvalUrl;
+
+          return;
+
+        }
+
+
+        /*
+         * SWISH
+         */
+
+        if (
+          selected.value ===
+          "swish"
+        ) {
+
+          showMessage(
+            `Order #${order.order_number} was created. Swish payment is not connected yet.`,
+            "info"
+          );
+
+
+          payButton.disabled =
+            false;
+
+          payButton.textContent =
+            "Pay Now";
+
+          return;
+
+        }
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+          error.message ||
+          "Your order could not be created.",
+          "error"
+        );
+
+
+        payButton.disabled =
+          false;
+
+        payButton.textContent =
+          "Pay Now";
+
+      }
+
+    }
+  );
+
+
+  /* ESCAPE HTML */
 
   function escapeHtml(value) {
 
     return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
   }
 
-  payButton.addEventListener("click", async () => {
 
-    clearMessage();
-
-    const selected =
-      document.querySelector(
-        'input[name="payment"]:checked'
-      );
-
-    if (!selected) {
-
-      showMessage(
-        "Please choose a payment method."
-      );
-
-      return;
-    }
-
-    if (cartItems.length === 0) {
-
-      showMessage(
-        "Your cart is empty."
-      );
-
-      return;
-    }
-
-    payButton.disabled = true;
-    payButton.textContent = "Processing...";
-
-    try {
-
-      if (selected.value === "stripe") {
-
-        const items = cartItems
-          .map(cartItem => {
-
-            const product = products.find(
-              p =>
-                Number(p.id) ===
-                Number(cartItem.product_id)
-            );
-
-            if (!product) return null;
-
-            return {
-              name: product.name,
-              price: Number(product.price),
-              quantity: Number(cartItem.quantity)
-            };
-
-          })
-          .filter(Boolean);
-
-        const response = await fetch(
-          "/api/create-checkout-session",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-              items
-            })
-          }
-        );
-
-        const contentType =
-          response.headers.get("content-type") || "";
-
-        if (!contentType.includes("application/json")) {
-          throw new Error(
-            "Stripe API did not return JSON. Check your Vercel API endpoint."
-          );
-        }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            data.error ||
-            "Stripe checkout failed."
-          );
-        }
-
-        if (!data.url) {
-          throw new Error(
-            "Stripe checkout URL was not returned."
-          );
-        }
-
-        window.location.href = data.url;
-
-        return;
-      }
-
-      if (selected.value === "paypal") {
-
-        const items = cartItems
-          .map(cartItem => {
-
-            const product = products.find(
-              p =>
-                Number(p.id) ===
-                Number(cartItem.product_id)
-            );
-
-            if (!product) return null;
-
-            return {
-              product_id: product.id,
-              name: product.name,
-              price: Number(product.price),
-              quantity: Number(cartItem.quantity)
-            };
-
-          })
-          .filter(Boolean);
-
-        const response = await fetch(
-          "/api/paypal-create-order",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-              items
-            })
-          }
-        );
-
-        const contentType =
-          response.headers.get("content-type") || "";
-
-        if (!contentType.includes("application/json")) {
-          throw new Error(
-            "PayPal API did not return JSON. Check your Vercel API endpoint."
-          );
-        }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            data.error ||
-            "PayPal checkout failed."
-          );
-        }
-
-        if (!data.approvalUrl) {
-          throw new Error(
-            "PayPal approval URL was not returned."
-          );
-        }
-
-        window.location.href =
-          data.approvalUrl;
-
-        return;
-      }
-
-      if (selected.value === "swish") {
-
-        showMessage(
-          "Swish payment is not connected yet. Stripe and PayPal are ready for the checkout flow.",
-          "info"
-        );
-
-        payButton.disabled = false;
-        payButton.textContent = "Pay Now";
-
-        return;
-      }
-
-    } catch (error) {
-
-      console.error(error);
-
-      showMessage(
-        error.message ||
-        "Payment could not be started. Please try again.",
-        "error"
-      );
-
-      payButton.disabled = false;
-      payButton.textContent = "Pay Now";
-    }
-
-  });
+  /* START */
 
   loadCheckout();
 
@@ -890,3 +1640,4 @@
 
 </body>
 </html>
+

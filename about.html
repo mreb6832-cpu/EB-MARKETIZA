@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>About Us | EB MARKETIZA</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f6f8;
+    color:#111827;
+    line-height:1.6;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:16px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:.3px;
+}
+
+.nav{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.nav a{
+    color:white;
+    text-decoration:none;
+    padding:9px 13px;
+    border-radius:8px;
+    font-size:14px;
+    transition:.2s;
+}
+
+.nav a:hover{
+    background:#2563eb;
+}
+
+.nav .active{
+    background:#2563eb;
+}
+
+.hero{
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #1e3a8a
+        );
+    color:white;
+    text-align:center;
+    padding:85px 20px;
+}
+
+.hero-content{
+    max-width:800px;
+    margin:auto;
+}
+
+.hero-badge{
+    display:inline-block;
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.2);
+    padding:7px 14px;
+    border-radius:30px;
+    font-size:13px;
+    margin-bottom:18px;
+}
+
+.hero h1{
+    font-size:46px;
+    line-height:1.15;
+    margin-bottom:18px;
+}
+
+.hero h1 span{
+    color:#60a5fa;
+}
+
+.hero p{
+    max-width:680px;
+    margin:auto;
+    color:#dbeafe;
+    font-size:17px;
+    line-height:1.8;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:50px 18px;
+}
+
+.section{
+    background:white;
+    border-radius:18px;
+    padding:38px;
+    margin-bottom:28px;
+    box-shadow:0 5px 22px rgba(0,0,0,.06);
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.section-title h2{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.section-title p{
+    color:#6b7280;
+    max-width:650px;
+    margin:auto;
+}
+
+.story{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:35px;
+    align-items:center;
+}
+
+.story-text h2{
+    font-size:30px;
+    margin-bottom:15px;
+}
+
+.story-text p{
+    color:#4b5563;
+    margin-bottom:15px;
+}
+
+.story-card{
+    background:linear-gradient(
+        135deg,
+        #eff6ff,
+        #dbeafe
+    );
+    border-radius:18px;
+    padding:35px;
+    text-align:center;
+}
+
+.story-logo{
+    font-size:34px;
+    font-weight:800;
+    color:#1d4ed8;
+    margin-bottom:10px;
+}
+
+.story-card p{
+    color:#374151;
+}
+
+.mission-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+}
+
+.mission-card{
+    padding:28px;
+    border-radius:15px;
+    background:#f9fafb;
+    border:1px solid #e5e7eb;
+}
+
+.mission-icon{
+    font-size:38px;
+    margin-bottom:12px;
+}
+
+.mission-card h3{
+    font-size:21px;
+    margin-bottom:10px;
+}
+
+.mission-card p{
+    color:#4b5563;
+}
+
+.why-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.why-card{
+    background:#f9fafb;
+    border-radius:15px;
+    padding:25px;
+    border:1px solid #e5e7eb;
+}
+
+.why-icon{
+    font-size:35px;
+    margin-bottom:12px;
+}
+
+.why-card h3{
+    margin-bottom:8px;
+    font-size:18px;
+}
+
+.why-card p{
+    color:#6b7280;
+    font-size:14px;
+}
+
+.values-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.value{
+    text-align:center;
+    padding:22px 15px;
+    border-radius:13px;
+    background:#f9fafb;
+}
+
+.value-icon{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.value h3{
+    font-size:16px;
+    margin-bottom:5px;
+}
+
+.value p{
+    color:#6b7280;
+    font-size:13px;
+}
+
+.how-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.step{
+    text-align:center;
+    padding:20px;
+}
+
+.step-number{
+    width:45px;
+    height:45px;
+    margin:0 auto 12px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.step h3{
+    font-size:16px;
+    margin-bottom:6px;
+}
+
+.step p{
+    color:#6b7280;
+    font-size:13px;
+}
+
+.sweden{
+    background:#111827;
+    color:white;
+    border-radius:18px;
+    padding:40px;
+    text-align:center;
+}
+
+.sweden-icon{
+    font-size:45px;
+    margin-bottom:10px;
+}
+
+.sweden h2{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.sweden p{
+    color:#d1d5db;
+    max-width:700px;
+    margin:auto;
+}
+
+.cta{
+    background:#2563eb;
+    color:white;
+    border-radius:18px;
+    padding:50px 25px;
+    text-align:center;
+}
+
+.cta h2{
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.cta p{
+    color:#dbeafe;
+    margin-bottom:25px;
+}
+
+.cta a{
+    display:inline-block;
+    background:white;
+    color:#2563eb;
+    text-decoration:none;
+    padding:13px 24px;
+    border-radius:9px;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.cta a:hover{
+    transform:translateY(-2px);
+}
+
+footer{
+    background:#111827;
+    color:#9ca3af;
+    text-align:center;
+    padding:30px 15px;
+}
+
+.footer-logo{
+    color:white;
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.footer-links{
+    margin:15px 0;
+}
+
+.footer-links a{
+    color:#d1d5db;
+    text-decoration:none;
+    margin:0 8px;
+    font-size:14px;
+}
+
+.footer-links a:hover{
+    color:white;
+}
+
+.copyright{
+    font-size:13px;
+}
+
+@media(max-width:800px){
+
+    header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .nav{
+        width:100%;
+    }
+
+    .nav a{
+        flex:1;
+        text-align:center;
+    }
+
+    .hero{
+        padding:65px 18px;
+    }
+
+    .hero h1{
+        font-size:36px;
+    }
+
+    .story{
+        grid-template-columns:1fr;
+    }
+
+    .mission-grid{
+        grid-template-columns:1fr;
+    }
+
+    .why-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .values-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .how-grid{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:500px){
+
+    .hero h1{
+        font-size:31px;
+    }
+
+    .hero p{
+        font-size:15px;
+    }
+
+    .container{
+        padding:25px 12px;
+    }
+
+    .section{
+        padding:25px 18px;
+    }
+
+    .section-title h2{
+        font-size:25px;
+    }
+
+    .why-grid,
+    .values-grid,
+    .how-grid{
+        grid-template-columns:1fr;
+    }
+
+    .story-text h2{
+        font-size:25px;
+    }
+
+    .sweden{
+        padding:32px 20px;
+    }
+
+    .cta{
+        padding:38px 20px;
+    }
+
+    .cta h2{
+        font-size:27px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+EB MARKETIZA
+</div>
+
+<nav class="nav">
+
+<a href="index.html">
+Home
+</a>
+
+<a href="products.html">
+Products
+</a>
+
+<a href="cart.html">
+Cart
+</a>
+
+<a href="orders.html">
+My Orders
+</a>
+
+<a href="account.html">
+Account
+</a>
+
+<a href="about.html" class="active">
+About
+</a>
+
+<a href="contact.html">
+Contact
+</a>
+
+</nav>
+
+</header>
+
+
+<section class="hero">
+
+<div class="hero-content">
+
+<div class="hero-badge">
+WELCOME TO EB MARKETIZA
+</div>
+
+<h1>
+Shopping Made
+<span>Simple.</span>
+</h1>
+
+<p>
+EB MARKETIZA is an online shopping platform focused on
+making it easier for customers to discover products,
+place orders and enjoy a simple shopping experience.
+</p>
+
+</div>
+
+</section>
+
+
+<main class="container">
+
+
+<!-- COMPANY STORY -->
+
+<section class="section">
+
+<div class="story">
+
+<div class="story-text">
+
+<h2>
+Our Story
+</h2>
+
+<p>
+EB MARKETIZA was created with a simple idea: online shopping
+should be easy, convenient and accessible.
+</p>
+
+<p>
+We wanted to build a shopping experience where customers can
+browse products, make purchases and manage their orders without
+unnecessary complexity.
+</p>
+
+<p>
+Today, EB MARKETIZA continues to grow with a focus on improving
+the customer experience and making online shopping more
+convenient.
+</p>
+
+</div>
+
+
+<div class="story-card">
+
+<div class="story-logo">
+EB MARKETIZA
+</div>
+
+<p>
+A modern online shopping experience built around
+simplicity, convenience and customer satisfaction.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- MISSION & VISION -->
+
+<section class="section">
+
+<div class="section-title">
+
+<h2>
+Mission & Vision
+</h2>
+
+<p>
+What drives EB MARKETIZA today and where we want to go in the future.
+</p>
+
+</div>
+
+
+<div class="mission-grid">
+
+
+<div class="mission-card">
+
+<div class="mission-icon">
+🎯
+</div>
+
+<h3>
+Our Mission
+</h3>
+
+<p>
+Our mission is to provide customers with a simple, reliable
+and convenient online shopping experience, from discovering
+products to receiving their orders.
+</p>
+
+</div>
+
+
+<div class="mission-card">
+
+<div class="mission-icon">
+🌍
+</div>
+
+<h3>
+Our Vision
+</h3>
+
+<p>
+Our vision is to build a trusted online shopping brand that
+continues to grow while making digital shopping easier and
+more convenient for customers.
+</p>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+<!-- WHY CHOOSE US -->
+
+<section class="section">
+
+<div class="section-title">
+
+<h2>
+Why Choose EB MARKETIZA?
+</h2>
+
+<p>
+We focus on the things that matter most when shopping online.
+</p>
+
+</div>
+
+
+<div class="why-grid">
+
+
+<div class="why-card">
+
+<div class="why-icon">
+🛍️
+</div>
+
+<h3>
+Easy Shopping
+</h3>
+
+<p>
+Browse products and add what you need to your cart with a
+simple and straightforward shopping experience.
+</p>
+
+</div>
+
+
+<div class="why-card">
+
+<div class="why-icon">
+🔐
+</div>
+
+<h3>
+Secure Experience
+</h3>
+
+<p>
+We are building our platform with secure authentication,
+checkout and order management in mind.
+</p>
+
+</div>
+
+
+<div class="why-card">
+
+<div class="why-icon">
+📦
+</div>
+
+<h3>
+Order Management
+</h3>
+
+<p>
+Customers can view their orders, payment status and delivery
+status directly from their account.
+</p>
+
+</div>
+
+
+<div class="why-card">
+
+<div class="why-icon">
+💳
+</div>
+
+<h3>
+Simple Checkout
+</h3>
+
+<p>
+Our checkout is designed to make providing delivery
+information and completing an order simple.
+</p>
+
+</div>
+
+
+<div class="why-card">
+
+<div class="why-icon">
+📱
+</div>
+
+<h3>
+Mobile Friendly
+</h3>
+
+<p>
+EB MARKETIZA is designed to work across phones, tablets and
+desktop computers.
+</p>
+
+</div>
+
+
+<div class="why-card">
+
+<div class="why-icon">
+⭐
+</div>
+
+<h3>
+Customer Focused
+</h3>
+
+<p>
+We continuously aim to improve the shopping experience and
+make the platform easier to use.
+</p>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+<!-- OUR VALUES -->
+
+<section class="section">
+
+<div class="section-title">
+
+<h2>
+Our Values
+</h2>
+
+<p>
+The principles behind the EB MARKETIZA experience.
+</p>
+
+</div>
+
+
+<div class="values-grid">
+
+
+<div class="value">
+
+<div class="value-icon">
+❤️
+</div>
+
+<h3>
+Customer First
+</h3>
+
+<p>
+Customers matter.
+</p>
+
+</div>
+
+
+<div class="value">
+
+<div class="value-icon">
+🚀
+</div>
+
+<h3>
+Innovation
+</h3>
+
+<p>
+Always improving.
+</p>
+
+</div>
+
+
+<div class="value">
+
+<div class="value-icon">
+🤝
+</div>
+
+<h3>
+Trust
+</h3>
+
+<p>
+Building confidence.
+</p>
+
+</div>
+
+
+<div class="value">
+
+<div class="value-icon">
+✨
+</div>
+
+<h3>
+Quality
+</h3>
+
+<p>
+Better experiences.
+</p>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+<!-- HOW IT WORKS -->
+
+<section class="section">
+
+<div class="section-title">
+
+<h2>
+How Shopping Works
+</h2>
+
+<p>
+Getting started with EB MARKETIZA is simple.
+</p>
+
+</div>
+
+
+<div class="how-grid">
+
+
+<div class="step">
+
+<div class="step-number">
+1
+</div>
+
+<h3>
+Browse
+</h3>
+
+<p>
+Explore our products.
+</p>
+
+</div>
+
+
+<div class="step">
+
+<div class="step-number">
+2
+</div>
+
+<h3>
+Add to Cart
+</h3>
+
+<p>
+Choose what you want.
+</p>
+
+</div>
+
+
+<div class="step">
+
+<div class="step-number">
+3
+</div>
+
+<h3>
+Checkout
+</h3>
+
+<p>
+Enter your delivery details.
+</p>
+
+</div>
+
+
+<div class="step">
+
+<div class="step-number">
+4
+</div>
+
+<h3>
+Track
+</h3>
+
+<p>
+Follow your order status.
+</p>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+<!-- SWEDEN -->
+
+<section class="section">
+
+<div class="sweden">
+
+<div class="sweden-icon">
+🇸🇪
+</div>
+
+<h2>
+EB MARKETIZA in Sweden
+</h2>
+
+<p>
+EB MARKETIZA operates with a focus on customers in Sweden.
+Prices are displayed in Swedish kronor (SEK), making it easy
+for customers to understand their order totals.
+</p>
+
+</div>
+
+</section>
+
+
+
+<!-- CTA -->
+
+<section class="cta">
+
+<h2>
+Ready to Start Shopping?
+</h2>
+
+<p>
+Explore our products and discover what EB MARKETIZA has to offer.
+</p>
+
+<a href="products.html">
+Shop Now
+</a>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+<div class="footer-logo">
+EB MARKETIZA
+</div>
+
+<p>
+Simple shopping. Better experience.
+</p>
+
+<div class="footer-links">
+
+<a href="index.html">
+Home
+</a>
+
+<a href="products.html">
+Products
+</a>
+
+<a href="about.html">
+About
+</a>
+
+<a href="contact.html">
+Contact
+</a>
+
+<a href="orders.html">
+My Orders
+</a>
+
+</div>
+
+<div class="copyright">
+© 2026 EB MARKETIZA. All rights reserved.
+</div>
+
+</footer>
+
+</body>
+</html>

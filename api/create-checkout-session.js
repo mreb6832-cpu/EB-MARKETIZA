@@ -3,7 +3,6 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
-  // Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method not allowed"
@@ -11,36 +10,44 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Check Stripe secret key
     if (!process.env.STRIPE_SECRET_KEY) {
       return res.status(500).json({
         error: "STRIPE_SECRET_KEY is not configured"
       });
     }
 
-    // Read request body
-    const { items } = req.body || {};
+    const { items, orderId } = req.body || {};
 
-    // Check products
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
         error: "No items provided"
       });
     }
 
-    // Convert cart items to Stripe line items
+    if (!orderId) {
+      return res.status(400).json({
+        error: "Order ID is required"
+      });
+    }
+
     const line_items = items.map((item) => {
-      const name = String(item.name || "EB-MARKETIZA Product");
+      const name = String(
+        item.name || "EB-MARKETIZA Product"
+      );
 
       const price = Number(item.price);
       const quantity = Number(item.quantity);
 
       if (!Number.isFinite(price) || price < 0) {
-        throw new Error(`Invalid price for product: ${name}`);
+        throw new Error(
+          `Invalid price for product: ${name}`
+        );
       }
 
       if (!Number.isInteger(quantity) || quantity < 1) {
-        throw new Error(`Invalid quantity for product: ${name}`);
+        throw new Error(
+          `Invalid quantity for product: ${name}`
+        );
       }
 
       return {
@@ -58,36 +65,50 @@ export default async function handler(req, res) {
       };
     });
 
-    // Create Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      "https://ebmarketiza.vercel.app";
 
-      // Disable Stripe Managed Payments
-      managed_payments: {
-        enabled: false
-      },
+    const session =
+      await stripe.checkout.sessions.create({
+        mode: "payment",
 
-      line_items: line_items,
+        managed_payments: {
+          enabled: false
+        },
 
-      success_url:
-        "https://mreb6832-cpu.github.io/EB-MARKETIZA/payment.html?success=true",
+        line_items: line_items,
 
-      cancel_url:
-        "https://mreb6832-cpu.github.io/EB-MARKETIZA/payment.html?canceled=true"
-    });
+        client_reference_id: orderId,
 
-    // Return JSON
+        metadata: {
+          order_id: orderId
+        },
+
+        success_url:
+          `${frontendUrl}/payment.html?success=true&order_id=${encodeURIComponent(orderId)}`,
+
+        cancel_url:
+          `${frontendUrl}/payment.html?canceled=true&order_id=${encodeURIComponent(orderId)}`
+      });
+
     return res.status(200).json({
       success: true,
       url: session.url,
-      sessionId: session.id
+      sessionId: session.id,
+      orderId: orderId
     });
 
   } catch (error) {
-    console.error("Stripe Checkout Error:", error);
+    console.error(
+      "Stripe Checkout Error:",
+      error
+    );
 
     return res.status(500).json({
-      error: error.message || "Stripe checkout failed"
+      error:
+        error.message ||
+        "Stripe checkout failed"
     });
   }
 }

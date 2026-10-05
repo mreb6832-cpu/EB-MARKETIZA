@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Orders | EB MARKETIZA</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f6f8;
+    color:#111827;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:16px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.nav{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.nav a,
+.nav button{
+    text-decoration:none;
+    border:0;
+    background:#2563eb;
+    color:white;
+    padding:9px 13px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.nav .logout{
+    background:#dc2626;
+}
+
+.container{
+    max-width:1000px;
+    width:100%;
+    margin:30px auto;
+    padding:0 15px;
+}
+
+.page-title{
+    margin-bottom:20px;
+}
+
+.page-title h1{
+    font-size:28px;
+}
+
+.page-title p{
+    color:#6b7280;
+    margin-top:7px;
+}
+
+.loading,
+.empty,
+.error{
+    background:white;
+    border-radius:14px;
+    padding:35px;
+    text-align:center;
+    box-shadow:0 4px 18px rgba(0,0,0,.06);
+}
+
+.error{
+    color:#991b1b;
+    background:#fee2e2;
+}
+
+.order-card{
+    background:white;
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 4px 18px rgba(0,0,0,.06);
+}
+
+.order-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+    border-bottom:1px solid #e5e7eb;
+    padding-bottom:15px;
+    margin-bottom:15px;
+}
+
+.order-number{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.order-date{
+    color:#6b7280;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.badges{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+}
+
+.badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+    text-transform:capitalize;
+}
+
+.paid{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.failed,
+.cancelled{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.refunded{
+    background:#ede9fe;
+    color:#5b21b6;
+}
+
+.new{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.processing{
+    background:#e0e7ff;
+    color:#3730a3;
+}
+
+.shipped{
+    background:#cffafe;
+    color:#155e75;
+}
+
+.delivered{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.order-info{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.info-box{
+    background:#f9fafb;
+    border-radius:9px;
+    padding:12px;
+}
+
+.info-box span{
+    display:block;
+    color:#6b7280;
+    font-size:12px;
+    margin-bottom:5px;
+}
+
+.info-box strong{
+    font-size:15px;
+}
+
+.order-actions{
+    margin-top:16px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.view-btn{
+    display:inline-block;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    padding:10px 15px;
+    border-radius:8px;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.shop-btn{
+    display:inline-block;
+    background:#111827;
+    color:white;
+    text-decoration:none;
+    padding:10px 15px;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.refresh-btn{
+    background:#111827;
+    color:white;
+    border:0;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:18px;
+}
+
+@media(max-width:700px){
+
+    header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .nav{
+        width:100%;
+    }
+
+    .nav a,
+    .nav button{
+        flex:1;
+        text-align:center;
+    }
+
+    .container{
+        margin-top:20px;
+    }
+
+    .page-title h1{
+        font-size:24px;
+    }
+
+    .order-top{
+        flex-direction:column;
+    }
+
+    .badges{
+        justify-content:flex-start;
+    }
+
+    .order-info{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+EB MARKETIZA
+</div>
+
+<div class="nav">
+
+<a href="index.html">Home</a>
+
+<a href="products.html">Products</a>
+
+<a href="cart.html">Cart</a>
+
+<a href="account.html">Account</a>
+
+<button id="logoutButton" class="logout">
+Logout
+</button>
+
+</div>
+
+</header>
+
+
+<main class="container">
+
+<div class="page-title">
+
+<h1>My Orders</h1>
+
+<p>
+View your orders, payment status and delivery status.
+</p>
+
+</div>
+
+
+<button id="refreshButton" class="refresh-btn">
+🔄 Refresh Orders
+</button>
+
+
+<div id="ordersContainer">
+
+<div class="loading">
+Loading your orders...
+</div>
+
+</div>
+
+</main>
+
+
+<script type="module">
+
+import { supabase } from "./supabaseClient.js";
+
+
+const ordersContainer =
+document.getElementById("ordersContainer");
+
+const refreshButton =
+document.getElementById("refreshButton");
+
+const logoutButton =
+document.getElementById("logoutButton");
+
+
+let currentUser = null;
+
+
+async function checkUser(){
+
+const {
+    data:{
+        user
+    }
+} = await supabase.auth.getUser();
+
+
+if(!user){
+
+window.location.href="login.html";
+
+return false;
+
+}
+
+
+currentUser = user;
+
+return true;
+
+}
+
+
+function escapeHtml(value){
+
+return String(value ?? "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+function formatDate(date){
+
+if(!date){
+return "-";
+}
+
+return new Date(date).toLocaleString(
+"en-SE",
+{
+    year:"numeric",
+    month:"short",
+    day:"numeric",
+    hour:"2-digit",
+    minute:"2-digit"
+}
+);
+
+}
+
+
+function getStatusClass(status){
+
+return String(status || "pending")
+.toLowerCase()
+.replaceAll(" ","-");
+
+}
+
+
+async function loadOrders(){
+
+ordersContainer.innerHTML=`
+
+<div class="loading">
+Loading your orders...
+</div>
+
+`;
+
+
+const {
+    data,
+    error
+} = await supabase
+
+.from("orders")
+
+.select("*")
+
+.eq("customer_email", currentUser.email)
+
+.order("created_at",{
+    ascending:false
+});
+
+
+if(error){
+
+console.error(error);
+
+ordersContainer.innerHTML=`
+
+<div class="error">
+Could not load your orders.
+<br><br>
+${escapeHtml(error.message)}
+</div>
+
+`;
+
+return;
+
+}
+
+
+if(!data || data.length===0){
+
+ordersContainer.innerHTML=`
+
+<div class="empty">
+
+<h2>No orders yet</h2>
+
+<p style="margin-top:8px;color:#6b7280">
+You have not placed any orders yet.
+</p>
+
+<div style="margin-top:18px">
+
+<a
+href="products.html"
+class="shop-btn"
+>
+Start Shopping
+</a>
+
+</div>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+ordersContainer.innerHTML="";
+
+
+data.forEach(order=>{
+
+const card=document.createElement("div");
+
+card.className="order-card";
+
+
+const paymentStatus =
+String(order.payment_status || "pending")
+.toLowerCase();
+
+
+const orderStatus =
+String(order.order_status || "new")
+.toLowerCase();
+
+
+card.innerHTML=`
+
+<div class="order-top">
+
+<div>
+
+<div class="order-number">
+
+Order #${escapeHtml(order.order_number)}
+
+</div>
+
+<div class="order-date">
+
+${formatDate(order.created_at)}
+
+</div>
+
+</div>
+
+
+<div class="badges">
+
+<span class="badge ${getStatusClass(paymentStatus)}">
+
+Payment:
+${escapeHtml(paymentStatus)}
+
+</span>
+
+
+<span class="badge ${getStatusClass(orderStatus)}">
+
+${escapeHtml(orderStatus)}
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="order-info">
+
+<div class="info-box">
+
+<span>Total</span>
+
+<strong>
+
+${Number(order.total || 0).toFixed(2)} SEK
+
+</strong>
+
+</div>
+
+
+<div class="info-box">
+
+<span>Subtotal</span>
+
+<strong>
+
+${Number(order.subtotal || 0).toFixed(2)} SEK
+
+</strong>
+
+</div>
+
+
+<div class="info-box">
+
+<span>Delivery</span>
+
+<strong>
+
+${Number(order.delivery_fee || 0).toFixed(2)} SEK
+
+</strong>
+
+</div>
+
+</div>
+
+
+<div class="order-actions">
+
+<a
+class="view-btn"
+href="order.html?id=${encodeURIComponent(order.id)}"
+>
+View Order
+</a>
+
+<a
+class="shop-btn"
+href="products.html"
+>
+Continue Shopping
+</a>
+
+</div>
+
+`;
+
+
+ordersContainer.appendChild(card);
+
+});
+
+}
+
+
+refreshButton.addEventListener(
+"click",
+loadOrders
+);
+
+
+logoutButton.addEventListener(
+"click",
+async()=>{
+
+await supabase.auth.signOut();
+
+window.location.href="login.html";
+
+}
+);
+
+
+const allowed = await checkUser();
+
+
+if(allowed){
+
+await loadOrders();
+
+}
+
+
+</script>
+
+</body>
+</html>

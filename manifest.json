@@ -1,0 +1,12 @@
+{
+  "background_color": "#ffffff",
+  "description": "Shop clothing online at E&amp;B MARKETIZA. Discover fashion products in SEK with a simple and secure shopping experience in Sweden.",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "EB MARKETIZA",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "EB MARKETIZA",
+  "start_url": "/",
+  "theme_color": "#050505"
+}

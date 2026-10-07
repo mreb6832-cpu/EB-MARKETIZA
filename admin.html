@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EB MARKETIZA — Owner Dashboard</title>
 
-<title>Admin Dashboard | EB MARKETIZA</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{
@@ -14,91 +15,128 @@
 }
 
 body{
-  font-family:Arial,sans-serif;
-  background:#f4f6f9;
-  color:#111827;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f6f8;
+  color:#222;
 }
 
 header{
-  background:#111827;
+  background:#111;
   color:#fff;
-  padding:16px 22px;
+  padding:18px 22px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:15px;
   position:sticky;
   top:0;
-  z-index:100;
+  z-index:50;
 }
 
-header h1{
-  font-size:21px;
+.logo{
+  font-size:22px;
+  font-weight:800;
 }
 
-.header-buttons{
+.header-right{
   display:flex;
-  gap:8px;
-  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
 }
 
-.header-buttons a,
-.header-buttons button{
-  color:#fff;
-  background:#2563eb;
+.admin-email{
+  font-size:13px;
+  opacity:.8;
+}
+
+button,
+.btn{
   border:0;
-  padding:9px 13px;
   border-radius:8px;
+  padding:11px 15px;
   cursor:pointer;
-  text-decoration:none;
+  font-weight:700;
 }
 
 .logout-btn{
-  background:#dc2626!important;
+  background:#fff;
+  color:#111;
 }
 
 .container{
-  width:100%;
-  max-width:1200px;
-  margin:30px auto;
-  padding:0 18px;
+  width:min(1200px,94%);
+  margin:25px auto;
+}
+
+h1{
+  margin-bottom:20px;
+}
+
+h2{
+  margin-bottom:15px;
+}
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:25px;
 }
 
 .card{
   background:#fff;
   border-radius:14px;
-  padding:24px;
-  margin-bottom:24px;
-  box-shadow:0 5px 20px rgba(0,0,0,.06);
+  padding:20px;
+  box-shadow:0 3px 15px rgba(0,0,0,.06);
 }
 
-.card h2{
-  margin-bottom:20px;
+.stat-title{
+  color:#777;
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.stat-value{
+  font-size:28px;
+  font-weight:800;
+}
+
+.section{
+  background:#fff;
+  border-radius:14px;
+  padding:20px;
+  margin-bottom:25px;
+  box-shadow:0 3px 15px rgba(0,0,0,.06);
 }
 
 .form-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:16px;
+  gap:14px;
 }
 
-.full{
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.form-group.full{
   grid-column:1/-1;
 }
 
 label{
-  display:block;
-  font-weight:bold;
-  margin-bottom:7px;
+  font-weight:700;
+  font-size:14px;
 }
 
 input,
 textarea,
 select{
   width:100%;
-  padding:12px;
-  border:1px solid #d1d5db;
+  border:1px solid #ddd;
   border-radius:8px;
+  padding:12px;
   font-size:15px;
   outline:none;
 }
@@ -106,96 +144,87 @@ select{
 input:focus,
 textarea:focus,
 select:focus{
-  border-color:#2563eb;
+  border-color:#ff5a00;
 }
 
 textarea{
-  min-height:120px;
+  min-height:100px;
   resize:vertical;
 }
 
-.main-btn{
-  background:#2563eb;
+.primary{
+  background:#ff5a00;
   color:#fff;
-  border:0;
-  padding:12px 20px;
-  border-radius:8px;
-  font-weight:bold;
-  cursor:pointer;
 }
 
-.main-btn:hover{
-  background:#1d4ed8;
+.secondary{
+  background:#eee;
+  color:#222;
 }
 
-.main-btn:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-}
-
-.cancel-btn{
-  background:#6b7280;
+.danger{
+  background:#dc3545;
   color:#fff;
-  border:0;
-  padding:12px 20px;
-  border-radius:8px;
-  cursor:pointer;
-  display:none;
-}
-
-.form-buttons{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-#message{
-  display:none;
-  margin-top:15px;
-  padding:12px;
-  border-radius:8px;
 }
 
 .success{
-  background:#dcfce7;
-  color:#166534;
+  background:#198754;
+  color:#fff;
 }
 
-.error{
-  background:#fee2e2;
-  color:#991b1b;
-}
-
-#imagePreview{
+.products-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
-  gap:12px;
-  margin-top:15px;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
 }
 
-.preview-card{
-  border:1px solid #e5e7eb;
-  border-radius:10px;
+.product-card{
+  border:1px solid #eee;
+  border-radius:12px;
   overflow:hidden;
-  background:#f9fafb;
+  background:#fff;
 }
 
-.preview-card img{
+.product-card img{
   width:100%;
-  height:125px;
+  height:190px;
   object-fit:cover;
-  display:block;
+  background:#eee;
 }
 
-.preview-label{
-  padding:8px;
-  text-align:center;
+.product-info{
+  padding:13px;
+}
+
+.product-name{
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.product-price{
+  font-weight:800;
+  color:#ff5a00;
+  margin-bottom:5px;
+}
+
+.product-stock{
+  color:#666;
   font-size:13px;
-  color:#4b5563;
+  margin-bottom:12px;
 }
 
-.products-wrapper,
-.orders-wrapper{
+.product-actions{
+  display:flex;
+  gap:7px;
+}
+
+.product-actions button{
+  flex:1;
+  padding:9px;
+  font-size:12px;
+}
+
+.table-wrap{
   overflow-x:auto;
 }
 
@@ -207,147 +236,32 @@ table{
 
 th,
 td{
-  padding:12px;
-  border-bottom:1px solid #e5e7eb;
+  padding:13px 10px;
+  border-bottom:1px solid #eee;
   text-align:left;
-  vertical-align:middle;
+  font-size:14px;
 }
 
 th{
-  background:#f9fafb;
-}
-
-.table-image{
-  width:65px;
-  height:65px;
-  object-fit:cover;
-  border-radius:8px;
-}
-
-.action-buttons{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-}
-
-.edit-btn{
-  background:#f59e0b;
-  color:#fff;
-  border:0;
-  padding:8px 11px;
-  border-radius:7px;
-  cursor:pointer;
-}
-
-.delete-btn{
-  background:#dc2626;
-  color:#fff;
-  border:0;
-  padding:8px 11px;
-  border-radius:7px;
-  cursor:pointer;
-}
-
-.view-btn{
-  background:#2563eb;
-  color:#fff;
-  border:0;
-  padding:8px 11px;
-  border-radius:7px;
-  cursor:pointer;
-}
-
-.print-btn{
-  background:#111827;
-  color:#fff;
-  border:0;
-  padding:8px 11px;
-  border-radius:7px;
-  cursor:pointer;
-}
-
-.refresh-btn{
-  background:#111827;
-  color:#fff;
-  border:0;
-  padding:9px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  margin-bottom:15px;
-}
-
-.empty{
-  text-align:center;
-  color:#6b7280;
-  padding:30px;
-}
-
-.photo-count{
-  display:inline-block;
-  background:#eff6ff;
-  color:#1d4ed8;
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.admin-email{
-  padding:12px;
-  background:#f3f4f6;
-  border-radius:8px;
-  color:#374151;
-}
-
-.orders-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  margin-bottom:18px;
-  flex-wrap:wrap;
-}
-
-.orders-header h2{
-  margin-bottom:0;
-}
-
-.notification-badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:27px;
-  height:27px;
-  padding:0 8px;
-  background:#dc2626;
-  color:#fff;
-  border-radius:50px;
-  font-size:13px;
-  font-weight:bold;
-  margin-left:6px;
-}
-
-.new-paid-order{
-  background:#dcfce7!important;
+  background:#fafafa;
 }
 
 .status{
   display:inline-block;
-  padding:5px 9px;
+  padding:6px 9px;
   border-radius:20px;
   font-size:12px;
-  font-weight:bold;
-  text-transform:capitalize;
+  font-weight:800;
 }
 
 .status-paid{
-  background:#dcfce7;
-  color:#166534;
+  background:#d1fae5;
+  color:#065f46;
 }
 
 .status-pending{
-  background:#fef3c7;
-  color:#92400e;
+  background:#fff3cd;
+  color:#856404;
 }
 
 .status-failed{
@@ -356,31 +270,162 @@ th{
 }
 
 .status-refunded{
-  background:#ede9fe;
-  color:#5b21b6;
+  background:#e5e7eb;
+  color:#374151;
 }
 
-.order-status-select{
-  min-width:125px;
-  padding:7px;
-  font-size:13px;
+.status-new{
+  background:#dbeafe;
+  color:#1e40af;
+}
+
+.status-processing{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.status-shipped{
+  background:#e0e7ff;
+  color:#3730a3;
+}
+
+.status-delivered{
+  background:#d1fae5;
+  color:#065f46;
+}
+
+.status-cancelled{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.order-actions{
+  display:flex;
+  gap:7px;
+}
+
+.order-actions button{
+  padding:8px 10px;
+  font-size:12px;
+}
+
+.notification{
+  position:fixed;
+  top:85px;
+  right:20px;
+  width:min(380px,calc(100% - 40px));
+  background:#fff;
+  border-left:5px solid #198754;
+  box-shadow:0 8px 30px rgba(0,0,0,.18);
+  border-radius:10px;
+  padding:17px;
+  z-index:9999;
+  display:none;
+}
+
+.notification.show{
+  display:block;
+  animation:slideIn .3s ease;
+}
+
+.notification-title{
+  font-weight:800;
+  margin-bottom:7px;
+}
+
+.notification-text{
+  color:#555;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.notification-close{
+  position:absolute;
+  right:10px;
+  top:7px;
+  background:none;
+  padding:3px;
+  font-size:18px;
+}
+
+.empty{
+  text-align:center;
+  color:#777;
+  padding:30px;
+}
+
+.image-preview{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:10px;
+}
+
+.preview-item{
+  width:90px;
+  height:90px;
+  border-radius:8px;
+  overflow:hidden;
+  border:1px solid #ddd;
+}
+
+.preview-item img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:500;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  background:#fff;
+  width:min(850px,100%);
+  max-height:90vh;
+  overflow:auto;
+  border-radius:15px;
+  padding:25px;
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.close-btn{
+  background:#eee;
+  border-radius:50%;
+  width:38px;
+  height:38px;
+  padding:0;
+  font-size:20px;
 }
 
 .invoice{
-  display:none;
   background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  padding:25px;
-  margin-top:20px;
 }
 
-.invoice-top{
+.invoice-header{
   display:flex;
   justify-content:space-between;
   gap:20px;
-  border-bottom:2px solid #111827;
   padding-bottom:20px;
+  border-bottom:2px solid #111;
   margin-bottom:20px;
 }
 
@@ -389,201 +434,123 @@ th{
   font-weight:800;
 }
 
-.invoice-number{
-  text-align:right;
-}
-
 .invoice-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:25px;
+  gap:20px;
   margin-bottom:25px;
+}
+
+.invoice-box{
+  border:1px solid #ddd;
+  padding:15px;
+  border-radius:8px;
 }
 
 .invoice-box h3{
   margin-bottom:8px;
-  font-size:15px;
-}
-
-.invoice-box p{
-  color:#4b5563;
-  line-height:1.6;
 }
 
 .invoice-items{
   width:100%;
   border-collapse:collapse;
-  margin-top:15px;
   min-width:0;
 }
 
 .invoice-items th,
 .invoice-items td{
-  border:1px solid #e5e7eb;
+  border:1px solid #ddd;
 }
 
 .invoice-total{
   margin-left:auto;
-  max-width:350px;
+  width:min(350px,100%);
   margin-top:20px;
 }
 
-.invoice-total-row{
+.total-row{
   display:flex;
   justify-content:space-between;
   padding:8px 0;
 }
 
-.invoice-total-row.final{
-  border-top:2px solid #111827;
-  margin-top:8px;
+.total-final{
+  border-top:2px solid #111;
   padding-top:12px;
   font-size:20px;
   font-weight:800;
 }
 
-.invoice-buttons{
-  display:flex;
-  gap:10px;
-  margin-top:20px;
+.loading{
+  text-align:center;
+  padding:25px;
+  color:#777;
 }
 
-.close-invoice{
-  background:#6b7280;
-  color:#fff;
-  border:0;
-  padding:10px 15px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.order-notification{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  background:#111827;
-  color:#fff;
-  padding:18px 20px;
-  border-radius:12px;
-  box-shadow:0 10px 30px rgba(0,0,0,.2);
-  display:none;
-  z-index:1000;
-  max-width:380px;
-  animation:notificationIn .3s ease;
-}
-
-@keyframes notificationIn{
+@keyframes slideIn{
   from{
-    transform:translateY(20px);
+    transform:translateX(30px);
     opacity:0;
   }
   to{
-    transform:translateY(0);
+    transform:translateX(0);
     opacity:1;
   }
 }
 
-.order-notification strong{
-  display:block;
-  margin-bottom:7px;
-  font-size:16px;
-}
-
-.notification-close{
-  float:right;
-  background:none;
-  border:0;
-  color:#fff;
-  font-size:20px;
-  cursor:pointer;
-}
-
-.order-count{
-  background:#2563eb;
-  color:#fff;
-  padding:5px 10px;
-  border-radius:20px;
-  font-size:13px;
-}
-
-.paid-label{
-  display:inline-block;
-  background:#dcfce7;
-  color:#166534;
-  padding:4px 8px;
-  border-radius:6px;
-  font-size:11px;
-  font-weight:bold;
-  margin-top:5px;
-}
-
-@media(max-width:700px){
-
-  .form-grid{
-    grid-template-columns:1fr;
+@media(max-width:900px){
+  .dashboard-grid{
+    grid-template-columns:repeat(2,1fr);
   }
 
-  .full{
-    grid-column:auto;
+  .products-grid{
+    grid-template-columns:repeat(2,1fr);
   }
+}
 
+@media(max-width:650px){
   header{
     align-items:flex-start;
     flex-direction:column;
   }
 
-  .container{
-    padding:0 12px;
-    margin-top:18px;
+  .header-right{
+    width:100%;
+    justify-content:space-between;
   }
 
-  .card{
-    padding:18px;
+  .dashboard-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .products-grid{
+    grid-template-columns:1fr 1fr;
   }
 
   .invoice-grid{
     grid-template-columns:1fr;
   }
 
-  .invoice-top{
-    flex-direction:column;
-  }
-
-  .invoice-number{
-    text-align:left;
-  }
-
-  .order-notification{
-    left:15px;
-    right:15px;
-    bottom:15px;
-    max-width:none;
+  .section{
+    padding:15px;
   }
 }
 
-@media print{
-
-  body{
-    background:#fff;
+@media(max-width:430px){
+  .products-grid{
+    grid-template-columns:1fr;
   }
 
-  body>*{
-    display:none!important;
+  .dashboard-grid{
+    grid-template-columns:1fr 1fr;
   }
 
-  #printArea{
-    display:block!important;
-  }
-
-  .invoice{
-    display:block!important;
-    border:0;
-    box-shadow:none;
-    margin:0;
-  }
-
-  .invoice-buttons{
-    display:none;
+  .stat-value{
+    font-size:22px;
   }
 }
 </style>
@@ -592,2876 +559,1564 @@ th{
 <body>
 
 <header>
+  <div class="logo">EB MARKETIZA — OWNER</div>
 
-<h1>EB MARKETIZA — Admin</h1>
-
-<div class="header-buttons">
-
-<a href="index.html">
-Home
-</a>
-
-<a href="products.html">
-Store
-</a>
-
-<button
-id="logoutButton"
-class="logout-btn"
-type="button"
->
-Logout
-</button>
-
-</div>
-
+  <div class="header-right">
+    <div class="admin-email" id="adminEmail"></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 </header>
 
+<div id="paidNotification" class="notification">
+  <button class="notification-close" onclick="hideNotification()">×</button>
+  <div class="notification-title">💰 Payment Received</div>
+  <div id="notificationText" class="notification-text"></div>
+</div>
 
-<div class="container">
+<main class="container">
 
+  <h1>Owner Dashboard</h1>
 
-<!-- ADMIN -->
+  <div class="dashboard-grid">
 
-<div class="card">
+    <div class="card">
+      <div class="stat-title">Products</div>
+      <div class="stat-value" id="productCount">0</div>
+    </div>
 
-<div class="admin-email">
+    <div class="card">
+      <div class="stat-title">Orders</div>
+      <div class="stat-value" id="orderCount">0</div>
+    </div>
 
-Logged in as:
+    <div class="card">
+      <div class="stat-title">Paid Orders</div>
+      <div class="stat-value" id="paidOrderCount">0</div>
+    </div>
 
-<strong id="adminEmail">
-Checking...
-</strong>
+    <div class="card">
+      <div class="stat-title">Revenue</div>
+      <div class="stat-value" id="revenueCount">0 SEK</div>
+    </div>
+
+  </div>
+
+  <section class="section">
+
+    <h2 id="productFormTitle">Add Product</h2>
+
+    <form id="productForm">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Product Name *</label>
+          <input id="productName" required>
+        </div>
+
+        <div class="form-group">
+          <label>Price (SEK) *</label>
+          <input id="productPrice" type="number" min="0" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+          <label>Stock *</label>
+          <input id="productStock" type="number" min="0" step="1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <input id="productCategory">
+        </div>
+
+        <div class="form-group full">
+          <label>Description</label>
+          <textarea id="productDescription"></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label>Product Images</label>
+          <input id="productImages" type="file" accept="image/*" multiple>
+          <div id="imagePreview" class="image-preview"></div>
+        </div>
+
+        <div class="form-group full">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="submit" class="primary" id="saveProductBtn">
+              Add Product
+            </button>
+
+            <button type="button" class="secondary" id="cancelEditBtn" onclick="cancelEdit()" style="display:none;">
+              Cancel Edit
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </form>
+
+  </section>
+
+  <section class="section">
+
+    <h2>Products</h2>
+
+    <div id="productsContainer" class="products-grid">
+      <div class="loading">Loading products...</div>
+    </div>
+
+  </section>
+
+  <section class="section">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:15px;">
+      <h2 style="margin:0;">Orders</h2>
+
+      <div style="font-weight:800;">
+        Paid: <span id="paidBadge">0</span>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Phone</th>
+            <th>Total</th>
+            <th>Payment</th>
+            <th>Order Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody id="ordersBody">
+          <tr>
+            <td colspan="8" class="loading">Loading orders...</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</main>
+
+<div id="orderModal" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>Order Details</h2>
+      <button class="close-btn" onclick="closeOrderModal()">×</button>
+    </div>
+
+    <div id="orderDetails"></div>
+
+  </div>
 
 </div>
 
-</div>
+<script>
+const SUPABASE_URL = "https://wgzjqklwxsqqykysxwho.supabase.co";
 
+const SUPABASE_ANON_KEY =
+"sb_publishable_Y4soeQaBE8hn8RazFT8soeQaBE8hn8RazFT";
 
-<!-- PRODUCT FORM -->
+const ADMIN_EMAIL = "mucyoemmy@gmail.com";
 
-<div class="card">
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-<h2 id="formTitle">
-➕ Add Product
-</h2>
-
-<form id="productForm">
-
-<div class="form-grid">
-
-
-<div>
-
-<label for="name">
-Product Name
-</label>
-
-<input
-id="name"
-type="text"
-placeholder="Product name"
-required
->
-
-</div>
-
-
-<div>
-
-<label for="price">
-Price (SEK)
-</label>
-
-<input
-id="price"
-type="number"
-min="0"
-step="0.01"
-placeholder="99.90"
-required
->
-
-</div>
-
-
-<div>
-
-<label for="category">
-Category
-</label>
-
-<input
-id="category"
-type="text"
-placeholder="Electronics"
->
-
-</div>
-
-
-<div>
-
-<label for="stock">
-Stock
-</label>
-
-<input
-id="stock"
-type="number"
-min="0"
-value="0"
-placeholder="10"
->
-
-</div>
-
-
-<div class="full">
-
-<label for="productImages">
-Product Photos
-</label>
-
-<input
-id="productImages"
-type="file"
-accept="image/*"
-multiple
->
-
-<p
-style="margin-top:8px;color:#6b7280;font-size:14px"
->
-Select one or multiple photos.
-</p>
-
-<div id="imagePreview"></div>
-
-</div>
-
-
-<div class="full">
-
-<label for="description">
-Description
-</label>
-
-<textarea
-id="description"
-placeholder="Describe the product..."
-></textarea>
-
-</div>
-
-
-<div class="full form-buttons">
-
-<button
-id="saveButton"
-class="main-btn"
-type="submit"
->
-➕ Add Product
-</button>
-
-<button
-id="cancelButton"
-class="cancel-btn"
-type="button"
->
-Cancel Edit
-</button>
-
-</div>
-
-</div>
-
-</form>
-
-<div id="message"></div>
-
-</div>
-
-
-<!-- ORDERS -->
-
-<div class="card">
-
-<div class="orders-header">
-
-<h2>
-
-🔔 Paid Orders
-
-<span
-id="notificationCount"
-class="notification-badge"
->
-0
-</span>
-
-</h2>
-
-<span
-id="orderConnection"
-class="order-count"
->
-Connecting...
-</span>
-
-</div>
-
-
-<button
-id="refreshOrdersButton"
-class="refresh-btn"
-type="button"
->
-🔄 Refresh Orders
-</button>
-
-
-<div class="orders-wrapper">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>
-Order
-</th>
-
-<th>
-Customer
-</th>
-
-<th>
-Phone
-</th>
-
-<th>
-Total
-</th>
-
-<th>
-Payment
-</th>
-
-<th>
-Status
-</th>
-
-<th>
-Date
-</th>
-
-<th>
-Actions
-</th>
-
-</tr>
-
-</thead>
-
-
-<tbody id="ordersTable">
-
-<tr>
-
-<td
-colspan="8"
-class="empty"
->
-Loading orders...
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-
-<div
-id="invoice"
-class="invoice"
-></div>
-
-</div>
-
-
-<!-- PRODUCTS -->
-
-<div class="card">
-
-<h2>
-📦 Products
-</h2>
-
-
-<button
-id="refreshButton"
-class="refresh-btn"
-type="button"
->
-🔄 Refresh
-</button>
-
-
-<div class="products-wrapper">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>
-Image
-</th>
-
-<th>
-Name
-</th>
-
-<th>
-Category
-</th>
-
-<th>
-Price
-</th>
-
-<th>
-Stock
-</th>
-
-<th>
-Photos
-</th>
-
-<th>
-Actions
-</th>
-
-</tr>
-
-</thead>
-
-
-<tbody id="productsTable">
-
-<tr>
-
-<td
-colspan="7"
-class="empty"
->
-No products yet.
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- PAID ORDER NOTIFICATION -->
-
-<div
-id="orderNotification"
-class="order-notification"
->
-
-<button
-id="notificationClose"
-class="notification-close"
-type="button"
->
-×
-</button>
-
-<strong>
-🔔 PAYMENT RECEIVED
-</strong>
-
-<span id="notificationText"></span>
-
-</div>
-
-
-<div id="printArea"></div>
-
-
-<script type="module">
-
-import { supabase } from "./supabaseClient.js";
-
-
-/* ADMIN EMAIL */
-
-const ADMIN_EMAIL =
-"mucyoemmy539@gmail.com";
-
-
-/* ELEMENTS */
-
-const form =
-document.getElementById("productForm");
-
-const nameInput =
-document.getElementById("name");
-
-const priceInput =
-document.getElementById("price");
-
-const categoryInput =
-document.getElementById("category");
-
-const stockInput =
-document.getElementById("stock");
-
-const descriptionInput =
-document.getElementById("description");
-
-const imageInput =
-document.getElementById("productImages");
-
-const imagePreview =
-document.getElementById("imagePreview");
-
-const productsTable =
-document.getElementById("productsTable");
-
-const message =
-document.getElementById("message");
-
-const saveButton =
-document.getElementById("saveButton");
-
-const cancelButton =
-document.getElementById("cancelButton");
-
-const formTitle =
-document.getElementById("formTitle");
-
-const adminEmail =
-document.getElementById("adminEmail");
-
-const ordersTable =
-document.getElementById("ordersTable");
-
-const notificationCount =
-document.getElementById("notificationCount");
-
-const orderConnection =
-document.getElementById("orderConnection");
-
-const invoice =
-document.getElementById("invoice");
-
-const orderNotification =
-document.getElementById("orderNotification");
-
-const notificationText =
-document.getElementById("notificationText");
-
-
-/* STATE */
-
-let editingProductId = null;
-
+let currentUser = null;
+let products = [];
 let orders = [];
-
+let editingProductId = null;
 let realtimeChannel = null;
+let notificationTimer = null;
 
+document.addEventListener("DOMContentLoaded", init);
 
-/*
-IMPORTANT:
+async function init(){
 
-Stores paid orders that already showed
-a notification in this browser session.
+  const {
+    data:{session}
+  } = await supabase.auth.getSession();
 
-This prevents the same payment from
-showing repeatedly.
-*/
+  if(!session){
+    window.location.href = "login.html";
+    return;
+  }
 
-const notifiedPaidOrders =
-new Set();
+  currentUser = session.user;
 
+  const email = String(currentUser.email || "").toLowerCase();
 
-/* MESSAGE */
+  if(email !== ADMIN_EMAIL.toLowerCase()){
+    alert("Access denied.");
+    await supabase.auth.signOut();
+    window.location.href = "index.html";
+    return;
+  }
 
-function showMessage(text,type){
+  document.getElementById("adminEmail").textContent = currentUser.email;
 
-message.textContent = text;
+  await loadProducts();
+  await loadOrders();
 
-message.className = type;
+  setupRealtime();
 
-message.style.display = "block";
+  document.getElementById("productImages")
+    .addEventListener("change", previewImages);
 
+  document.getElementById("productForm")
+    .addEventListener("submit", saveProduct);
 }
 
+async function logout(){
 
-function hideMessage(){
+  if(realtimeChannel){
+    await supabase.removeChannel(realtimeChannel);
+  }
 
-message.style.display = "none";
+  await supabase.auth.signOut();
 
+  window.location.href = "login.html";
 }
-
-
-/* ADMIN CHECK */
-
-async function checkAdmin(){
-
-const {
-data:{
-user
-}
-} =
-await supabase.auth.getUser();
-
-
-if(!user){
-
-window.location.href =
-"login.html";
-
-return false;
-
-}
-
-
-adminEmail.textContent =
-user.email || "";
-
-
-if(
-user.email?.toLowerCase() !==
-ADMIN_EMAIL.toLowerCase()
-){
-
-document.body.innerHTML = `
-
-<div
-style="
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
-background:#f4f6f9;
-font-family:Arial;
-"
->
-
-<div
-style="
-background:white;
-padding:35px;
-border-radius:15px;
-text-align:center;
-max-width:450px;
-width:100%;
-box-shadow:0 5px 25px rgba(0,0,0,.1);
-"
->
-
-<h2>
-Access Denied
-</h2>
-
-<p
-style="
-margin:15px 0;
-color:#6b7280;
-"
->
-You are not authorized to access the admin dashboard.
-</p>
-
-<a
-href="index.html"
-style="
-display:inline-block;
-background:#2563eb;
-color:white;
-text-decoration:none;
-padding:11px 18px;
-border-radius:8px;
-"
->
-Go Home
-</a>
-
-</div>
-
-</div>
-
-`;
-
-return false;
-
-}
-
-return true;
-
-}
-
-
-/* IMAGE PREVIEW */
-
-imageInput.addEventListener(
-"change",
-()=>{
-
-imagePreview.innerHTML = "";
-
-Array.from(imageInput.files)
-.forEach((file,index)=>{
-
-const reader =
-new FileReader();
-
-reader.onload =
-event => {
-
-const div =
-document.createElement("div");
-
-div.className =
-"preview-card";
-
-div.innerHTML = `
-
-<img
-src="${event.target.result}"
-alt="Product photo"
->
-
-<div class="preview-label">
-Photo ${index + 1}
-</div>
-
-`;
-
-imagePreview.appendChild(div);
-
-};
-
-reader.readAsDataURL(file);
-
-});
-
-});
-
-
-/* UPLOAD IMAGE */
-
-async function uploadImage(
-file,
-productId,
-index
-){
-
-const extension =
-file.name
-.split(".")
-.pop()
-.toLowerCase();
-
-
-const filePath =
-`${productId}/${Date.now()}-${index}-${crypto.randomUUID()}.${extension}`;
-
-
-const {
-error
-} =
-await supabase.storage
-.from("product-images")
-.upload(
-filePath,
-file,
-{
-cacheControl:"3600",
-upsert:false
-}
-);
-
-
-if(error){
-throw error;
-}
-
-
-const {
-data
-} =
-supabase.storage
-.from("product-images")
-.getPublicUrl(filePath);
-
-
-return data.publicUrl;
-
-}
-
-
-/* ADD PRODUCT */
-
-async function addProduct(){
-
-const name =
-nameInput.value.trim();
-
-const price =
-Number(priceInput.value);
-
-const category =
-categoryInput.value.trim();
-
-const stock =
-Number(stockInput.value || 0);
-
-const description =
-descriptionInput.value.trim();
-
-const files =
-Array.from(imageInput.files);
-
-
-if(!name){
-
-throw new Error(
-"Product name is required."
-);
-
-}
-
-
-if(
-Number.isNaN(price) ||
-price < 0
-){
-
-throw new Error(
-"Enter a valid price."
-);
-
-}
-
-
-const {
-data:product,
-error
-} =
-await supabase
-.from("products")
-.insert({
-
-name,
-description,
-price,
-category,
-stock,
-image:null
-
-})
-.select()
-.single();
-
-
-if(error){
-throw error;
-}
-
-
-const uploadedUrls = [];
-
-
-for(
-let i=0;
-i<files.length;
-i++
-){
-
-saveButton.textContent =
-`Uploading ${i+1}/${files.length}...`;
-
-
-const url =
-await uploadImage(
-files[i],
-product.id,
-i
-);
-
-
-uploadedUrls.push(url);
-
-}
-
-
-if(uploadedUrls.length > 0){
-
-const rows =
-uploadedUrls.map(
-(url,index)=>({
-
-product_id:
-product.id,
-
-image_url:
-url,
-
-sort_order:
-index
-
-})
-);
-
-
-const {
-error:imageError
-} =
-await supabase
-.from("product_images")
-.insert(rows);
-
-
-if(imageError){
-throw imageError;
-}
-
-
-const {
-error:updateError
-} =
-await supabase
-.from("products")
-.update({
-image:
-uploadedUrls[0]
-})
-.eq(
-"id",
-product.id
-);
-
-
-if(updateError){
-throw updateError;
-}
-
-}
-
-
-showMessage(
-`Product added successfully! ${uploadedUrls.length} photo(s) uploaded.`,
-"success"
-);
-
-
-resetForm();
-
-await loadProducts();
-
-}
-
-
-/* UPDATE PRODUCT */
-
-async function updateProduct(){
-
-const name =
-nameInput.value.trim();
-
-const price =
-Number(priceInput.value);
-
-const category =
-categoryInput.value.trim();
-
-const stock =
-Number(stockInput.value || 0);
-
-const description =
-descriptionInput.value.trim();
-
-const files =
-Array.from(imageInput.files);
-
-
-if(!name){
-
-throw new Error(
-"Product name is required."
-);
-
-}
-
-
-if(
-Number.isNaN(price) ||
-price < 0
-){
-
-throw new Error(
-"Enter a valid price."
-);
-
-}
-
-
-const {
-error
-} =
-await supabase
-.from("products")
-.update({
-
-name,
-description,
-price,
-category,
-stock
-
-})
-.eq(
-"id",
-editingProductId
-);
-
-
-if(error){
-throw error;
-}
-
-
-if(files.length > 0){
-
-const uploadedUrls = [];
-
-
-for(
-let i=0;
-i<files.length;
-i++
-){
-
-saveButton.textContent =
-`Uploading ${i+1}/${files.length}...`;
-
-
-const url =
-await uploadImage(
-files[i],
-editingProductId,
-i
-);
-
-
-uploadedUrls.push(url);
-
-}
-
-
-const rows =
-uploadedUrls.map(
-(url,index)=>({
-
-product_id:
-editingProductId,
-
-image_url:
-url,
-
-sort_order:
-Date.now()+index
-
-})
-);
-
-
-const {
-error:imageError
-} =
-await supabase
-.from("product_images")
-.insert(rows);
-
-
-if(imageError){
-throw imageError;
-}
-
-
-const {
-data:currentProduct
-} =
-await supabase
-.from("products")
-.select("image")
-.eq(
-"id",
-editingProductId
-)
-.single();
-
-
-if(
-!currentProduct?.image &&
-uploadedUrls[0]
-){
-
-await supabase
-.from("products")
-.update({
-image:
-uploadedUrls[0]
-})
-.eq(
-"id",
-editingProductId
-);
-
-}
-
-}
-
-
-showMessage(
-"Product updated successfully!",
-"success"
-);
-
-
-resetForm();
-
-await loadProducts();
-
-}
-
-
-/* FORM SUBMIT */
-
-form.addEventListener(
-"submit",
-async event=>{
-
-event.preventDefault();
-
-hideMessage();
-
-saveButton.disabled =
-true;
-
-
-try{
-
-if(editingProductId){
-
-await updateProduct();
-
-}else{
-
-await addProduct();
-
-}
-
-}catch(error){
-
-console.error(error);
-
-showMessage(
-"Error: " + error.message,
-"error"
-);
-
-}finally{
-
-saveButton.disabled =
-false;
-
-saveButton.textContent =
-editingProductId
-? "💾 Update Product"
-: "➕ Add Product";
-
-}
-
-});
-
-
-/* LOAD PRODUCTS */
 
 async function loadProducts(){
 
-productsTable.innerHTML = `
+  const container = document.getElementById("productsContainer");
 
-<tr>
+  container.innerHTML = '<div class="loading">Loading products...</div>';
 
-<td
-colspan="7"
-class="empty"
->
-Loading products...
-</td>
+  const {data,error} = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at",{ascending:false});
 
-</tr>
+  if(error){
 
-`;
+    console.error(error);
 
+    container.innerHTML =
+      '<div class="empty">Could not load products.</div>';
 
-const {
-data,
-error
-} =
-await supabase
-.from("products")
-.select("*")
-.order(
-"created_at",
-{
-ascending:false
-}
-);
+    return;
+  }
 
+  products = data || [];
 
-if(error){
+  document.getElementById("productCount").textContent =
+    products.length;
 
-productsTable.innerHTML = `
-
-<tr>
-
-<td
-colspan="7"
-class="empty"
->
-${escapeHtml(error.message)}
-</td>
-
-</tr>
-
-`;
-
-return;
-
+  renderProducts();
 }
 
+function renderProducts(){
 
-if(
-!data ||
-data.length === 0
-){
+  const container =
+    document.getElementById("productsContainer");
 
-productsTable.innerHTML = `
+  if(!products.length){
 
-<tr>
+    container.innerHTML =
+      '<div class="empty">No products yet.</div>';
 
-<td
-colspan="7"
-class="empty"
->
-No products yet.
-</td>
+    return;
+  }
 
-</tr>
+  container.innerHTML = products.map(product => {
 
-`;
+    const image =
+      product.image ||
+      "https://via.placeholder.com/600x400?text=No+Image";
 
-return;
+    return `
+      <div class="product-card">
 
+        <img
+          src="${escapeHtml(image)}"
+          alt="${escapeHtml(product.name || "Product")}"
+        >
+
+        <div class="product-info">
+
+          <div class="product-name">
+            ${escapeHtml(product.name || "Unnamed")}
+          </div>
+
+          <div class="product-price">
+            ${formatMoney(product.price)} SEK
+          </div>
+
+          <div class="product-stock">
+            Stock: ${Number(product.stock || 0)}
+          </div>
+
+          <div class="product-actions">
+
+            <button
+              class="secondary"
+              onclick="editProduct('${escapeJs(product.id)}')"
+            >
+              Edit
+            </button>
+
+            <button
+              class="danger"
+              onclick="deleteProduct('${escapeJs(product.id)}')"
+            >
+              Delete
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
 }
 
+function previewImages(event){
 
-productsTable.innerHTML = "";
+  const preview =
+    document.getElementById("imagePreview");
 
+  preview.innerHTML = "";
 
-for(
-const product of data
-){
+  const files =
+    Array.from(event.target.files || []);
 
-const {
-count
-} =
-await supabase
-.from("product_images")
-.select(
-"id",
-{
-count:"exact",
-head:true
-}
-)
-.eq(
-"product_id",
-product.id
-);
+  files.forEach(file => {
 
+    const reader = new FileReader();
 
-const row =
-document.createElement("tr");
+    reader.onload = e => {
 
+      const item =
+        document.createElement("div");
 
-row.innerHTML = `
+      item.className = "preview-item";
 
-<td>
+      item.innerHTML =
+        `<img src="${e.target.result}" alt="Preview">`;
 
-${
-product.image
-?
+      preview.appendChild(item);
 
-`
-<img
-src="${escapeHtml(product.image)}"
-class="table-image"
-alt="Product"
->
-`
+    };
 
-:
+    reader.readAsDataURL(file);
 
-"No image"
+  });
 }
 
-</td>
+async function saveProduct(event){
 
+  event.preventDefault();
 
-<td>
-${escapeHtml(product.name || "")}
-</td>
+  const button =
+    document.getElementById("saveProductBtn");
 
+  button.disabled = true;
+  button.textContent = "Saving...";
 
-<td>
-${escapeHtml(product.category || "-")}
-</td>
+  try{
 
+    const name =
+      document.getElementById("productName").value.trim();
 
-<td>
-${Number(product.price || 0).toFixed(2)} SEK
-</td>
+    const price =
+      Number(document.getElementById("productPrice").value);
 
+    const stock =
+      Number(document.getElementById("productStock").value);
 
-<td>
-${product.stock ?? 0}
-</td>
+    const category =
+      document.getElementById("productCategory").value.trim();
 
+    const description =
+      document.getElementById("productDescription").value.trim();
 
-<td>
+    const files =
+      Array.from(
+        document.getElementById("productImages").files || []
+      );
 
-<span class="photo-count">
+    if(!name){
+      throw new Error("Product name is required.");
+    }
 
-${count || 0} photo(s)
+    if(!Number.isFinite(price) || price < 0){
+      throw new Error("Enter a valid price.");
+    }
 
-</span>
+    if(!Number.isFinite(stock) || stock < 0){
+      throw new Error("Enter a valid stock.");
+    }
 
-</td>
+    let productId = editingProductId;
+    let productData = null;
 
+    if(editingProductId){
 
-<td>
+      const {data,error} = await supabase
+        .from("products")
+        .update({
+          name,
+          price,
+          stock,
+          category,
+          description
+        })
+        .eq("id",editingProductId)
+        .select()
+        .single();
 
-<div class="action-buttons">
+      if(error) throw error;
 
-<button
-class="edit-btn"
-data-edit="${product.id}"
->
-Edit
-</button>
+      productData = data;
 
-<button
-class="delete-btn"
-data-delete="${product.id}"
->
-Delete
-</button>
+    }else{
 
-</div>
+      const {data,error} = await supabase
+        .from("products")
+        .insert({
+          name,
+          price,
+          stock,
+          category,
+          description
+        })
+        .select()
+        .single();
 
-</td>
+      if(error) throw error;
 
-`;
+      productData = data;
+      productId = data.id;
+    }
 
+    if(files.length){
 
-productsTable.appendChild(row);
+      const uploadedImages = [];
 
+      for(let i=0;i<files.length;i++){
+
+        const file = files[i];
+
+        const extension =
+          file.name.includes(".")
+            ? file.name.split(".").pop().toLowerCase()
+            : "jpg";
+
+        const filePath =
+          `${productId}/${Date.now()}-${i}.${extension}`;
+
+        const {error:uploadError} =
+          await supabase.storage
+            .from("product-images")
+            .upload(filePath,file,{
+              upsert:true,
+              contentType:file.type
+            });
+
+        if(uploadError) throw uploadError;
+
+        const {data:publicData} =
+          supabase.storage
+            .from("product-images")
+            .getPublicUrl(filePath);
+
+        const publicUrl =
+          publicData.publicUrl;
+
+        uploadedImages.push(publicUrl);
+
+        const {error:imageRowError} =
+          await supabase
+            .from("product_images")
+            .insert({
+              product_id: productId,
+              image_url: publicUrl,
+              sort_order: i
+            });
+
+        if(imageRowError) throw imageRowError;
+      }
+
+      if(uploadedImages.length){
+
+        const {error:imageUpdateError} =
+          await supabase
+            .from("products")
+            .update({
+              image: uploadedImages[0]
+            })
+            .eq("id",productId);
+
+        if(imageUpdateError) throw imageUpdateError;
+      }
+    }
+
+    alert(
+      editingProductId
+        ? "Product updated successfully."
+        : "Product added successfully."
+    );
+
+    cancelEdit();
+
+    await loadProducts();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      error?.message ||
+      "Something went wrong while saving the product."
+    );
+
+  }finally{
+
+    button.disabled = false;
+
+    button.textContent =
+      editingProductId
+        ? "Update Product"
+        : "Add Product";
+  }
 }
 
+function editProduct(id){
 
-/* EDIT BUTTONS */
+  const product =
+    products.find(
+      p => String(p.id) === String(id)
+    );
 
-document
-.querySelectorAll("[data-edit]")
-.forEach(button=>{
+  if(!product) return;
 
-button.addEventListener(
-"click",
-()=>{
-startEdit(
-button.dataset.edit
-);
-}
-);
+  editingProductId = product.id;
 
-});
+  document.getElementById("productFormTitle").textContent =
+    "Edit Product";
 
+  document.getElementById("productName").value =
+    product.name || "";
 
-/* DELETE BUTTONS */
+  document.getElementById("productPrice").value =
+    product.price ?? "";
 
-document
-.querySelectorAll("[data-delete]")
-.forEach(button=>{
+  document.getElementById("productStock").value =
+    product.stock ?? "";
 
-button.addEventListener(
-"click",
-()=>{
-deleteProduct(
-button.dataset.delete
-);
-}
-);
+  document.getElementById("productCategory").value =
+    product.category || "";
 
-});
+  document.getElementById("productDescription").value =
+    product.description || "";
 
-}
+  document.getElementById("productImages").value = "";
 
+  document.getElementById("imagePreview").innerHTML = "";
 
-/* START EDIT */
+  document.getElementById("saveProductBtn").textContent =
+    "Update Product";
 
-async function startEdit(id){
+  document.getElementById("cancelEditBtn").style.display =
+    "inline-block";
 
-const {
-data,
-error
-} =
-await supabase
-.from("products")
-.select("*")
-.eq("id",id)
-.single();
-
-
-if(error){
-
-showMessage(
-error.message,
-"error"
-);
-
-return;
-
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 }
 
+function cancelEdit(){
 
-editingProductId = id;
+  editingProductId = null;
 
+  document.getElementById("productForm").reset();
 
-nameInput.value =
-data.name || "";
+  document.getElementById("productFormTitle").textContent =
+    "Add Product";
 
-priceInput.value =
-data.price || "";
+  document.getElementById("saveProductBtn").textContent =
+    "Add Product";
 
-categoryInput.value =
-data.category || "";
+  document.getElementById("cancelEditBtn").style.display =
+    "none";
 
-stockInput.value =
-data.stock || 0;
-
-descriptionInput.value =
-data.description || "";
-
-
-formTitle.textContent =
-"✏️ Edit Product";
-
-saveButton.textContent =
-"💾 Update Product";
-
-cancelButton.style.display =
-"block";
-
-
-imageInput.value = "";
-
-imagePreview.innerHTML = "";
-
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
+  document.getElementById("imagePreview").innerHTML = "";
 }
-
-
-/* RESET */
-
-cancelButton.addEventListener(
-"click",
-resetForm
-);
-
-
-function resetForm(){
-
-editingProductId = null;
-
-form.reset();
-
-stockInput.value = 0;
-
-imagePreview.innerHTML = "";
-
-formTitle.textContent =
-"➕ Add Product";
-
-saveButton.textContent =
-"➕ Add Product";
-
-cancelButton.style.display =
-"none";
-
-}
-
-
-/* DELETE PRODUCT */
 
 async function deleteProduct(id){
 
-if(
-!confirm(
-"Are you sure you want to delete this product?"
-)
-){
+  const product =
+    products.find(
+      p => String(p.id) === String(id)
+    );
 
-return;
+  if(!product) return;
 
+  const confirmed =
+    confirm(
+      `Delete "${product.name}"?\n\nThis action cannot be undone.`
+    );
+
+  if(!confirmed) return;
+
+  try{
+
+    const {error} =
+      await supabase
+        .from("products")
+        .delete()
+        .eq("id",id);
+
+    if(error) throw error;
+
+    alert("Product deleted.");
+
+    await loadProducts();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      error?.message ||
+      "Could not delete product."
+    );
+  }
 }
-
-
-try{
-
-const {
-data:images,
-error:imageError
-} =
-await supabase
-.from("product_images")
-.select("image_url")
-.eq(
-"product_id",
-id
-);
-
-
-if(imageError){
-throw imageError;
-}
-
-
-if(
-images &&
-images.length > 0
-){
-
-const paths =
-images.map(item=>{
-
-try{
-
-const url =
-new URL(item.image_url);
-
-const marker =
-"/product-images/";
-
-const position =
-url.pathname.indexOf(marker);
-
-
-if(position === -1){
-return null;
-}
-
-
-return decodeURIComponent(
-url.pathname.substring(
-position + marker.length
-)
-);
-
-
-}catch{
-
-return null;
-
-}
-
-})
-.filter(Boolean);
-
-
-if(paths.length > 0){
-
-await supabase.storage
-.from("product-images")
-.remove(paths);
-
-}
-
-}
-
-
-const {
-error
-} =
-await supabase
-.from("products")
-.delete()
-.eq(
-"id",
-id
-);
-
-
-if(error){
-throw error;
-}
-
-
-showMessage(
-"Product deleted successfully.",
-"success"
-);
-
-
-await loadProducts();
-
-
-}catch(error){
-
-showMessage(
-"Could not delete product: " +
-error.message,
-"error"
-);
-
-}
-
-}
-
-
-/* LOAD ORDERS */
 
 async function loadOrders(){
 
-ordersTable.innerHTML = `
+  const body =
+    document.getElementById("ordersBody");
 
-<tr>
+  body.innerHTML =
+    `<tr><td colspan="8" class="loading">Loading orders...</td></tr>`;
 
-<td
-colspan="8"
-class="empty"
->
-Loading orders...
-</td>
+  const {data,error} =
+    await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at",{ascending:false});
 
-</tr>
+  if(error){
 
-`;
+    console.error(error);
 
+    body.innerHTML =
+      `<tr><td colspan="8" class="empty">Could not load orders.</td></tr>`;
 
-const {
-data,
-error
-} =
-await supabase
-.from("orders")
-.select("*")
-.order(
-"created_at",
-{
-ascending:false
+    return;
+  }
+
+  orders = data || [];
+
+  renderOrders();
 }
-);
-
-
-if(error){
-
-console.error(error);
-
-ordersTable.innerHTML = `
-
-<tr>
-
-<td
-colspan="8"
-class="empty"
->
-${escapeHtml(error.message)}
-</td>
-
-</tr>
-
-`;
-
-return;
-
-}
-
-
-orders = data || [];
-
-
-renderOrders();
-
-}
-
-
-/* RENDER ORDERS */
 
 function renderOrders(){
 
-if(!orders.length){
+  const body =
+    document.getElementById("ordersBody");
 
-ordersTable.innerHTML = `
+  document.getElementById("orderCount").textContent =
+    orders.length;
 
-<tr>
+  const paidOrders =
+    orders.filter(
+      order =>
+        String(order.payment_status || "").toLowerCase() === "paid"
+    );
 
-<td
-colspan="8"
-class="empty"
->
-No orders yet.
-</td>
+  document.getElementById("paidOrderCount").textContent =
+    paidOrders.length;
 
-</tr>
+  document.getElementById("paidBadge").textContent =
+    paidOrders.length;
 
-`;
+  const revenue =
+    paidOrders.reduce(
+      (sum,order) =>
+        sum + Number(order.total || 0),
+      0
+    );
 
-notificationCount.textContent =
-"0";
+  document.getElementById("revenueCount").textContent =
+    `${formatMoney(revenue)} SEK`;
 
-return;
+  if(!orders.length){
 
+    body.innerHTML =
+      `<tr><td colspan="8" class="empty">No orders yet.</td></tr>`;
+
+    return;
+  }
+
+  body.innerHTML = orders.map(order => {
+
+    const payment =
+      String(order.payment_status || "pending").toLowerCase();
+
+    const orderStatus =
+      String(order.order_status || "new").toLowerCase();
+
+    return `
+      <tr>
+
+        <td>
+          <strong>#${escapeHtml(order.order_number ?? "")}</strong>
+        </td>
+
+        <td>
+          ${escapeHtml(order.customer_name || "—")}
+          <br>
+          <small>${escapeHtml(order.customer_email || "")}</small>
+        </td>
+
+        <td>
+          ${escapeHtml(order.customer_phone || "—")}
+        </td>
+
+        <td>
+          <strong>${formatMoney(order.total)} SEK</strong>
+        </td>
+
+        <td>
+          <span class="status ${paymentClass(payment)}">
+            ${escapeHtml(payment.toUpperCase())}
+          </span>
+        </td>
+
+        <td>
+
+          <select
+            onchange="updateOrderStatus('${escapeJs(order.id)}',this.value)"
+          >
+
+            <option value="new" ${orderStatus==="new"?"selected":""}>
+              New
+            </option>
+
+            <option value="processing" ${orderStatus==="processing"?"selected":""}>
+              Processing
+            </option>
+
+            <option value="shipped" ${orderStatus==="shipped"?"selected":""}>
+              Shipped
+            </option>
+
+            <option value="delivered" ${orderStatus==="delivered"?"selected":""}>
+              Delivered
+            </option>
+
+            <option value="cancelled" ${orderStatus==="cancelled"?"selected":""}>
+              Cancelled
+            </option>
+
+          </select>
+
+        </td>
+
+        <td>
+          ${formatDate(order.created_at)}
+        </td>
+
+        <td>
+
+          <div class="order-actions">
+
+            <button
+              class="secondary"
+              onclick="viewOrder('${escapeJs(order.id)}')"
+            >
+              View
+            </button>
+
+            <button
+              class="primary"
+              onclick="printOrder('${escapeJs(order.id)}')"
+            >
+              Print
+            </button>
+
+          </div>
+
+        </td>
+
+      </tr>
+    `;
+
+  }).join("");
 }
 
+async function updateOrderStatus(orderId,status){
 
-/*
-ONLY PAID ORDERS ARE COUNTED
-AS NOTIFICATIONS.
-*/
+  try{
 
-const paidOrders =
-orders.filter(
-order =>
-String(
-order.payment_status || ""
-).toLowerCase() === "paid"
-);
+    const {error} =
+      await supabase
+        .from("orders")
+        .update({
+          order_status:status,
+          updated_at:new Date().toISOString()
+        })
+        .eq("id",orderId);
 
+    if(error) throw error;
 
-notificationCount.textContent =
-paidOrders.length;
+  }catch(error){
 
+    console.error(error);
 
-ordersTable.innerHTML = "";
+    alert(
+      error?.message ||
+      "Could not update order status."
+    );
 
-
-orders.forEach(order=>{
-
-const row =
-document.createElement("tr");
-
-
-/*
-Highlight paid orders.
-*/
-
-if(
-String(
-order.payment_status || ""
-).toLowerCase() === "paid"
-){
-
-row.className =
-"new-paid-order";
-
+    await loadOrders();
+  }
 }
-
-
-row.innerHTML = `
-
-<td>
-
-<strong>
-#${escapeHtml(order.order_number)}
-</strong>
-
-</td>
-
-
-<td>
-
-${escapeHtml(
-order.customer_name || "-"
-)}
-
-<br>
-
-<small>
-${escapeHtml(
-order.customer_email || "-"
-)}
-</small>
-
-</td>
-
-
-<td>
-
-${escapeHtml(
-order.customer_phone || "-"
-)}
-
-</td>
-
-
-<td>
-
-<strong>
-
-${Number(
-order.total || 0
-).toFixed(2)}
-
-SEK
-
-</strong>
-
-</td>
-
-
-<td>
-
-<span
-class="status status-${escapeHtml(
-order.payment_status || "pending"
-)}"
->
-
-${escapeHtml(
-order.payment_status || "pending"
-)}
-
-</span>
-
-</td>
-
-
-<td>
-
-<select
-class="order-status-select"
-data-status="${order.id}"
->
-
-<option
-value="new"
-${order.order_status === "new"
-?"selected":""
-}
->
-New
-</option>
-
-<option
-value="processing"
-${order.order_status === "processing"
-?"selected":""
-}
->
-Processing
-</option>
-
-<option
-value="shipped"
-${order.order_status === "shipped"
-?"selected":""
-}
->
-Shipped
-</option>
-
-<option
-value="delivered"
-${order.order_status === "delivered"
-?"selected":""
-}
->
-Delivered
-</option>
-
-<option
-value="cancelled"
-${order.order_status === "cancelled"
-?"selected":""
-}
->
-Cancelled
-</option>
-
-</select>
-
-</td>
-
-
-<td>
-
-${formatDate(
-order.created_at
-)}
-
-</td>
-
-
-<td>
-
-<div class="action-buttons">
-
-<button
-class="view-btn"
-data-view-order="${order.id}"
->
-View
-</button>
-
-
-<button
-class="print-btn"
-data-print-order="${order.id}"
->
-🖨️ Print
-</button>
-
-</div>
-
-</td>
-
-`;
-
-
-ordersTable.appendChild(row);
-
-});
-
-
-/* VIEW */
-
-document
-.querySelectorAll("[data-view-order]")
-.forEach(button=>{
-
-button.addEventListener(
-"click",
-()=>{
-viewOrder(
-button.dataset.viewOrder
-);
-}
-);
-
-});
-
-
-/* PRINT */
-
-document
-.querySelectorAll("[data-print-order]")
-.forEach(button=>{
-
-button.addEventListener(
-"click",
-()=>{
-printOrder(
-button.dataset.printOrder
-);
-}
-);
-
-});
-
-
-/* STATUS */
-
-document
-.querySelectorAll("[data-status]")
-.forEach(select=>{
-
-select.addEventListener(
-"change",
-()=>{
-updateOrderStatus(
-select.dataset.status,
-select.value
-);
-}
-);
-
-});
-
-}
-
-
-/* UPDATE ORDER STATUS */
-
-async function updateOrderStatus(
-orderId,
-status
-){
-
-const {
-error
-} =
-await supabase
-.from("orders")
-.update({
-order_status:status
-})
-.eq(
-"id",
-orderId
-);
-
-
-if(error){
-
-alert(
-"Could not update order: " +
-error.message
-);
-
-return;
-
-}
-
-
-const order =
-orders.find(
-o =>
-String(o.id) ===
-String(orderId)
-);
-
-
-if(order){
-
-order.order_status =
-status;
-
-}
-
-
-renderOrders();
-
-}
-
-
-/* VIEW ORDER */
-
-async function viewOrder(orderId){
-
-const order =
-orders.find(
-o =>
-String(o.id) ===
-String(orderId)
-);
-
-
-if(!order){
-return;
-}
-
-
-const {
-data:items,
-error
-} =
-await supabase
-.from("order_items")
-.select("*")
-.eq(
-"order_id",
-orderId
-)
-.order(
-"created_at",
-{
-ascending:true
-}
-);
-
-
-if(error){
-
-alert(
-"Could not load order items: " +
-error.message
-);
-
-return;
-
-}
-
-
-renderInvoice(
-order,
-items || []
-);
-
-
-invoice.style.display =
-"block";
-
-
-invoice.scrollIntoView({
-behavior:"smooth",
-block:"start"
-});
-
-}
-
-
-/* INVOICE */
-
-function renderInvoice(
-order,
-items
-){
-
-let itemsHtml = "";
-
-
-if(items.length){
-
-itemsHtml =
-items.map(
-item => `
-
-<tr>
-
-<td>
-${escapeHtml(
-item.product_name || "-"
-)}
-</td>
-
-<td>
-${Number(
-item.quantity || 0
-)}
-</td>
-
-<td>
-${Number(
-item.unit_price || 0
-).toFixed(2)} SEK
-</td>
-
-<td>
-${Number(
-item.line_total || 0
-).toFixed(2)} SEK
-</td>
-
-</tr>
-
-`
-).join("");
-
-
-}else{
-
-itemsHtml = `
-
-<tr>
-
-<td
-colspan="4"
-style="text-align:center"
->
-No order items found.
-</td>
-
-</tr>
-
-`;
-
-}
-
-
-const address = `
-
-${escapeHtml(
-order.street || ""
-)}
-${escapeHtml(
-order.house_number || ""
-)}
-
-${
-order.apartment
-?
-`, ${escapeHtml(
-order.apartment
-)}`
-:
-""
-}
-
-<br>
-
-${escapeHtml(
-order.postal_code || ""
-)}
-
-${escapeHtml(
-order.city || ""
-)}
-
-<br>
-
-${escapeHtml(
-order.country || "Sweden"
-)}
-
-`;
-
-
-invoice.innerHTML = `
-
-<div class="invoice-top">
-
-<div>
-
-<div class="invoice-title">
-EB MARKETIZA
-</div>
-
-<p
-style="
-margin-top:6px;
-color:#6b7280;
-"
->
-Order Invoice
-</p>
-
-</div>
-
-
-<div class="invoice-number">
-
-<strong>
-Order #${escapeHtml(
-order.order_number
-)}
-</strong>
-
-<br>
-
-${formatDate(
-order.created_at
-)}
-
-</div>
-
-</div>
-
-
-<div class="invoice-grid">
-
-
-<div class="invoice-box">
-
-<h3>
-Customer
-</h3>
-
-<p>
-
-<strong>
-${escapeHtml(
-order.customer_name || "-"
-)}
-</strong>
-
-<br>
-
-${escapeHtml(
-order.customer_email || "-"
-)}
-
-<br>
-
-${escapeHtml(
-order.customer_phone || "-"
-)}
-
-</p>
-
-</div>
-
-
-<div class="invoice-box">
-
-<h3>
-Delivery Address
-</h3>
-
-<p>
-${address}
-</p>
-
-</div>
-
-</div>
-
-
-<div class="invoice-box">
-
-<h3>
-Products
-</h3>
-
-
-<table class="invoice-items">
-
-<thead>
-
-<tr>
-
-<th>
-Product
-</th>
-
-<th>
-Quantity
-</th>
-
-<th>
-Unit Price
-</th>
-
-<th>
-Total
-</th>
-
-</tr>
-
-</thead>
-
-
-<tbody>
-
-${itemsHtml}
-
-</tbody>
-
-</table>
-
-</div>
-
-
-<div class="invoice-total">
-
-<div class="invoice-total-row">
-
-<span>
-Subtotal
-</span>
-
-<strong>
-${Number(
-order.subtotal || 0
-).toFixed(2)} SEK
-</strong>
-
-</div>
-
-
-<div class="invoice-total-row">
-
-<span>
-Delivery
-</span>
-
-<strong>
-${Number(
-order.delivery_fee || 0
-).toFixed(2)} SEK
-</strong>
-
-</div>
-
-
-<div class="invoice-total-row final">
-
-<span>
-Total
-</span>
-
-<strong>
-${Number(
-order.total || 0
-).toFixed(2)} SEK
-</strong>
-
-</div>
-
-</div>
-
-
-<div style="margin-top:20px">
-
-<p>
-
-<strong>
-Payment:
-</strong>
-
-${escapeHtml(
-order.payment_status || "pending"
-)}
-
-</p>
-
-
-<p style="margin-top:7px">
-
-<strong>
-Order Status:
-</strong>
-
-${escapeHtml(
-order.order_status || "new"
-)}
-
-</p>
-
-
-<p style="margin-top:7px">
-
-<strong>
-Payment Reference:
-</strong>
-
-${escapeHtml(
-order.payment_reference || "-"
-)}
-
-</p>
-
-</div>
-
-
-<div class="invoice-buttons">
-
-<button
-class="main-btn"
-id="invoicePrintButton"
-type="button"
->
-🖨️ Print Invoice
-</button>
-
-
-<button
-class="close-invoice"
-id="closeInvoice"
-type="button"
->
-Close
-</button>
-
-</div>
-
-`;
-
-
-document
-.getElementById("invoicePrintButton")
-.addEventListener(
-"click",
-()=>{
-window.print();
-}
-);
-
-
-document
-.getElementById("closeInvoice")
-.addEventListener(
-"click",
-()=>{
-invoice.style.display =
-"none";
-}
-);
-
-}
-
-
-/* PRINT ORDER */
-
-async function printOrder(orderId){
-
-await viewOrder(orderId);
-
-
-setTimeout(
-()=>{
-window.print();
-},
-300
-);
-
-}
-
-
-/* DATE */
-
-function formatDate(value){
-
-if(!value){
-return "-";
-}
-
-
-return new Date(value)
-.toLocaleString(
-"en-SE",
-{
-year:"numeric",
-month:"2-digit",
-day:"2-digit",
-hour:"2-digit",
-minute:"2-digit"
-}
-);
-
-}
-
-
-/*
-==========================================
-PAID PAYMENT NOTIFICATION
-==========================================
-
-ONLY paid payments reach this function.
-*/
-
-function showPaidNotification(order){
-
-const paymentStatus =
-String(
-order.payment_status || ""
-).toLowerCase();
-
-
-/*
-Never show notification for:
-pending
-failed
-refunded
-anything else
-*/
-
-if(paymentStatus !== "paid"){
-return;
-}
-
-
-/*
-Do not show same paid order twice
-during the current admin session.
-*/
-
-const orderId =
-String(order.id);
-
-
-if(
-notifiedPaidOrders.has(orderId)
-){
-return;
-}
-
-
-notifiedPaidOrders.add(orderId);
-
-
-notificationText.textContent =
-`Order #${order.order_number} from ${order.customer_name || "customer"} — ${Number(order.total || 0).toFixed(2)} SEK`;
-
-
-orderNotification.style.display =
-"block";
-
-
-setTimeout(
-()=>{
-orderNotification.style.display =
-"none";
-},
-10000
-);
-
-}
-
-
-/* CLOSE NOTIFICATION */
-
-document
-.getElementById("notificationClose")
-.addEventListener(
-"click",
-()=>{
-orderNotification.style.display =
-"none";
-}
-);
-
-
-/*
-==========================================
-REALTIME ORDERS
-==========================================
-*/
 
 function setupRealtime(){
 
-if(realtimeChannel){
+  if(realtimeChannel){
+    supabase.removeChannel(realtimeChannel);
+  }
 
-supabase.removeChannel(
-realtimeChannel
-);
+  realtimeChannel =
+    supabase
+      .channel("admin-orders-realtime")
 
+      .on(
+        "postgres_changes",
+        {
+          event:"INSERT",
+          schema:"public",
+          table:"orders"
+        },
+        payload => {
+
+          const newOrder =
+            payload.new;
+
+          orders.unshift(newOrder);
+
+          renderOrders();
+
+          /*
+            IMPORTANT:
+            New orders are NOT notifications.
+            Pending orders are NOT notifications.
+          */
+        }
+      )
+
+      .on(
+        "postgres_changes",
+        {
+          event:"UPDATE",
+          schema:"public",
+          table:"orders"
+        },
+        payload => {
+
+          const updatedOrder =
+            payload.new;
+
+          const index =
+            orders.findIndex(
+              order =>
+                String(order.id) ===
+                String(updatedOrder.id)
+            );
+
+          let oldOrder =
+            index !== -1
+              ? orders[index]
+              : null;
+
+          const wasPaid =
+            String(oldOrder?.payment_status || "").toLowerCase()
+            === "paid";
+
+          const isPaid =
+            String(updatedOrder.payment_status || "").toLowerCase()
+            === "paid";
+
+          if(index !== -1){
+
+            orders[index] =
+              updatedOrder;
+
+          }else{
+
+            orders.unshift(updatedOrder);
+          }
+
+          renderOrders();
+
+          /*
+            ONLY notify when payment changes
+            from NOT PAID -> PAID.
+          */
+
+          if(!wasPaid && isPaid){
+
+            showPaidOrderNotification(
+              updatedOrder
+            );
+          }
+        }
+      )
+
+      .subscribe(status => {
+
+        console.log(
+          "Orders realtime:",
+          status
+        );
+
+      });
 }
 
+function showPaidOrderNotification(order){
 
-realtimeChannel =
-supabase
-.channel(
-"admin-orders-realtime"
-)
+  const notification =
+    document.getElementById("paidNotification");
 
+  const text =
+    document.getElementById("notificationText");
 
-/*
-NEW ORDER
-*/
+  text.innerHTML = `
+    Order <strong>#${escapeHtml(order.order_number ?? "")}</strong>
+    is now <strong>PAID</strong>.<br>
+    Customer: ${escapeHtml(order.customer_name || "—")}<br>
+    Total: <strong>${formatMoney(order.total)} SEK</strong>
+  `;
 
-.on(
-"postgres_changes",
-{
-event:"INSERT",
-schema:"public",
-table:"orders"
-},
-payload=>{
+  notification.classList.add("show");
 
-const newOrder =
-payload.new;
+  if(notificationTimer){
+    clearTimeout(notificationTimer);
+  }
 
+  notificationTimer =
+    setTimeout(
+      hideNotification,
+      9000
+    );
 
-/*
-Add order to list.
-*/
+  /*
+    Optional browser notification.
+    It only works if permission has already
+    been granted by the browser.
+  */
 
-orders.unshift(
-newOrder
-);
+  try{
 
+    if(
+      "Notification" in window &&
+      Notification.permission === "granted"
+    ){
 
-/*
-Refresh admin table.
-*/
+      new Notification(
+        "EB MARKETIZA — Payment Received",
+        {
+          body:
+            `Order #${order.order_number} paid — ${formatMoney(order.total)} SEK`
+        }
+      );
 
-renderOrders();
+    }
 
+  }catch(error){
 
-/*
-IMPORTANT:
-
-Notification ONLY if the new
-order is already PAID.
-*/
-
-if(
-String(
-newOrder.payment_status || ""
-).toLowerCase() === "paid"
-){
-
-showPaidNotification(
-newOrder
-);
-
+    console.log(
+      "Browser notification unavailable."
+    );
+  }
 }
 
-}
-)
+function hideNotification(){
 
-
-/*
-ORDER UPDATE
-*/
-
-.on(
-"postgres_changes",
-{
-event:"UPDATE",
-schema:"public",
-table:"orders"
-},
-payload=>{
-
-const updatedOrder =
-payload.new;
-
-
-const index =
-orders.findIndex(
-order =>
-String(order.id) ===
-String(updatedOrder.id)
-);
-
-
-let oldOrder = null;
-
-
-if(index !== -1){
-
-oldOrder =
-orders[index];
-
-orders[index] =
-updatedOrder;
-
-}else{
-
-orders.unshift(
-updatedOrder
-);
-
+  document
+    .getElementById("paidNotification")
+    .classList.remove("show");
 }
 
+async function viewOrder(orderId){
 
-/*
-Refresh table.
-*/
+  const order =
+    orders.find(
+      o => String(o.id) === String(orderId)
+    );
 
-renderOrders();
+  if(!order){
 
+    alert("Order not found.");
+    return;
+  }
 
-/*
-IMPORTANT:
+  const {data:items,error} =
+    await supabase
+      .from("order_items")
+      .select("*")
+      .eq("order_id",orderId)
+      .order("created_at",{ascending:true});
 
-This is the main part.
+  if(error){
 
-pending -> paid
-= notification
+    console.error(error);
 
-failed -> paid
-= notification
+    alert(
+      error?.message ||
+      "Could not load order items."
+    );
 
-anything -> paid
-= notification
+    return;
+  }
 
-paid -> paid
-= NO duplicate notification
-*/
+  document.getElementById("orderDetails").innerHTML =
+    buildInvoice(order,items || []);
 
-const oldPayment =
-String(
-oldOrder?.payment_status || ""
-).toLowerCase();
-
-
-const newPayment =
-String(
-updatedOrder.payment_status || ""
-).toLowerCase();
-
-
-if(
-newPayment === "paid" &&
-oldPayment !== "paid"
-){
-
-showPaidNotification(
-updatedOrder
-);
-
+  document
+    .getElementById("orderModal")
+    .classList.add("show");
 }
 
-}
-)
+function closeOrderModal(){
 
-
-.subscribe(
-status=>{
-
-if(
-status === "SUBSCRIBED"
-){
-
-orderConnection.textContent =
-"🟢 Realtime Connected";
-
-}else if(
-status === "CHANNEL_ERROR"
-){
-
-orderConnection.textContent =
-"🔴 Realtime Error";
-
-}else if(
-status === "TIMED_OUT"
-){
-
-orderConnection.textContent =
-"🟠 Timeout";
-
-}else{
-
-orderConnection.textContent =
-status;
-
+  document
+    .getElementById("orderModal")
+    .classList.remove("show");
 }
 
+function buildInvoice(order,items){
+
+  const payment =
+    String(order.payment_status || "pending").toUpperCase();
+
+  const orderStatus =
+    String(order.order_status || "new").toUpperCase();
+
+  const itemsHtml =
+    items.length
+      ? items.map(item => `
+          <tr>
+
+            <td>
+              ${escapeHtml(item.product_name || "Product")}
+            </td>
+
+            <td>
+              ${Number(item.quantity || 0)}
+            </td>
+
+            <td>
+              ${formatMoney(item.unit_price)} SEK
+            </td>
+
+            <td>
+              ${formatMoney(item.line_total)} SEK
+            </td>
+
+          </tr>
+        `).join("")
+      : `
+        <tr>
+          <td colspan="4" style="text-align:center;">
+            No items found.
+          </td>
+        </tr>
+      `;
+
+  return `
+    <div class="invoice">
+
+      <div class="invoice-header">
+
+        <div>
+          <div class="invoice-title">
+            EB MARKETIZA
+          </div>
+
+          <div>
+            Order Invoice
+          </div>
+        </div>
+
+        <div style="text-align:right;">
+          <strong>
+            Order #${escapeHtml(order.order_number ?? "")}
+          </strong>
+
+          <br>
+
+          ${formatDate(order.created_at)}
+        </div>
+
+      </div>
+
+      <div class="invoice-grid">
+
+        <div class="invoice-box">
+
+          <h3>Customer</h3>
+
+          <div>
+            <strong>
+              ${escapeHtml(order.customer_name || "—")}
+            </strong>
+          </div>
+
+          <div>
+            ${escapeHtml(order.customer_email || "—")}
+          </div>
+
+          <div>
+            ${escapeHtml(order.customer_phone || "—")}
+          </div>
+
+        </div>
+
+        <div class="invoice-box">
+
+          <h3>Delivery Address</h3>
+
+          <div>
+            ${escapeHtml(order.street || "")}
+            ${order.house_number
+              ? " " + escapeHtml(order.house_number)
+              : ""}
+          </div>
+
+          ${
+            order.apartment
+              ? `<div>${escapeHtml(order.apartment)}</div>`
+              : ""
+          }
+
+          <div>
+            ${escapeHtml(order.postal_code || "")}
+            ${escapeHtml(order.city || "")}
+          </div>
+
+          <div>
+            ${escapeHtml(order.country || "Sweden")}
+          </div>
+
+        </div>
+
+      </div>
+
+      <div style="margin-bottom:15px;">
+
+        <strong>Payment:</strong>
+
+        <span class="status ${paymentClass(payment.toLowerCase())}">
+          ${escapeHtml(payment)}
+        </span>
+
+        &nbsp;&nbsp;
+
+        <strong>Order:</strong>
+
+        <span class="status ${orderStatusClass(orderStatus.toLowerCase())}">
+          ${escapeHtml(orderStatus)}
+        </span>
+
+      </div>
+
+      ${
+        order.payment_reference
+          ? `
+            <div style="margin-bottom:15px;font-size:13px;">
+              Payment Reference:
+              ${escapeHtml(order.payment_reference)}
+            </div>
+          `
+          : ""
+      }
+
+      <table class="invoice-items">
+
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+
+      </table>
+
+      <div class="invoice-total">
+
+        <div class="total-row">
+          <span>Subtotal</span>
+          <strong>${formatMoney(order.subtotal)} SEK</strong>
+        </div>
+
+        <div class="total-row">
+          <span>Delivery</span>
+          <strong>${formatMoney(order.delivery_fee)} SEK</strong>
+        </div>
+
+        <div class="total-row total-final">
+          <span>Total</span>
+          <strong>${formatMoney(order.total)} SEK</strong>
+        </div>
+
+      </div>
+
+      ${
+        order.notes
+          ? `
+            <div style="margin-top:20px;">
+              <strong>Notes:</strong>
+              <div style="margin-top:5px;">
+                ${escapeHtml(order.notes)}
+              </div>
+            </div>
+          `
+          : ""
+      }
+
+    </div>
+  `;
 }
-);
 
+async function printOrder(orderId){
+
+  const order =
+    orders.find(
+      o => String(o.id) === String(orderId)
+    );
+
+  if(!order){
+
+    alert("Order not found.");
+    return;
+  }
+
+  const {data:items,error} =
+    await supabase
+      .from("order_items")
+      .select("*")
+      .eq("order_id",orderId)
+      .order("created_at",{ascending:true});
+
+  if(error){
+
+    console.error(error);
+
+    alert(
+      error?.message ||
+      "Could not load order items."
+    );
+
+    return;
+  }
+
+  const printWindow =
+    window.open(
+      "",
+      "_blank",
+      "width=900,height=700"
+    );
+
+  if(!printWindow){
+
+    alert(
+      "Please allow pop-ups to print the order."
+    );
+
+    return;
+  }
+
+  const invoice =
+    buildInvoice(order,items || []);
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+
+      <meta charset="UTF-8">
+
+      <title>
+        EB MARKETIZA — Order #${escapeHtml(order.order_number ?? "")}
+      </title>
+
+      <style>
+
+        *{
+          box-sizing:border-box;
+        }
+
+        body{
+          font-family:Arial,Helvetica,sans-serif;
+          padding:35px;
+          color:#111;
+        }
+
+        .invoice-header{
+          display:flex;
+          justify-content:space-between;
+          gap:20px;
+          padding-bottom:20px;
+          border-bottom:2px solid #111;
+          margin-bottom:20px;
+        }
+
+        .invoice-title{
+          font-size:28px;
+          font-weight:800;
+        }
+
+        .invoice-grid{
+          display:grid;
+          grid-template-columns:1fr 1fr;
+          gap:20px;
+          margin-bottom:25px;
+        }
+
+        .invoice-box{
+          border:1px solid #ddd;
+          padding:15px;
+          border-radius:8px;
+        }
+
+        .invoice-box h3{
+          margin-bottom:8px;
+        }
+
+        table{
+          width:100%;
+          border-collapse:collapse;
+        }
+
+        th,td{
+          padding:10px;
+          border:1px solid #ddd;
+          text-align:left;
+        }
+
+        .invoice-total{
+          margin-left:auto;
+          width:350px;
+          margin-top:20px;
+        }
+
+        .total-row{
+          display:flex;
+          justify-content:space-between;
+          padding:8px 0;
+        }
+
+        .total-final{
+          border-top:2px solid #111;
+          padding-top:12px;
+          font-size:20px;
+          font-weight:800;
+        }
+
+        .status{
+          display:inline-block;
+          padding:5px 8px;
+          border:1px solid #aaa;
+          border-radius:15px;
+          font-size:12px;
+          font-weight:800;
+        }
+
+        @media print{
+
+          body{
+            padding:0;
+          }
+
+          @page{
+            margin:15mm;
+          }
+        }
+
+        @media(max-width:650px){
+
+          body{
+            padding:15px;
+          }
+
+          .invoice-grid{
+            grid-template-columns:1fr;
+          }
+
+          .invoice-total{
+            width:100%;
+          }
+
+        }
+
+      </style>
+
+    </head>
+
+    <body>
+
+      ${invoice}
+
+      <script>
+        window.onload = function(){
+          setTimeout(function(){
+            window.print();
+          },300);
+        };
+      <\/script>
+
+    </body>
+
+    </html>
+  `);
+
+  printWindow.document.close();
 }
 
+function formatMoney(value){
 
-/* REFRESH PRODUCTS */
-
-document
-.getElementById("refreshButton")
-.addEventListener(
-"click",
-loadProducts
-);
-
-
-/* REFRESH ORDERS */
-
-document
-.getElementById("refreshOrdersButton")
-.addEventListener(
-"click",
-loadOrders
-);
-
-
-/* LOGOUT */
-
-document
-.getElementById("logoutButton")
-.addEventListener(
-"click",
-async()=>{
-
-if(realtimeChannel){
-
-await supabase.removeChannel(
-realtimeChannel
-);
-
+  return Number(value || 0)
+    .toLocaleString(
+      "sv-SE",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
 }
 
+function formatDate(value){
 
-await supabase.auth.signOut();
+  if(!value) return "—";
 
+  const date =
+    new Date(value);
 
-window.location.href =
-"login.html";
+  if(Number.isNaN(date.getTime())){
+    return "—";
+  }
 
+  return date.toLocaleString(
+    "sv-SE",
+    {
+      year:"numeric",
+      month:"short",
+      day:"numeric",
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
 }
-);
 
+function paymentClass(status){
 
-/* ESCAPE HTML */
+  switch(String(status).toLowerCase()){
+
+    case "paid":
+      return "status-paid";
+
+    case "failed":
+      return "status-failed";
+
+    case "refunded":
+      return "status-refunded";
+
+    default:
+      return "status-pending";
+  }
+}
+
+function orderStatusClass(status){
+
+  switch(String(status).toLowerCase()){
+
+    case "processing":
+      return "status-processing";
+
+    case "shipped":
+      return "status-shipped";
+
+    case "delivered":
+      return "status-delivered";
+
+    case "cancelled":
+      return "status-cancelled";
+
+    default:
+      return "status-new";
+  }
+}
 
 function escapeHtml(value){
 
-return String(value)
-
-.replaceAll(
-"&",
-"&amp;"
-)
-
-.replaceAll(
-"<",
-"&lt;"
-)
-
-.replaceAll(
-">",
-"&gt;"
-)
-
-.replaceAll(
-'"',
-"&quot;"
-)
-
-.replaceAll(
-"'",
-"&#039;"
-);
-
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
+function escapeJs(value){
 
-/* START */
-
-const allowed =
-await checkAdmin();
-
-
-if(allowed){
-
-await loadProducts();
-
-await loadOrders();
-
-setupRealtime();
-
+  return String(value ?? "")
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'")
+    .replace(/\r/g,"\\r")
+    .replace(/\n/g,"\\n");
 }
 
+window.addEventListener("click",event => {
+
+  const modal =
+    document.getElementById("orderModal");
+
+  if(event.target === modal){
+    closeOrderModal();
+  }
+
+});
+
+window.addEventListener("beforeunload",() => {
+
+  if(realtimeChannel){
+    supabase.removeChannel(realtimeChannel);
+  }
+
+});
 </script>
 
 </body>
 </html>
-

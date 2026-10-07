@@ -3,96 +3,588 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Admin Dashboard | EB MARKETIZA</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#f4f6f9;color:#111827}
-header{background:#111827;color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px;position:sticky;top:0;z-index:100}
-header h1{font-size:21px}
-.header-buttons{display:flex;gap:8px;flex-wrap:wrap}
-.header-buttons a,.header-buttons button{color:#fff;background:#2563eb;border:0;padding:9px 13px;border-radius:8px;cursor:pointer;text-decoration:none}
-.logout-btn{background:#dc2626!important}
-.container{width:100%;max-width:1200px;margin:30px auto;padding:0 18px}
-.card{background:#fff;border-radius:14px;padding:24px;margin-bottom:24px;box-shadow:0 5px 20px rgba(0,0,0,.06)}
-.card h2{margin-bottom:20px}
-.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.full{grid-column:1/-1}
-label{display:block;font-weight:bold;margin-bottom:7px}
-input,textarea,select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;font-size:15px;outline:none}
-input:focus,textarea:focus,select:focus{border-color:#2563eb}
-textarea{min-height:120px;resize:vertical}
-input[type=file]{background:#fff}
-.main-btn{background:#2563eb;color:#fff;border:0;padding:12px 20px;border-radius:8px;font-weight:bold;cursor:pointer}
-.main-btn:hover{background:#1d4ed8}
-.main-btn:disabled{opacity:.6;cursor:not-allowed}
-.cancel-btn{background:#6b7280;color:#fff;border:0;padding:12px 20px;border-radius:8px;cursor:pointer;display:none}
-.form-buttons{display:flex;gap:10px;flex-wrap:wrap}
-#message{display:none;margin-top:15px;padding:12px;border-radius:8px}
-.success{background:#dcfce7;color:#166534}
-.error{background:#fee2e2;color:#991b1b}
-.info{background:#dbeafe;color:#1e40af}
-#imagePreview{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-top:15px}
-.preview-card{border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;background:#f9fafb}
-.preview-card img{width:100%;height:125px;object-fit:cover;display:block}
-.preview-label{padding:8px;text-align:center;font-size:13px;color:#4b5563}
-.products-wrapper,.orders-wrapper{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:850px}
-th,td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:middle}
-th{background:#f9fafb}
-.table-image{width:65px;height:65px;object-fit:cover;border-radius:8px}
-.action-buttons{display:flex;gap:6px;flex-wrap:wrap}
-.edit-btn{background:#f59e0b;color:#fff;border:0;padding:8px 11px;border-radius:7px;cursor:pointer}
-.delete-btn{background:#dc2626;color:#fff;border:0;padding:8px 11px;border-radius:7px;cursor:pointer}
-.view-btn{background:#2563eb;color:#fff;border:0;padding:8px 11px;border-radius:7px;cursor:pointer}
-.print-btn{background:#111827;color:#fff;border:0;padding:8px 11px;border-radius:7px;cursor:pointer}
-.refresh-btn{background:#111827;color:#fff;border:0;padding:9px 14px;border-radius:8px;cursor:pointer;margin-bottom:15px}
-.empty{text-align:center;color:#6b7280;padding:30px}
-.photo-count{display:inline-block;background:#eff6ff;color:#1d4ed8;padding:5px 9px;border-radius:20px;font-size:12px;font-weight:bold}
-.admin-email{padding:12px;background:#f3f4f6;border-radius:8px;color:#374151}
-.orders-header{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:18px;flex-wrap:wrap}
-.orders-header h2{margin-bottom:0}
-.notification-badge{display:inline-flex;align-items:center;justify-content:center;min-width:27px;height:27px;padding:0 8px;background:#dc2626;color:#fff;border-radius:50px;font-size:13px;font-weight:bold;margin-left:6px}
-.new-order-row{background:#eff6ff}
-.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:12px;font-weight:bold;text-transform:capitalize}
-.status-paid{background:#dcfce7;color:#166534}
-.status-pending{background:#fef3c7;color:#92400e}
-.status-failed{background:#fee2e2;color:#991b1b}
-.status-refunded{background:#ede9fe;color:#5b21b6}
-.order-status-select{min-width:125px;padding:7px;font-size:13px}
-.invoice{display:none;background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:25px;margin-top:20px}
-.invoice-top{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #111827;padding-bottom:20px;margin-bottom:20px}
-.invoice-title{font-size:28px;font-weight:800}
-.invoice-number{text-align:right}
-.invoice-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px;margin-bottom:25px}
-.invoice-box h3{margin-bottom:8px;font-size:15px}
-.invoice-box p{color:#4b5563;line-height:1.6}
-.invoice-items{width:100%;border-collapse:collapse;margin-top:15px}
-.invoice-items th,.invoice-items td{border:1px solid #e5e7eb}
-.invoice-total{margin-left:auto;max-width:350px;margin-top:20px}
-.invoice-total-row{display:flex;justify-content:space-between;padding:8px 0}
-.invoice-total-row.final{border-top:2px solid #111827;margin-top:8px;padding-top:12px;font-size:20px;font-weight:800}
-.invoice-buttons{display:flex;gap:10px;margin-top:20px}
-.close-invoice{background:#6b7280;color:#fff;border:0;padding:10px 15px;border-radius:8px;cursor:pointer}
-.order-notification{position:fixed;right:20px;bottom:20px;background:#111827;color:#fff;padding:18px 20px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:none;z-index:1000;max-width:350px}
-.order-notification strong{display:block;margin-bottom:6px}
-.notification-close{float:right;background:none;border:0;color:#fff;font-size:18px;cursor:pointer}
-.order-count{background:#2563eb;color:#fff;padding:5px 10px;border-radius:20px;font-size:13px}
-@media(max-width:700px){
-.form-grid{grid-template-columns:1fr}
-.full{grid-column:auto}
-header{align-items:flex-start;flex-direction:column}
-.container{padding:0 12px;margin-top:18px}
-.card{padding:18px}
-.invoice-grid{grid-template-columns:1fr}
-.order-notification{left:15px;right:15px;bottom:15px;max-width:none}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
+
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f6f9;
+  color:#111827;
+}
+
+header{
+  background:#111827;
+  color:#fff;
+  padding:16px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+header h1{
+  font-size:21px;
+}
+
+.header-buttons{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.header-buttons a,
+.header-buttons button{
+  color:#fff;
+  background:#2563eb;
+  border:0;
+  padding:9px 13px;
+  border-radius:8px;
+  cursor:pointer;
+  text-decoration:none;
+}
+
+.logout-btn{
+  background:#dc2626!important;
+}
+
+.container{
+  width:100%;
+  max-width:1200px;
+  margin:30px auto;
+  padding:0 18px;
+}
+
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:24px;
+  margin-bottom:24px;
+  box-shadow:0 5px 20px rgba(0,0,0,.06);
+}
+
+.card h2{
+  margin-bottom:20px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+
+.full{
+  grid-column:1/-1;
+}
+
+label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:7px;
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  padding:12px;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  font-size:15px;
+  outline:none;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:#2563eb;
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+.main-btn{
+  background:#2563eb;
+  color:#fff;
+  border:0;
+  padding:12px 20px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.main-btn:hover{
+  background:#1d4ed8;
+}
+
+.main-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.cancel-btn{
+  background:#6b7280;
+  color:#fff;
+  border:0;
+  padding:12px 20px;
+  border-radius:8px;
+  cursor:pointer;
+  display:none;
+}
+
+.form-buttons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+#message{
+  display:none;
+  margin-top:15px;
+  padding:12px;
+  border-radius:8px;
+}
+
+.success{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.error{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+#imagePreview{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:12px;
+  margin-top:15px;
+}
+
+.preview-card{
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  overflow:hidden;
+  background:#f9fafb;
+}
+
+.preview-card img{
+  width:100%;
+  height:125px;
+  object-fit:cover;
+  display:block;
+}
+
+.preview-label{
+  padding:8px;
+  text-align:center;
+  font-size:13px;
+  color:#4b5563;
+}
+
+.products-wrapper,
+.orders-wrapper{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
+}
+
+th,
+td{
+  padding:12px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:left;
+  vertical-align:middle;
+}
+
+th{
+  background:#f9fafb;
+}
+
+.table-image{
+  width:65px;
+  height:65px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.action-buttons{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.edit-btn{
+  background:#f59e0b;
+  color:#fff;
+  border:0;
+  padding:8px 11px;
+  border-radius:7px;
+  cursor:pointer;
+}
+
+.delete-btn{
+  background:#dc2626;
+  color:#fff;
+  border:0;
+  padding:8px 11px;
+  border-radius:7px;
+  cursor:pointer;
+}
+
+.view-btn{
+  background:#2563eb;
+  color:#fff;
+  border:0;
+  padding:8px 11px;
+  border-radius:7px;
+  cursor:pointer;
+}
+
+.print-btn{
+  background:#111827;
+  color:#fff;
+  border:0;
+  padding:8px 11px;
+  border-radius:7px;
+  cursor:pointer;
+}
+
+.refresh-btn{
+  background:#111827;
+  color:#fff;
+  border:0;
+  padding:9px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-bottom:15px;
+}
+
+.empty{
+  text-align:center;
+  color:#6b7280;
+  padding:30px;
+}
+
+.photo-count{
+  display:inline-block;
+  background:#eff6ff;
+  color:#1d4ed8;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.admin-email{
+  padding:12px;
+  background:#f3f4f6;
+  border-radius:8px;
+  color:#374151;
+}
+
+.orders-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+
+.orders-header h2{
+  margin-bottom:0;
+}
+
+.notification-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:27px;
+  height:27px;
+  padding:0 8px;
+  background:#dc2626;
+  color:#fff;
+  border-radius:50px;
+  font-size:13px;
+  font-weight:bold;
+  margin-left:6px;
+}
+
+.new-paid-order{
+  background:#dcfce7!important;
+}
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+  text-transform:capitalize;
+}
+
+.status-paid{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.status-pending{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.status-failed{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.status-refunded{
+  background:#ede9fe;
+  color:#5b21b6;
+}
+
+.order-status-select{
+  min-width:125px;
+  padding:7px;
+  font-size:13px;
+}
+
+.invoice{
+  display:none;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:25px;
+  margin-top:20px;
+}
+
+.invoice-top{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  border-bottom:2px solid #111827;
+  padding-bottom:20px;
+  margin-bottom:20px;
+}
+
+.invoice-title{
+  font-size:28px;
+  font-weight:800;
+}
+
+.invoice-number{
+  text-align:right;
+}
+
+.invoice-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:25px;
+  margin-bottom:25px;
+}
+
+.invoice-box h3{
+  margin-bottom:8px;
+  font-size:15px;
+}
+
+.invoice-box p{
+  color:#4b5563;
+  line-height:1.6;
+}
+
+.invoice-items{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+  min-width:0;
+}
+
+.invoice-items th,
+.invoice-items td{
+  border:1px solid #e5e7eb;
+}
+
+.invoice-total{
+  margin-left:auto;
+  max-width:350px;
+  margin-top:20px;
+}
+
+.invoice-total-row{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+}
+
+.invoice-total-row.final{
+  border-top:2px solid #111827;
+  margin-top:8px;
+  padding-top:12px;
+  font-size:20px;
+  font-weight:800;
+}
+
+.invoice-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.close-invoice{
+  background:#6b7280;
+  color:#fff;
+  border:0;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.order-notification{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#111827;
+  color:#fff;
+  padding:18px 20px;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,.2);
+  display:none;
+  z-index:1000;
+  max-width:380px;
+  animation:notificationIn .3s ease;
+}
+
+@keyframes notificationIn{
+  from{
+    transform:translateY(20px);
+    opacity:0;
+  }
+  to{
+    transform:translateY(0);
+    opacity:1;
+  }
+}
+
+.order-notification strong{
+  display:block;
+  margin-bottom:7px;
+  font-size:16px;
+}
+
+.notification-close{
+  float:right;
+  background:none;
+  border:0;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.order-count{
+  background:#2563eb;
+  color:#fff;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:13px;
+}
+
+.paid-label{
+  display:inline-block;
+  background:#dcfce7;
+  color:#166534;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+@media(max-width:700px){
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .full{
+    grid-column:auto;
+  }
+
+  header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .container{
+    padding:0 12px;
+    margin-top:18px;
+  }
+
+  .card{
+    padding:18px;
+  }
+
+  .invoice-grid{
+    grid-template-columns:1fr;
+  }
+
+  .invoice-top{
+    flex-direction:column;
+  }
+
+  .invoice-number{
+    text-align:left;
+  }
+
+  .order-notification{
+    left:15px;
+    right:15px;
+    bottom:15px;
+    max-width:none;
+  }
+}
+
 @media print{
-body{background:#fff}
-body>*{display:none!important}
-#printArea{display:block!important}
-.invoice{display:block!important;border:0;box-shadow:none;margin:0}
-.invoice-buttons{display:none}
+
+  body{
+    background:#fff;
+  }
+
+  body>*{
+    display:none!important;
+  }
+
+  #printArea{
+    display:block!important;
+  }
+
+  .invoice{
+    display:block!important;
+    border:0;
+    box-shadow:none;
+    margin:0;
+  }
+
+  .invoice-buttons{
+    display:none;
+  }
 }
 </style>
 </head>
@@ -100,250 +592,670 @@ body>*{display:none!important}
 <body>
 
 <header>
+
 <h1>EB MARKETIZA — Admin</h1>
+
 <div class="header-buttons">
-<a href="index.html">Home</a>
-<a href="products.html">Store</a>
-<button id="logoutButton" class="logout-btn" type="button">Logout</button>
+
+<a href="index.html">
+Home
+</a>
+
+<a href="products.html">
+Store
+</a>
+
+<button
+id="logoutButton"
+class="logout-btn"
+type="button"
+>
+Logout
+</button>
+
 </div>
+
 </header>
+
 
 <div class="container">
 
-<div class="card">
-<div class="admin-email">
-Logged in as:
-<strong id="adminEmail">Checking...</strong>
-</div>
-</div>
+
+<!-- ADMIN -->
 
 <div class="card">
-<h2 id="formTitle">➕ Add Product</h2>
+
+<div class="admin-email">
+
+Logged in as:
+
+<strong id="adminEmail">
+Checking...
+</strong>
+
+</div>
+
+</div>
+
+
+<!-- PRODUCT FORM -->
+
+<div class="card">
+
+<h2 id="formTitle">
+➕ Add Product
+</h2>
 
 <form id="productForm">
 
 <div class="form-grid">
 
-<div>
-<label for="name">Product Name</label>
-<input id="name" type="text" placeholder="Product name" required>
-</div>
 
 <div>
-<label for="price">Price (SEK)</label>
-<input id="price" type="number" min="0" step="0.01" placeholder="99.90" required>
+
+<label for="name">
+Product Name
+</label>
+
+<input
+id="name"
+type="text"
+placeholder="Product name"
+required
+>
+
 </div>
 
-<div>
-<label for="category">Category</label>
-<input id="category" type="text" placeholder="Electronics">
-</div>
 
 <div>
-<label for="stock">Stock</label>
-<input id="stock" type="number" min="0" value="0" placeholder="10">
+
+<label for="price">
+Price (SEK)
+</label>
+
+<input
+id="price"
+type="number"
+min="0"
+step="0.01"
+placeholder="99.90"
+required
+>
+
 </div>
+
+
+<div>
+
+<label for="category">
+Category
+</label>
+
+<input
+id="category"
+type="text"
+placeholder="Electronics"
+>
+
+</div>
+
+
+<div>
+
+<label for="stock">
+Stock
+</label>
+
+<input
+id="stock"
+type="number"
+min="0"
+value="0"
+placeholder="10"
+>
+
+</div>
+
 
 <div class="full">
-<label for="productImages">Product Photos</label>
-<input id="productImages" type="file" accept="image/*" multiple>
-<p style="margin-top:8px;color:#6b7280;font-size:14px">
+
+<label for="productImages">
+Product Photos
+</label>
+
+<input
+id="productImages"
+type="file"
+accept="image/*"
+multiple
+>
+
+<p
+style="margin-top:8px;color:#6b7280;font-size:14px"
+>
 Select one or multiple photos.
 </p>
+
 <div id="imagePreview"></div>
+
 </div>
+
 
 <div class="full">
-<label for="description">Description</label>
-<textarea id="description" placeholder="Describe the product..."></textarea>
+
+<label for="description">
+Description
+</label>
+
+<textarea
+id="description"
+placeholder="Describe the product..."
+></textarea>
+
 </div>
+
 
 <div class="full form-buttons">
-<button id="saveButton" class="main-btn" type="submit">➕ Add Product</button>
-<button id="cancelButton" class="cancel-btn" type="button">Cancel Edit</button>
+
+<button
+id="saveButton"
+class="main-btn"
+type="submit"
+>
+➕ Add Product
+</button>
+
+<button
+id="cancelButton"
+class="cancel-btn"
+type="button"
+>
+Cancel Edit
+</button>
+
 </div>
 
 </div>
+
 </form>
 
 <div id="message"></div>
+
 </div>
+
+
+<!-- ORDERS -->
 
 <div class="card">
 
 <div class="orders-header">
-<h2>🔔 New Orders <span id="notificationCount" class="notification-badge">0</span></h2>
-<span id="orderConnection" class="order-count">Connecting...</span>
+
+<h2>
+
+🔔 Paid Orders
+
+<span
+id="notificationCount"
+class="notification-badge"
+>
+0
+</span>
+
+</h2>
+
+<span
+id="orderConnection"
+class="order-count"
+>
+Connecting...
+</span>
+
 </div>
 
-<button id="refreshOrdersButton" class="refresh-btn" type="button">🔄 Refresh Orders</button>
+
+<button
+id="refreshOrdersButton"
+class="refresh-btn"
+type="button"
+>
+🔄 Refresh Orders
+</button>
+
 
 <div class="orders-wrapper">
+
 <table>
+
 <thead>
+
 <tr>
-<th>Order</th>
-<th>Customer</th>
-<th>Phone</th>
-<th>Total</th>
-<th>Payment</th>
-<th>Status</th>
-<th>Date</th>
-<th>Actions</th>
+
+<th>
+Order
+</th>
+
+<th>
+Customer
+</th>
+
+<th>
+Phone
+</th>
+
+<th>
+Total
+</th>
+
+<th>
+Payment
+</th>
+
+<th>
+Status
+</th>
+
+<th>
+Date
+</th>
+
+<th>
+Actions
+</th>
+
 </tr>
+
 </thead>
 
+
 <tbody id="ordersTable">
+
 <tr>
-<td colspan="8" class="empty">Loading orders...</td>
+
+<td
+colspan="8"
+class="empty"
+>
+Loading orders...
+</td>
+
 </tr>
+
 </tbody>
+
 </table>
-</div>
-
-<div id="invoice" class="invoice"></div>
 
 </div>
+
+
+<div
+id="invoice"
+class="invoice"
+></div>
+
+</div>
+
+
+<!-- PRODUCTS -->
 
 <div class="card">
 
-<h2>📦 Products</h2>
+<h2>
+📦 Products
+</h2>
 
-<button id="refreshButton" class="refresh-btn" type="button">
+
+<button
+id="refreshButton"
+class="refresh-btn"
+type="button"
+>
 🔄 Refresh
 </button>
+
 
 <div class="products-wrapper">
 
 <table>
 
 <thead>
+
 <tr>
-<th>Image</th>
-<th>Name</th>
-<th>Category</th>
-<th>Price</th>
-<th>Stock</th>
-<th>Photos</th>
-<th>Actions</th>
+
+<th>
+Image
+</th>
+
+<th>
+Name
+</th>
+
+<th>
+Category
+</th>
+
+<th>
+Price
+</th>
+
+<th>
+Stock
+</th>
+
+<th>
+Photos
+</th>
+
+<th>
+Actions
+</th>
+
 </tr>
+
 </thead>
 
+
 <tbody id="productsTable">
+
 <tr>
-<td colspan="7" class="empty">No products yet.</td>
+
+<td
+colspan="7"
+class="empty"
+>
+No products yet.
+</td>
+
 </tr>
+
 </tbody>
 
 </table>
 
 </div>
-</div>
 
 </div>
 
-<div id="orderNotification" class="order-notification">
-<button id="notificationClose" class="notification-close">×</button>
-<strong>🔔 Paid Order Received</strong>
+</div>
+
+
+<!-- PAID ORDER NOTIFICATION -->
+
+<div
+id="orderNotification"
+class="order-notification"
+>
+
+<button
+id="notificationClose"
+class="notification-close"
+type="button"
+>
+×
+</button>
+
+<strong>
+🔔 PAYMENT RECEIVED
+</strong>
+
 <span id="notificationText"></span>
+
 </div>
+
 
 <div id="printArea"></div>
+
 
 <script type="module">
 
 import { supabase } from "./supabaseClient.js";
 
-const ADMIN_EMAIL = "mucyoemmy539@gmail.com";
 
-const form = document.getElementById("productForm");
-const nameInput = document.getElementById("name");
-const priceInput = document.getElementById("price");
-const categoryInput = document.getElementById("category");
-const stockInput = document.getElementById("stock");
-const descriptionInput = document.getElementById("description");
-const imageInput = document.getElementById("productImages");
-const imagePreview = document.getElementById("imagePreview");
-const productsTable = document.getElementById("productsTable");
-const message = document.getElementById("message");
-const saveButton = document.getElementById("saveButton");
-const cancelButton = document.getElementById("cancelButton");
-const formTitle = document.getElementById("formTitle");
-const adminEmail = document.getElementById("adminEmail");
+/* ADMIN EMAIL */
 
-const ordersTable = document.getElementById("ordersTable");
-const notificationCount = document.getElementById("notificationCount");
-const orderConnection = document.getElementById("orderConnection");
-const invoice = document.getElementById("invoice");
-const orderNotification = document.getElementById("orderNotification");
-const notificationText = document.getElementById("notificationText");
-const printArea = document.getElementById("printArea");
+const ADMIN_EMAIL =
+"mucyoemmy539@gmail.com";
+
+
+/* ELEMENTS */
+
+const form =
+document.getElementById("productForm");
+
+const nameInput =
+document.getElementById("name");
+
+const priceInput =
+document.getElementById("price");
+
+const categoryInput =
+document.getElementById("category");
+
+const stockInput =
+document.getElementById("stock");
+
+const descriptionInput =
+document.getElementById("description");
+
+const imageInput =
+document.getElementById("productImages");
+
+const imagePreview =
+document.getElementById("imagePreview");
+
+const productsTable =
+document.getElementById("productsTable");
+
+const message =
+document.getElementById("message");
+
+const saveButton =
+document.getElementById("saveButton");
+
+const cancelButton =
+document.getElementById("cancelButton");
+
+const formTitle =
+document.getElementById("formTitle");
+
+const adminEmail =
+document.getElementById("adminEmail");
+
+const ordersTable =
+document.getElementById("ordersTable");
+
+const notificationCount =
+document.getElementById("notificationCount");
+
+const orderConnection =
+document.getElementById("orderConnection");
+
+const invoice =
+document.getElementById("invoice");
+
+const orderNotification =
+document.getElementById("orderNotification");
+
+const notificationText =
+document.getElementById("notificationText");
+
+
+/* STATE */
 
 let editingProductId = null;
+
 let orders = [];
+
 let realtimeChannel = null;
 
-/* 
-   Keeps track of paid orders already notified in this browser session.
-   This prevents the same paid order from showing the notification repeatedly.
+
+/*
+IMPORTANT:
+
+Stores paid orders that already showed
+a notification in this browser session.
+
+This prevents the same payment from
+showing repeatedly.
 */
-const notifiedPaidOrders = new Set();
+
+const notifiedPaidOrders =
+new Set();
+
+
+/* MESSAGE */
 
 function showMessage(text,type){
+
 message.textContent = text;
+
 message.className = type;
+
 message.style.display = "block";
+
 }
 
+
 function hideMessage(){
+
 message.style.display = "none";
+
 }
+
+
+/* ADMIN CHECK */
 
 async function checkAdmin(){
 
-const {data:{user}} = await supabase.auth.getUser();
+const {
+data:{
+user
+}
+} =
+await supabase.auth.getUser();
+
 
 if(!user){
-window.location.href="login.html";
+
+window.location.href =
+"login.html";
+
 return false;
+
 }
 
-adminEmail.textContent=user.email||"";
 
-if(user.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){
+adminEmail.textContent =
+user.email || "";
 
-document.body.innerHTML=`
-<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#f4f6f9;font-family:Arial">
-<div style="background:white;padding:35px;border-radius:15px;text-align:center;max-width:450px;width:100%;box-shadow:0 5px 25px rgba(0,0,0,.1)">
-<h2>Access Denied</h2>
-<p style="margin:15px 0;color:#6b7280">You are not authorized to access the admin dashboard.</p>
-<a href="index.html" style="display:inline-block;background:#2563eb;color:white;text-decoration:none;padding:11px 18px;border-radius:8px">Go Home</a>
+
+if(
+user.email?.toLowerCase() !==
+ADMIN_EMAIL.toLowerCase()
+){
+
+document.body.innerHTML = `
+
+<div
+style="
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:#f4f6f9;
+font-family:Arial;
+"
+>
+
+<div
+style="
+background:white;
+padding:35px;
+border-radius:15px;
+text-align:center;
+max-width:450px;
+width:100%;
+box-shadow:0 5px 25px rgba(0,0,0,.1);
+"
+>
+
+<h2>
+Access Denied
+</h2>
+
+<p
+style="
+margin:15px 0;
+color:#6b7280;
+"
+>
+You are not authorized to access the admin dashboard.
+</p>
+
+<a
+href="index.html"
+style="
+display:inline-block;
+background:#2563eb;
+color:white;
+text-decoration:none;
+padding:11px 18px;
+border-radius:8px;
+"
+>
+Go Home
+</a>
+
 </div>
-</div>`;
+
+</div>
+
+`;
 
 return false;
+
 }
 
 return true;
+
 }
 
-imageInput.addEventListener("change",()=>{
 
-imagePreview.innerHTML="";
+/* IMAGE PREVIEW */
 
-Array.from(imageInput.files).forEach((file,index)=>{
+imageInput.addEventListener(
+"change",
+()=>{
 
-const reader=new FileReader();
+imagePreview.innerHTML = "";
 
-reader.onload=event=>{
+Array.from(imageInput.files)
+.forEach((file,index)=>{
 
-const div=document.createElement("div");
+const reader =
+new FileReader();
 
-div.className="preview-card";
+reader.onload =
+event => {
 
-div.innerHTML=`
-<img src="${event.target.result}" alt="Product photo">
-<div class="preview-label">Photo ${index+1}</div>`;
+const div =
+document.createElement("div");
+
+div.className =
+"preview-card";
+
+div.innerHTML = `
+
+<img
+src="${event.target.result}"
+alt="Product photo"
+>
+
+<div class="preview-label">
+Photo ${index + 1}
+</div>
+
+`;
 
 imagePreview.appendChild(div);
 
@@ -355,177 +1267,408 @@ reader.readAsDataURL(file);
 
 });
 
-async function uploadImage(file,productId,index){
 
-const extension=file.name.split(".").pop().toLowerCase();
+/* UPLOAD IMAGE */
 
-const filePath=`${productId}/${Date.now()}-${index}-${crypto.randomUUID()}.${extension}`;
+async function uploadImage(
+file,
+productId,
+index
+){
 
-const {error}=await supabase.storage
+const extension =
+file.name
+.split(".")
+.pop()
+.toLowerCase();
+
+
+const filePath =
+`${productId}/${Date.now()}-${index}-${crypto.randomUUID()}.${extension}`;
+
+
+const {
+error
+} =
+await supabase.storage
 .from("product-images")
-.upload(filePath,file,{cacheControl:"3600",upsert:false});
+.upload(
+filePath,
+file,
+{
+cacheControl:"3600",
+upsert:false
+}
+);
 
-if(error)throw error;
 
-const {data}=supabase.storage
+if(error){
+throw error;
+}
+
+
+const {
+data
+} =
+supabase.storage
 .from("product-images")
 .getPublicUrl(filePath);
 
+
 return data.publicUrl;
+
 }
+
+
+/* ADD PRODUCT */
 
 async function addProduct(){
 
-const name=nameInput.value.trim();
-const price=Number(priceInput.value);
-const category=categoryInput.value.trim();
-const stock=Number(stockInput.value||0);
-const description=descriptionInput.value.trim();
-const files=Array.from(imageInput.files);
+const name =
+nameInput.value.trim();
 
-if(!name)throw new Error("Product name is required.");
+const price =
+Number(priceInput.value);
 
-if(Number.isNaN(price)||price<0)throw new Error("Enter a valid price.");
+const category =
+categoryInput.value.trim();
 
-const {data:product,error}=await supabase
+const stock =
+Number(stockInput.value || 0);
+
+const description =
+descriptionInput.value.trim();
+
+const files =
+Array.from(imageInput.files);
+
+
+if(!name){
+
+throw new Error(
+"Product name is required."
+);
+
+}
+
+
+if(
+Number.isNaN(price) ||
+price < 0
+){
+
+throw new Error(
+"Enter a valid price."
+);
+
+}
+
+
+const {
+data:product,
+error
+} =
+await supabase
 .from("products")
 .insert({
+
 name,
 description,
 price,
 category,
 stock,
 image:null
+
 })
 .select()
 .single();
 
-if(error)throw error;
 
-const uploadedUrls=[];
-
-for(let i=0;i<files.length;i++){
-
-saveButton.textContent=`Uploading ${i+1}/${files.length}...`;
-
-const url=await uploadImage(files[i],product.id,i);
-
-uploadedUrls.push(url);
+if(error){
+throw error;
 }
 
-if(uploadedUrls.length>0){
 
-const rows=uploadedUrls.map((url,index)=>({
-product_id:product.id,
-image_url:url,
-sort_order:index
-}));
+const uploadedUrls = [];
 
-const {error:imageError}=await supabase
+
+for(
+let i=0;
+i<files.length;
+i++
+){
+
+saveButton.textContent =
+`Uploading ${i+1}/${files.length}...`;
+
+
+const url =
+await uploadImage(
+files[i],
+product.id,
+i
+);
+
+
+uploadedUrls.push(url);
+
+}
+
+
+if(uploadedUrls.length > 0){
+
+const rows =
+uploadedUrls.map(
+(url,index)=>({
+
+product_id:
+product.id,
+
+image_url:
+url,
+
+sort_order:
+index
+
+})
+);
+
+
+const {
+error:imageError
+} =
+await supabase
 .from("product_images")
 .insert(rows);
 
-if(imageError)throw imageError;
 
-const {error:updateError}=await supabase
-.from("products")
-.update({image:uploadedUrls[0]})
-.eq("id",product.id);
-
-if(updateError)throw updateError;
+if(imageError){
+throw imageError;
 }
+
+
+const {
+error:updateError
+} =
+await supabase
+.from("products")
+.update({
+image:
+uploadedUrls[0]
+})
+.eq(
+"id",
+product.id
+);
+
+
+if(updateError){
+throw updateError;
+}
+
+}
+
 
 showMessage(
 `Product added successfully! ${uploadedUrls.length} photo(s) uploaded.`,
 "success"
 );
 
+
 resetForm();
 
 await loadProducts();
+
 }
+
+
+/* UPDATE PRODUCT */
 
 async function updateProduct(){
 
-const name=nameInput.value.trim();
-const price=Number(priceInput.value);
-const category=categoryInput.value.trim();
-const stock=Number(stockInput.value||0);
-const description=descriptionInput.value.trim();
-const files=Array.from(imageInput.files);
+const name =
+nameInput.value.trim();
 
-if(!name)throw new Error("Product name is required.");
+const price =
+Number(priceInput.value);
 
-if(Number.isNaN(price)||price<0)throw new Error("Enter a valid price.");
+const category =
+categoryInput.value.trim();
 
-const {error}=await supabase
+const stock =
+Number(stockInput.value || 0);
+
+const description =
+descriptionInput.value.trim();
+
+const files =
+Array.from(imageInput.files);
+
+
+if(!name){
+
+throw new Error(
+"Product name is required."
+);
+
+}
+
+
+if(
+Number.isNaN(price) ||
+price < 0
+){
+
+throw new Error(
+"Enter a valid price."
+);
+
+}
+
+
+const {
+error
+} =
+await supabase
 .from("products")
 .update({
+
 name,
 description,
 price,
 category,
 stock
+
 })
-.eq("id",editingProductId);
+.eq(
+"id",
+editingProductId
+);
 
-if(error)throw error;
 
-if(files.length>0){
-
-const uploadedUrls=[];
-
-for(let i=0;i<files.length;i++){
-
-saveButton.textContent=`Uploading ${i+1}/${files.length}...`;
-
-const url=await uploadImage(files[i],editingProductId,i);
-
-uploadedUrls.push(url);
+if(error){
+throw error;
 }
 
-const rows=uploadedUrls.map((url,index)=>({
-product_id:editingProductId,
-image_url:url,
-sort_order:Date.now()+index
-}));
 
-const {error:imageError}=await supabase
+if(files.length > 0){
+
+const uploadedUrls = [];
+
+
+for(
+let i=0;
+i<files.length;
+i++
+){
+
+saveButton.textContent =
+`Uploading ${i+1}/${files.length}...`;
+
+
+const url =
+await uploadImage(
+files[i],
+editingProductId,
+i
+);
+
+
+uploadedUrls.push(url);
+
+}
+
+
+const rows =
+uploadedUrls.map(
+(url,index)=>({
+
+product_id:
+editingProductId,
+
+image_url:
+url,
+
+sort_order:
+Date.now()+index
+
+})
+);
+
+
+const {
+error:imageError
+} =
+await supabase
 .from("product_images")
 .insert(rows);
 
-if(imageError)throw imageError;
 
-const {data:currentProduct}=await supabase
+if(imageError){
+throw imageError;
+}
+
+
+const {
+data:currentProduct
+} =
+await supabase
 .from("products")
 .select("image")
-.eq("id",editingProductId)
+.eq(
+"id",
+editingProductId
+)
 .single();
 
-if(!currentProduct?.image&&uploadedUrls[0]){
+
+if(
+!currentProduct?.image &&
+uploadedUrls[0]
+){
 
 await supabase
 .from("products")
-.update({image:uploadedUrls[0]})
-.eq("id",editingProductId);
+.update({
+image:
+uploadedUrls[0]
+})
+.eq(
+"id",
+editingProductId
+);
 
 }
+
 }
 
-showMessage("Product updated successfully!","success");
+
+showMessage(
+"Product updated successfully!",
+"success"
+);
+
 
 resetForm();
 
 await loadProducts();
+
 }
 
-form.addEventListener("submit",async event=>{
+
+/* FORM SUBMIT */
+
+form.addEventListener(
+"submit",
+async event=>{
 
 event.preventDefault();
 
 hideMessage();
 
-saveButton.disabled=true;
+saveButton.disabled =
+true;
+
 
 try{
 
@@ -543,148 +1686,320 @@ await addProduct();
 
 console.error(error);
 
-showMessage("Error: "+error.message,"error");
+showMessage(
+"Error: " + error.message,
+"error"
+);
 
 }finally{
 
-saveButton.disabled=false;
+saveButton.disabled =
+false;
 
-saveButton.textContent=
+saveButton.textContent =
 editingProductId
-?"💾 Update Product"
-:"➕ Add Product";
+? "💾 Update Product"
+: "➕ Add Product";
 
 }
 
 });
 
+
+/* LOAD PRODUCTS */
+
 async function loadProducts(){
 
-productsTable.innerHTML=`
-<tr>
-<td colspan="7" class="empty">Loading products...</td>
-</tr>`;
+productsTable.innerHTML = `
 
-const {data,error}=await supabase
+<tr>
+
+<td
+colspan="7"
+class="empty"
+>
+Loading products...
+</td>
+
+</tr>
+
+`;
+
+
+const {
+data,
+error
+} =
+await supabase
 .from("products")
 .select("*")
-.order("created_at",{ascending:false});
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
 
 if(error){
 
-productsTable.innerHTML=`
+productsTable.innerHTML = `
+
 <tr>
-<td colspan="7" class="empty">${escapeHtml(error.message)}</td>
-</tr>`;
+
+<td
+colspan="7"
+class="empty"
+>
+${escapeHtml(error.message)}
+</td>
+
+</tr>
+
+`;
 
 return;
+
 }
 
-if(!data||data.length===0){
 
-productsTable.innerHTML=`
+if(
+!data ||
+data.length === 0
+){
+
+productsTable.innerHTML = `
+
 <tr>
-<td colspan="7" class="empty">No products yet.</td>
-</tr>`;
+
+<td
+colspan="7"
+class="empty"
+>
+No products yet.
+</td>
+
+</tr>
+
+`;
 
 return;
+
 }
 
-productsTable.innerHTML="";
 
-for(const product of data){
+productsTable.innerHTML = "";
 
-const {count}=await supabase
+
+for(
+const product of data
+){
+
+const {
+count
+} =
+await supabase
 .from("product_images")
-.select("id",{count:"exact",head:true})
-.eq("product_id",product.id);
+.select(
+"id",
+{
+count:"exact",
+head:true
+}
+)
+.eq(
+"product_id",
+product.id
+);
 
-const row=document.createElement("tr");
 
-row.innerHTML=`
+const row =
+document.createElement("tr");
+
+
+row.innerHTML = `
+
 <td>
-${product.image?`
-<img src="${escapeHtml(product.image)}" class="table-image" alt="Product">
-`:"No image"}
+
+${
+product.image
+?
+
+`
+<img
+src="${escapeHtml(product.image)}"
+class="table-image"
+alt="Product"
+>
+`
+
+:
+
+"No image"
+}
+
 </td>
 
-<td>${escapeHtml(product.name||"")}</td>
-<td>${escapeHtml(product.category||"-")}</td>
-<td>${Number(product.price||0).toFixed(2)} SEK</td>
-<td>${product.stock??0}</td>
 
 <td>
-<span class="photo-count">${count||0} photo(s)</span>
+${escapeHtml(product.name || "")}
 </td>
 
+
 <td>
+${escapeHtml(product.category || "-")}
+</td>
+
+
+<td>
+${Number(product.price || 0).toFixed(2)} SEK
+</td>
+
+
+<td>
+${product.stock ?? 0}
+</td>
+
+
+<td>
+
+<span class="photo-count">
+
+${count || 0} photo(s)
+
+</span>
+
+</td>
+
+
+<td>
+
 <div class="action-buttons">
 
-<button class="edit-btn" data-edit="${product.id}">
+<button
+class="edit-btn"
+data-edit="${product.id}"
+>
 Edit
 </button>
 
-<button class="delete-btn" data-delete="${product.id}">
+<button
+class="delete-btn"
+data-delete="${product.id}"
+>
 Delete
 </button>
 
 </div>
-</td>`;
+
+</td>
+
+`;
+
 
 productsTable.appendChild(row);
+
 }
 
-document.querySelectorAll("[data-edit]").forEach(button=>{
+
+/* EDIT BUTTONS */
+
+document
+.querySelectorAll("[data-edit]")
+.forEach(button=>{
 
 button.addEventListener(
 "click",
-()=>startEdit(button.dataset.edit)
+()=>{
+startEdit(
+button.dataset.edit
+);
+}
 );
 
 });
 
-document.querySelectorAll("[data-delete]").forEach(button=>{
+
+/* DELETE BUTTONS */
+
+document
+.querySelectorAll("[data-delete]")
+.forEach(button=>{
 
 button.addEventListener(
 "click",
-()=>deleteProduct(button.dataset.delete)
+()=>{
+deleteProduct(
+button.dataset.delete
+);
+}
 );
 
 });
 
 }
+
+
+/* START EDIT */
 
 async function startEdit(id){
 
-const {data,error}=await supabase
+const {
+data,
+error
+} =
+await supabase
 .from("products")
 .select("*")
 .eq("id",id)
 .single();
 
+
 if(error){
 
-showMessage(error.message,"error");
+showMessage(
+error.message,
+"error"
+);
 
 return;
+
 }
 
-editingProductId=id;
 
-nameInput.value=data.name||"";
-priceInput.value=data.price||"";
-categoryInput.value=data.category||"";
-stockInput.value=data.stock||0;
-descriptionInput.value=data.description||"";
+editingProductId = id;
 
-formTitle.textContent="✏️ Edit Product";
 
-saveButton.textContent="💾 Update Product";
+nameInput.value =
+data.name || "";
 
-cancelButton.style.display="block";
+priceInput.value =
+data.price || "";
 
-imageInput.value="";
-imagePreview.innerHTML="";
+categoryInput.value =
+data.category || "";
+
+stockInput.value =
+data.stock || 0;
+
+descriptionInput.value =
+data.description || "";
+
+
+formTitle.textContent =
+"✏️ Edit Product";
+
+saveButton.textContent =
+"💾 Update Product";
+
+cancelButton.style.display =
+"block";
+
+
+imageInput.value = "";
+
+imagePreview.innerHTML = "";
+
 
 window.scrollTo({
 top:0,
@@ -693,60 +2008,103 @@ behavior:"smooth"
 
 }
 
+
+/* RESET */
+
 cancelButton.addEventListener(
 "click",
 resetForm
 );
 
+
 function resetForm(){
 
-editingProductId=null;
+editingProductId = null;
 
 form.reset();
 
-stockInput.value=0;
+stockInput.value = 0;
 
-imagePreview.innerHTML="";
+imagePreview.innerHTML = "";
 
-formTitle.textContent="➕ Add Product";
+formTitle.textContent =
+"➕ Add Product";
 
-saveButton.textContent="➕ Add Product";
+saveButton.textContent =
+"➕ Add Product";
 
-cancelButton.style.display="none";
+cancelButton.style.display =
+"none";
 
 }
 
+
+/* DELETE PRODUCT */
+
 async function deleteProduct(id){
 
-if(!confirm("Are you sure you want to delete this product?"))
+if(
+!confirm(
+"Are you sure you want to delete this product?"
+)
+){
+
 return;
 
+}
+
+
 try{
 
-const {data:images,error:imageError}=await supabase
+const {
+data:images,
+error:imageError
+} =
+await supabase
 .from("product_images")
 .select("image_url")
-.eq("product_id",id);
+.eq(
+"product_id",
+id
+);
 
-if(imageError)throw imageError;
 
-if(images&&images.length>0){
+if(imageError){
+throw imageError;
+}
 
-const paths=images.map(item=>{
+
+if(
+images &&
+images.length > 0
+){
+
+const paths =
+images.map(item=>{
 
 try{
 
-const url=new URL(item.image_url);
+const url =
+new URL(item.image_url);
 
-const marker="/product-images/";
+const marker =
+"/product-images/";
 
-const position=url.pathname.indexOf(marker);
+const position =
+url.pathname.indexOf(marker);
 
-if(position===-1)return null;
+
+if(position === -1){
+return null;
+}
+
 
 return decodeURIComponent(
-url.pathname.substring(position+marker.length)
+url.pathname.substring(
+position + marker.length
+)
 );
+
 
 }catch{
 
@@ -754,9 +2112,11 @@ return null;
 
 }
 
-}).filter(Boolean);
+})
+.filter(Boolean);
 
-if(paths.length>0){
+
+if(paths.length > 0){
 
 await supabase.storage
 .from("product-images")
@@ -766,24 +2126,38 @@ await supabase.storage
 
 }
 
-const {error}=await supabase
+
+const {
+error
+} =
+await supabase
 .from("products")
 .delete()
-.eq("id",id);
+.eq(
+"id",
+id
+);
 
-if(error)throw error;
+
+if(error){
+throw error;
+}
+
 
 showMessage(
 "Product deleted successfully.",
 "success"
 );
 
+
 await loadProducts();
+
 
 }catch(error){
 
 showMessage(
-"Could not delete product: "+error.message,
+"Could not delete product: " +
+error.message,
 "error"
 );
 
@@ -791,99 +2165,214 @@ showMessage(
 
 }
 
+
+/* LOAD ORDERS */
+
 async function loadOrders(){
 
-ordersTable.innerHTML=`
-<tr>
-<td colspan="8" class="empty">Loading orders...</td>
-</tr>`;
+ordersTable.innerHTML = `
 
-const {data,error}=await supabase
+<tr>
+
+<td
+colspan="8"
+class="empty"
+>
+Loading orders...
+</td>
+
+</tr>
+
+`;
+
+
+const {
+data,
+error
+} =
+await supabase
 .from("orders")
 .select("*")
-.order("created_at",{ascending:false});
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
 
 if(error){
 
 console.error(error);
 
-ordersTable.innerHTML=`
+ordersTable.innerHTML = `
+
 <tr>
-<td colspan="8" class="empty">${escapeHtml(error.message)}</td>
-</tr>`;
+
+<td
+colspan="8"
+class="empty"
+>
+${escapeHtml(error.message)}
+</td>
+
+</tr>
+
+`;
 
 return;
+
 }
 
-orders=data||[];
+
+orders = data || [];
+
 
 renderOrders();
 
 }
 
+
+/* RENDER ORDERS */
+
 function renderOrders(){
 
 if(!orders.length){
 
-ordersTable.innerHTML=`
-<tr>
-<td colspan="8" class="empty">No orders yet.</td>
-</tr>`;
+ordersTable.innerHTML = `
 
-notificationCount.textContent="0";
+<tr>
+
+<td
+colspan="8"
+class="empty"
+>
+No orders yet.
+</td>
+
+</tr>
+
+`;
+
+notificationCount.textContent =
+"0";
 
 return;
+
 }
 
+
 /*
-   Notification badge:
-   ONLY orders with payment_status = paid are counted.
+ONLY PAID ORDERS ARE COUNTED
+AS NOTIFICATIONS.
 */
-const paidOrders=orders.filter(
-order=>
-String(order.payment_status||"").toLowerCase()==="paid"
+
+const paidOrders =
+orders.filter(
+order =>
+String(
+order.payment_status || ""
+).toLowerCase() === "paid"
 );
 
-notificationCount.textContent=paidOrders.length;
 
-ordersTable.innerHTML="";
+notificationCount.textContent =
+paidOrders.length;
+
+
+ordersTable.innerHTML = "";
+
 
 orders.forEach(order=>{
 
-const row=document.createElement("tr");
+const row =
+document.createElement("tr");
+
 
 /*
-   Keep the existing row highlighting for new orders.
+Highlight paid orders.
 */
-if(order.order_status==="new"){
-row.className="new-order-row";
+
+if(
+String(
+order.payment_status || ""
+).toLowerCase() === "paid"
+){
+
+row.className =
+"new-paid-order";
+
 }
 
-row.innerHTML=`
+
+row.innerHTML = `
 
 <td>
-<strong>#${escapeHtml(order.order_number)}</strong>
+
+<strong>
+#${escapeHtml(order.order_number)}
+</strong>
+
 </td>
 
+
 <td>
-${escapeHtml(order.customer_name||"-")}
+
+${escapeHtml(
+order.customer_name || "-"
+)}
+
 <br>
-<small>${escapeHtml(order.customer_email||"-")}</small>
+
+<small>
+${escapeHtml(
+order.customer_email || "-"
+)}
+</small>
+
 </td>
 
-<td>
-${escapeHtml(order.customer_phone||"-")}
-</td>
 
 <td>
-<strong>${Number(order.total||0).toFixed(2)} SEK</strong>
+
+${escapeHtml(
+order.customer_phone || "-"
+)}
+
 </td>
 
+
 <td>
-<span class="status status-${escapeHtml(order.payment_status||"pending")}">
-${escapeHtml(order.payment_status||"pending")}
+
+<strong>
+
+${Number(
+order.total || 0
+).toFixed(2)}
+
+SEK
+
+</strong>
+
+</td>
+
+
+<td>
+
+<span
+class="status status-${escapeHtml(
+order.payment_status || "pending"
+)}"
+>
+
+${escapeHtml(
+order.payment_status || "pending"
+)}
+
 </span>
+
 </td>
+
 
 <td>
 
@@ -892,28 +2381,48 @@ class="order-status-select"
 data-status="${order.id}"
 >
 
-<option value="new"
-${order.order_status==="new"?"selected":""}>
+<option
+value="new"
+${order.order_status === "new"
+?"selected":""
+}
+>
 New
 </option>
 
-<option value="processing"
-${order.order_status==="processing"?"selected":""}>
+<option
+value="processing"
+${order.order_status === "processing"
+?"selected":""
+}
+>
 Processing
 </option>
 
-<option value="shipped"
-${order.order_status==="shipped"?"selected":""}>
+<option
+value="shipped"
+${order.order_status === "shipped"
+?"selected":""
+}
+>
 Shipped
 </option>
 
-<option value="delivered"
-${order.order_status==="delivered"?"selected":""}>
+<option
+value="delivered"
+${order.order_status === "delivered"
+?"selected":""
+}
+>
 Delivered
 </option>
 
-<option value="cancelled"
-${order.order_status==="cancelled"?"selected":""}>
+<option
+value="cancelled"
+${order.order_status === "cancelled"
+?"selected":""
+}
+>
 Cancelled
 </option>
 
@@ -921,9 +2430,15 @@ Cancelled
 
 </td>
 
+
 <td>
-${formatDate(order.created_at)}
+
+${formatDate(
+order.created_at
+)}
+
 </td>
+
 
 <td>
 
@@ -936,6 +2451,7 @@ data-view-order="${order.id}"
 View
 </button>
 
+
 <button
 class="print-btn"
 data-print-order="${order.id}"
@@ -945,37 +2461,56 @@ data-print-order="${order.id}"
 
 </div>
 
-</td>`;
+</td>
+
+`;
+
 
 ordersTable.appendChild(row);
 
 });
 
-document.querySelectorAll("[data-view-order]")
+
+/* VIEW */
+
+document
+.querySelectorAll("[data-view-order]")
 .forEach(button=>{
 
 button.addEventListener(
 "click",
 ()=>{
-viewOrder(button.dataset.viewOrder);
+viewOrder(
+button.dataset.viewOrder
+);
 }
 );
 
 });
 
-document.querySelectorAll("[data-print-order]")
+
+/* PRINT */
+
+document
+.querySelectorAll("[data-print-order]")
 .forEach(button=>{
 
 button.addEventListener(
 "click",
 ()=>{
-printOrder(button.dataset.printOrder);
+printOrder(
+button.dataset.printOrder
+);
 }
 );
 
 });
 
-document.querySelectorAll("[data-status]")
+
+/* STATUS */
+
+document
+.querySelectorAll("[data-status]")
 .forEach(select=>{
 
 select.addEventListener(
@@ -992,62 +2527,118 @@ select.value
 
 }
 
-async function updateOrderStatus(orderId,status){
 
-const {error}=await supabase
+/* UPDATE ORDER STATUS */
+
+async function updateOrderStatus(
+orderId,
+status
+){
+
+const {
+error
+} =
+await supabase
 .from("orders")
 .update({
 order_status:status
 })
-.eq("id",orderId);
+.eq(
+"id",
+orderId
+);
+
 
 if(error){
 
 alert(
-"Could not update order: "+error.message
+"Could not update order: " +
+error.message
 );
 
 return;
+
 }
 
-const order=orders.find(
-o=>String(o.id)===String(orderId)
+
+const order =
+orders.find(
+o =>
+String(o.id) ===
+String(orderId)
 );
 
+
 if(order){
-order.order_status=status;
+
+order.order_status =
+status;
+
 }
+
 
 renderOrders();
 
 }
 
+
+/* VIEW ORDER */
+
 async function viewOrder(orderId){
 
-const order=orders.find(
-o=>String(o.id)===String(orderId)
+const order =
+orders.find(
+o =>
+String(o.id) ===
+String(orderId)
 );
 
-if(!order)return;
 
-const {data:items,error}=await supabase
+if(!order){
+return;
+}
+
+
+const {
+data:items,
+error
+} =
+await supabase
 .from("order_items")
 .select("*")
-.eq("order_id",orderId)
-.order("created_at",{ascending:true});
+.eq(
+"order_id",
+orderId
+)
+.order(
+"created_at",
+{
+ascending:true
+}
+);
+
 
 if(error){
 
 alert(
-"Could not load order items: "+error.message
+"Could not load order items: " +
+error.message
 );
 
 return;
+
 }
 
-renderInvoice(order,items||[]);
 
-invoice.style.display="block";
+renderInvoice(
+order,
+items || []
+);
+
+
+invoice.style.display =
+"block";
+
 
 invoice.scrollIntoView({
 behavior:"smooth",
@@ -1056,64 +2647,114 @@ block:"start"
 
 }
 
-function renderInvoice(order,items){
 
-let itemsHtml="";
+/* INVOICE */
+
+function renderInvoice(
+order,
+items
+){
+
+let itemsHtml = "";
+
 
 if(items.length){
 
-itemsHtml=items.map(item=>`
+itemsHtml =
+items.map(
+item => `
 
 <tr>
 
 <td>
-${escapeHtml(item.product_name||"-")}
+${escapeHtml(
+item.product_name || "-"
+)}
 </td>
 
 <td>
-${Number(item.quantity||0)}
+${Number(
+item.quantity || 0
+)}
 </td>
 
 <td>
-${Number(item.unit_price||0).toFixed(2)} SEK
+${Number(
+item.unit_price || 0
+).toFixed(2)} SEK
 </td>
 
 <td>
-${Number(item.line_total||0).toFixed(2)} SEK
+${Number(
+item.line_total || 0
+).toFixed(2)} SEK
 </td>
 
 </tr>
 
-`).join("");
+`
+).join("");
+
 
 }else{
 
-itemsHtml=`
+itemsHtml = `
+
 <tr>
-<td colspan="4" style="text-align:center">
+
+<td
+colspan="4"
+style="text-align:center"
+>
 No order items found.
 </td>
-</tr>`;
 
-}
-
-const address=`
-
-${escapeHtml(order.street||"")}
-${escapeHtml(order.house_number||"")}
-${order.apartment?
-`, ${escapeHtml(order.apartment)}`:""}
-<br>
-
-${escapeHtml(order.postal_code||"")}
-${escapeHtml(order.city||"")}
-<br>
-
-${escapeHtml(order.country||"Sweden")}
+</tr>
 
 `;
 
-invoice.innerHTML=`
+}
+
+
+const address = `
+
+${escapeHtml(
+order.street || ""
+)}
+${escapeHtml(
+order.house_number || ""
+)}
+
+${
+order.apartment
+?
+`, ${escapeHtml(
+order.apartment
+)}`
+:
+""
+}
+
+<br>
+
+${escapeHtml(
+order.postal_code || ""
+)}
+
+${escapeHtml(
+order.city || ""
+)}
+
+<br>
+
+${escapeHtml(
+order.country || "Sweden"
+)}
+
+`;
+
+
+invoice.innerHTML = `
 
 <div class="invoice-top">
 
@@ -1123,84 +2764,130 @@ invoice.innerHTML=`
 EB MARKETIZA
 </div>
 
-<p style="margin-top:6px;color:#6b7280">
+<p
+style="
+margin-top:6px;
+color:#6b7280;
+"
+>
 Order Invoice
 </p>
 
 </div>
 
+
 <div class="invoice-number">
 
 <strong>
-Order #${escapeHtml(order.order_number)}
+Order #${escapeHtml(
+order.order_number
+)}
 </strong>
 
 <br>
 
-${formatDate(order.created_at)}
+${formatDate(
+order.created_at
+)}
 
 </div>
 
 </div>
+
 
 <div class="invoice-grid">
 
+
 <div class="invoice-box">
 
-<h3>Customer</h3>
+<h3>
+Customer
+</h3>
 
 <p>
 
 <strong>
-${escapeHtml(order.customer_name||"-")}
+${escapeHtml(
+order.customer_name || "-"
+)}
 </strong>
 
 <br>
 
-${escapeHtml(order.customer_email||"-")}
+${escapeHtml(
+order.customer_email || "-"
+)}
 
 <br>
 
-${escapeHtml(order.customer_phone||"-")}
+${escapeHtml(
+order.customer_phone || "-"
+)}
 
 </p>
 
 </div>
 
+
 <div class="invoice-box">
 
-<h3>Delivery Address</h3>
+<h3>
+Delivery Address
+</h3>
 
-<p>${address}</p>
+<p>
+${address}
+</p>
 
 </div>
 
 </div>
 
+
 <div class="invoice-box">
 
-<h3>Products</h3>
+<h3>
+Products
+</h3>
+
 
 <table class="invoice-items">
 
 <thead>
 
 <tr>
-<th>Product</th>
-<th>Quantity</th>
-<th>Unit Price</th>
-<th>Total</th>
+
+<th>
+Product
+</th>
+
+<th>
+Quantity
+</th>
+
+<th>
+Unit Price
+</th>
+
+<th>
+Total
+</th>
+
 </tr>
 
 </thead>
 
+
 <tbody>
+
 ${itemsHtml}
+
 </tbody>
 
 </table>
 
 </div>
+
 
 <div class="invoice-total">
 
@@ -1211,10 +2898,13 @@ Subtotal
 </span>
 
 <strong>
-${Number(order.subtotal||0).toFixed(2)} SEK
+${Number(
+order.subtotal || 0
+).toFixed(2)} SEK
 </strong>
 
 </div>
+
 
 <div class="invoice-total-row">
 
@@ -1223,10 +2913,13 @@ Delivery
 </span>
 
 <strong>
-${Number(order.delivery_fee||0).toFixed(2)} SEK
+${Number(
+order.delivery_fee || 0
+).toFixed(2)} SEK
 </strong>
 
 </div>
+
 
 <div class="invoice-total-row final">
 
@@ -1235,48 +2928,74 @@ Total
 </span>
 
 <strong>
-${Number(order.total||0).toFixed(2)} SEK
+${Number(
+order.total || 0
+).toFixed(2)} SEK
 </strong>
 
 </div>
 
 </div>
 
+
 <div style="margin-top:20px">
 
 <p>
-<strong>Payment:</strong>
-${escapeHtml(order.payment_status||"pending")}
+
+<strong>
+Payment:
+</strong>
+
+${escapeHtml(
+order.payment_status || "pending"
+)}
+
 </p>
+
 
 <p style="margin-top:7px">
 
-<strong>Order Status:</strong>
-${escapeHtml(order.order_status||"new")}
+<strong>
+Order Status:
+</strong>
+
+${escapeHtml(
+order.order_status || "new"
+)}
 
 </p>
 
+
 <p style="margin-top:7px">
 
-<strong>Payment Reference:</strong>
-${escapeHtml(order.payment_reference||"-")}
+<strong>
+Payment Reference:
+</strong>
+
+${escapeHtml(
+order.payment_reference || "-"
+)}
 
 </p>
 
 </div>
 
+
 <div class="invoice-buttons">
 
 <button
 class="main-btn"
-onclick="window.print()"
+id="invoicePrintButton"
+type="button"
 >
 🖨️ Print Invoice
 </button>
 
+
 <button
 class="close-invoice"
 id="closeInvoice"
+type="button"
 >
 Close
 </button>
@@ -1285,31 +3004,58 @@ Close
 
 `;
 
-document.getElementById("closeInvoice")
+
+document
+.getElementById("invoicePrintButton")
 .addEventListener(
 "click",
 ()=>{
-invoice.style.display="none";
+window.print();
+}
+);
+
+
+document
+.getElementById("closeInvoice")
+.addEventListener(
+"click",
+()=>{
+invoice.style.display =
+"none";
 }
 );
 
 }
 
+
+/* PRINT ORDER */
+
 async function printOrder(orderId){
 
 await viewOrder(orderId);
 
-setTimeout(()=>{
+
+setTimeout(
+()=>{
 window.print();
-},300);
+},
+300
+);
 
 }
 
+
+/* DATE */
+
 function formatDate(value){
 
-if(!value)return"-";
+if(!value){
+return "-";
+}
 
-return new Date(value).toLocaleString(
+
+return new Date(value)
+.toLocaleString(
 "en-SE",
 {
 year:"numeric",
@@ -1322,44 +3068,92 @@ minute:"2-digit"
 
 }
 
+
 /*
-   Paid-order notification.
-   This function is ONLY called for paid orders.
+==========================================
+PAID PAYMENT NOTIFICATION
+==========================================
+
+ONLY paid payments reach this function.
 */
-function showNewOrderNotification(order){
+
+function showPaidNotification(order){
+
+const paymentStatus =
+String(
+order.payment_status || ""
+).toLowerCase();
+
+
+/*
+Never show notification for:
+pending
+failed
+refunded
+anything else
+*/
+
+if(paymentStatus !== "paid"){
+return;
+}
+
+
+/*
+Do not show same paid order twice
+during the current admin session.
+*/
+
+const orderId =
+String(order.id);
+
 
 if(
-String(order.payment_status||"").toLowerCase()!=="paid"
+notifiedPaidOrders.has(orderId)
 ){
 return;
 }
 
-if(notifiedPaidOrders.has(String(order.id))){
-return;
+
+notifiedPaidOrders.add(orderId);
+
+
+notificationText.textContent =
+`Order #${order.order_number} from ${order.customer_name || "customer"} — ${Number(order.total || 0).toFixed(2)} SEK`;
+
+
+orderNotification.style.display =
+"block";
+
+
+setTimeout(
+()=>{
+orderNotification.style.display =
+"none";
+},
+10000
+);
+
 }
 
-notifiedPaidOrders.add(String(order.id));
 
-notificationText.textContent=
-`Order #${order.order_number} from ${order.customer_name||"customer"} — ${Number(order.total||0).toFixed(2)} SEK`;
+/* CLOSE NOTIFICATION */
 
-orderNotification.style.display="block";
-
-setTimeout(()=>{
-
-orderNotification.style.display="none";
-
-},8000);
-
-}
-
-document.getElementById("notificationClose")
+document
+.getElementById("notificationClose")
 .addEventListener(
 "click",
 ()=>{
-orderNotification.style.display="none";
+orderNotification.style.display =
+"none";
 }
 );
+
+
+/*
+==========================================
+REALTIME ORDERS
+==========================================
+*/
 
 function setupRealtime(){
 
@@ -1367,3 +3161,307 @@ if(realtimeChannel){
 
 supabase.removeChannel(
 realtimeChannel
+);
+
+}
+
+
+realtimeChannel =
+supabase
+.channel(
+"admin-orders-realtime"
+)
+
+
+/*
+NEW ORDER
+*/
+
+.on(
+"postgres_changes",
+{
+event:"INSERT",
+schema:"public",
+table:"orders"
+},
+payload=>{
+
+const newOrder =
+payload.new;
+
+
+/*
+Add order to list.
+*/
+
+orders.unshift(
+newOrder
+);
+
+
+/*
+Refresh admin table.
+*/
+
+renderOrders();
+
+
+/*
+IMPORTANT:
+
+Notification ONLY if the new
+order is already PAID.
+*/
+
+if(
+String(
+newOrder.payment_status || ""
+).toLowerCase() === "paid"
+){
+
+showPaidNotification(
+newOrder
+);
+
+}
+
+}
+)
+
+
+/*
+ORDER UPDATE
+*/
+
+.on(
+"postgres_changes",
+{
+event:"UPDATE",
+schema:"public",
+table:"orders"
+},
+payload=>{
+
+const updatedOrder =
+payload.new;
+
+
+const index =
+orders.findIndex(
+order =>
+String(order.id) ===
+String(updatedOrder.id)
+);
+
+
+let oldOrder = null;
+
+
+if(index !== -1){
+
+oldOrder =
+orders[index];
+
+orders[index] =
+updatedOrder;
+
+}else{
+
+orders.unshift(
+updatedOrder
+);
+
+}
+
+
+/*
+Refresh table.
+*/
+
+renderOrders();
+
+
+/*
+IMPORTANT:
+
+This is the main part.
+
+pending -> paid
+= notification
+
+failed -> paid
+= notification
+
+anything -> paid
+= notification
+
+paid -> paid
+= NO duplicate notification
+*/
+
+const oldPayment =
+String(
+oldOrder?.payment_status || ""
+).toLowerCase();
+
+
+const newPayment =
+String(
+updatedOrder.payment_status || ""
+).toLowerCase();
+
+
+if(
+newPayment === "paid" &&
+oldPayment !== "paid"
+){
+
+showPaidNotification(
+updatedOrder
+);
+
+}
+
+}
+)
+
+
+.subscribe(
+status=>{
+
+if(
+status === "SUBSCRIBED"
+){
+
+orderConnection.textContent =
+"🟢 Realtime Connected";
+
+}else if(
+status === "CHANNEL_ERROR"
+){
+
+orderConnection.textContent =
+"🔴 Realtime Error";
+
+}else if(
+status === "TIMED_OUT"
+){
+
+orderConnection.textContent =
+"🟠 Timeout";
+
+}else{
+
+orderConnection.textContent =
+status;
+
+}
+
+}
+);
+
+}
+
+
+/* REFRESH PRODUCTS */
+
+document
+.getElementById("refreshButton")
+.addEventListener(
+"click",
+loadProducts
+);
+
+
+/* REFRESH ORDERS */
+
+document
+.getElementById("refreshOrdersButton")
+.addEventListener(
+"click",
+loadOrders
+);
+
+
+/* LOGOUT */
+
+document
+.getElementById("logoutButton")
+.addEventListener(
+"click",
+async()=>{
+
+if(realtimeChannel){
+
+await supabase.removeChannel(
+realtimeChannel
+);
+
+}
+
+
+await supabase.auth.signOut();
+
+
+window.location.href =
+"login.html";
+
+}
+);
+
+
+/* ESCAPE HTML */
+
+function escapeHtml(value){
+
+return String(value)
+
+.replaceAll(
+"&",
+"&amp;"
+)
+
+.replaceAll(
+"<",
+"&lt;"
+)
+
+.replaceAll(
+">",
+"&gt;"
+)
+
+.replaceAll(
+'"',
+"&quot;"
+)
+
+.replaceAll(
+"'",
+"&#039;"
+);
+
+}
+
+
+/* START */
+
+const allowed =
+await checkAdmin();
+
+
+if(allowed){
+
+await loadProducts();
+
+await loadOrders();
+
+setupRealtime();
+
+}
+
+</script>
+
+</body>
+</html>
+

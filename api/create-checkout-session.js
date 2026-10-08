@@ -65,8 +65,14 @@ export default async function handler(req, res) {
       };
     });
 
+    /*
+      IMPORTANT:
+      Use the real EB-MARKETIZA Vercel URL directly.
+      This prevents a wrong FRONTEND_URL environment
+      variable such as ".vercel.ap" from breaking redirect.
+    */
+
     const frontendUrl =
-      process.env.FRONTEND_URL ||
       "https://ebmarketiza.vercel.app";
 
     const session =

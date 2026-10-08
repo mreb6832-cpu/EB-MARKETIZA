@@ -327,7 +327,7 @@ th{
   min-width:27px;
   height:27px;
   padding:0 8px;
-  background:#dc2626;
+  background:#16a34a;
   color:#fff;
   border-radius:50px;
   font-size:13px;
@@ -335,8 +335,12 @@ th{
   margin-left:6px;
 }
 
-.new-order-row{
-  background:#eff6ff;
+.order-count{
+  background:#2563eb;
+  color:#fff;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:13px;
 }
 
 .status{
@@ -368,10 +372,8 @@ th{
   color:#5b21b6;
 }
 
-.order-status-select{
-  min-width:125px;
-  padding:7px;
-  font-size:13px;
+.paid-row{
+  background:#f0fdf4;
 }
 
 .invoice{
@@ -422,6 +424,7 @@ th{
   width:100%;
   border-collapse:collapse;
   margin-top:15px;
+  min-width:0;
 }
 
 .invoice-items th,
@@ -453,6 +456,7 @@ th{
   display:flex;
   gap:10px;
   margin-top:20px;
+  flex-wrap:wrap;
 }
 
 .close-invoice{
@@ -462,6 +466,20 @@ th{
   padding:10px 15px;
   border-radius:8px;
   cursor:pointer;
+}
+
+.delete-invoice-btn{
+  background:#dc2626;
+  color:#fff;
+  border:0;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.delete-invoice-btn:hover{
+  background:#b91c1c;
 }
 
 .order-notification{
@@ -492,14 +510,6 @@ th{
   cursor:pointer;
 }
 
-.order-count{
-  background:#2563eb;
-  color:#fff;
-  padding:5px 10px;
-  border-radius:20px;
-  font-size:13px;
-}
-
 @media(max-width:700px){
 
   .form-grid{
@@ -528,6 +538,14 @@ th{
     grid-template-columns:1fr;
   }
 
+  .invoice-top{
+    flex-direction:column;
+  }
+
+  .invoice-number{
+    text-align:left;
+  }
+
   .order-notification{
     left:15px;
     right:15px;
@@ -550,15 +568,15 @@ th{
     display:block!important;
   }
 
-  .invoice{
+  #printArea .invoice{
     display:block!important;
     border:0;
     box-shadow:none;
     margin:0;
   }
 
-  .invoice-buttons{
-    display:none;
+  #printArea .invoice-buttons{
+    display:none!important;
   }
 }
 </style>
@@ -567,25 +585,45 @@ th{
 <body>
 
 <header>
+
 <h1>EB MARKETIZA — Admin</h1>
 
 <div class="header-buttons">
+
 <a href="index.html">Home</a>
+
 <a href="products.html">Store</a>
-<button id="logoutButton" class="logout-btn" type="button">
+
+<button
+id="logoutButton"
+class="logout-btn"
+type="button">
 Logout
 </button>
+
 </div>
+
 </header>
+
 
 <div class="container">
 
+
 <div class="card">
+
 <div class="admin-email">
+
 Logged in as:
 <strong id="adminEmail">Checking...</strong>
+
 </div>
+
 </div>
+
+
+<!-- =========================
+     ADD PRODUCT
+========================= -->
 
 <div class="card">
 
@@ -596,16 +634,26 @@ Logged in as:
 <div class="form-grid">
 
 <div>
-<label for="name">Product Name</label>
+
+<label for="name">
+Product Name
+</label>
+
 <input
 id="name"
 type="text"
 placeholder="Product name"
 required>
+
 </div>
 
+
 <div>
-<label for="price">Price (SEK)</label>
+
+<label for="price">
+Price (SEK)
+</label>
+
 <input
 id="price"
 type="number"
@@ -613,25 +661,39 @@ min="0"
 step="0.01"
 placeholder="99.90"
 required>
+
 </div>
 
+
 <div>
-<label for="category">Category</label>
+
+<label for="category">
+Category
+</label>
+
 <input
 id="category"
 type="text"
 placeholder="Electronics">
+
 </div>
 
+
 <div>
-<label for="stock">Stock</label>
+
+<label for="stock">
+Stock
+</label>
+
 <input
 id="stock"
 type="number"
 min="0"
 value="0"
 placeholder="10">
+
 </div>
+
 
 <div class="full">
 
@@ -653,6 +715,7 @@ Select one or multiple photos.
 
 </div>
 
+
 <div class="full">
 
 <label for="description">
@@ -664,6 +727,7 @@ id="description"
 placeholder="Describe the product..."></textarea>
 
 </div>
+
 
 <div class="full form-buttons">
 
@@ -692,19 +756,24 @@ Cancel Edit
 </div>
 
 
-<!-- ORDERS -->
+<!-- =========================
+     PAID INVOICES
+========================= -->
 
 <div class="card">
 
 <div class="orders-header">
 
 <h2>
-🔔 New Orders
+
+🧾 Paid Invoices
+
 <span
 id="notificationCount"
 class="notification-badge">
 0
 </span>
+
 </h2>
 
 <span
@@ -715,36 +784,51 @@ Connecting...
 
 </div>
 
+
 <button
 id="refreshOrdersButton"
 class="refresh-btn"
 type="button">
-🔄 Refresh Orders
+
+🔄 Refresh Paid Invoices
+
 </button>
+
 
 <div class="orders-wrapper">
 
 <table>
 
 <thead>
+
 <tr>
-<th>Order</th>
+
+<th>Invoice</th>
 <th>Customer</th>
 <th>Phone</th>
 <th>Total</th>
 <th>Payment</th>
-<th>Status</th>
+<th>Order Status</th>
 <th>Date</th>
 <th>Actions</th>
+
 </tr>
+
 </thead>
+
 
 <tbody id="ordersTable">
 
 <tr>
-<td colspan="8" class="empty">
-Loading orders...
+
+<td
+colspan="8"
+class="empty">
+
+Loading paid invoices...
+
 </td>
+
 </tr>
 
 </tbody>
@@ -753,12 +837,18 @@ Loading orders...
 
 </div>
 
-<div id="invoice" class="invoice"></div>
+
+<div
+id="invoice"
+class="invoice">
+</div>
 
 </div>
 
 
-<!-- PRODUCTS -->
+<!-- =========================
+     PRODUCTS
+========================= -->
 
 <div class="card">
 
@@ -768,8 +858,11 @@ Loading orders...
 id="refreshButton"
 class="refresh-btn"
 type="button">
+
 🔄 Refresh
+
 </button>
+
 
 <div class="products-wrapper">
 
@@ -778,6 +871,7 @@ type="button">
 <thead>
 
 <tr>
+
 <th>Image</th>
 <th>Name</th>
 <th>Category</th>
@@ -785,16 +879,24 @@ type="button">
 <th>Stock</th>
 <th>Photos</th>
 <th>Actions</th>
+
 </tr>
 
 </thead>
 
+
 <tbody id="productsTable">
 
 <tr>
-<td colspan="7" class="empty">
+
+<td
+colspan="7"
+class="empty">
+
 No products yet.
+
 </td>
+
 </tr>
 
 </tbody>
@@ -808,23 +910,31 @@ No products yet.
 </div>
 
 
+<!-- =========================
+     NOTIFICATION
+========================= -->
+
 <div
 id="orderNotification"
 class="order-notification">
 
 <button
 id="notificationClose"
-class="notification-close">
+class="notification-close"
+type="button">
+
 ×
+
 </button>
 
 <strong>
-🔔 New Order Received
+🔔 Paid Order Received
 </strong>
 
 <span id="notificationText"></span>
 
 </div>
+
 
 <div id="printArea"></div>
 
@@ -834,76 +944,69 @@ class="notification-close">
 import { supabase } from "./supabaseClient.js";
 
 
-/* =========================
-   ADMIN SETTINGS
-========================= */
+const ADMIN_EMAIL =
+  "mucyoemmy539@gmail.com";
 
-const ADMIN_EMAIL = "mucyoemmy539@gmail.com";
-
-
-/* =========================
-   ELEMENTS
-========================= */
 
 const form =
-document.getElementById("productForm");
+  document.getElementById("productForm");
 
 const nameInput =
-document.getElementById("name");
+  document.getElementById("name");
 
 const priceInput =
-document.getElementById("price");
+  document.getElementById("price");
 
 const categoryInput =
-document.getElementById("category");
+  document.getElementById("category");
 
 const stockInput =
-document.getElementById("stock");
+  document.getElementById("stock");
 
 const descriptionInput =
-document.getElementById("description");
+  document.getElementById("description");
 
 const imageInput =
-document.getElementById("productImages");
+  document.getElementById("productImages");
 
 const imagePreview =
-document.getElementById("imagePreview");
+  document.getElementById("imagePreview");
 
 const productsTable =
-document.getElementById("productsTable");
+  document.getElementById("productsTable");
 
 const message =
-document.getElementById("message");
+  document.getElementById("message");
 
 const saveButton =
-document.getElementById("saveButton");
+  document.getElementById("saveButton");
 
 const cancelButton =
-document.getElementById("cancelButton");
+  document.getElementById("cancelButton");
 
 const formTitle =
-document.getElementById("formTitle");
+  document.getElementById("formTitle");
 
 const adminEmail =
-document.getElementById("adminEmail");
+  document.getElementById("adminEmail");
 
 const ordersTable =
-document.getElementById("ordersTable");
+  document.getElementById("ordersTable");
 
 const notificationCount =
-document.getElementById("notificationCount");
+  document.getElementById("notificationCount");
 
 const orderConnection =
-document.getElementById("orderConnection");
+  document.getElementById("orderConnection");
 
 const invoice =
-document.getElementById("invoice");
+  document.getElementById("invoice");
 
 const orderNotification =
-document.getElementById("orderNotification");
+  document.getElementById("orderNotification");
 
 const notificationText =
-document.getElementById("notificationText");
+  document.getElementById("notificationText");
 
 
 let editingProductId = null;
@@ -923,6 +1026,7 @@ function showMessage(text,type){
 
 }
 
+
 function hideMessage(){
 
   message.style.display = "none";
@@ -941,23 +1045,16 @@ async function checkAdmin(){
     error
   } = await supabase.auth.getUser();
 
-  if(error){
 
-    console.error(error);
+  if(error || !user){
 
-    window.location.href = "login.html";
-
-    return false;
-
-  }
-
-  if(!user){
-
-    window.location.href = "login.html";
+    window.location.href =
+      "login.html";
 
     return false;
 
   }
+
 
   adminEmail.textContent =
     user.email || "";
@@ -970,58 +1067,59 @@ async function checkAdmin(){
 
     document.body.innerHTML = `
 
-    <div style="
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-      background:#f4f6f9;
-      font-family:Arial
-    ">
-
       <div style="
-        background:white;
-        padding:35px;
-        border-radius:15px;
-        text-align:center;
-        max-width:450px;
-        width:100%;
-        box-shadow:0 5px 25px rgba(0,0,0,.1)
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+        background:#f4f6f9;
+        font-family:Arial;
       ">
 
-        <h2>Access Denied</h2>
-
-        <p style="
-          margin:15px 0;
-          color:#6b7280
+        <div style="
+          background:white;
+          padding:35px;
+          border-radius:15px;
+          text-align:center;
+          max-width:450px;
+          width:100%;
+          box-shadow:0 5px 25px rgba(0,0,0,.1);
         ">
-          You are not authorized to access
-          the admin dashboard.
-        </p>
 
-        <a
-          href="index.html"
-          style="
-            display:inline-block;
-            background:#2563eb;
-            color:white;
-            text-decoration:none;
-            padding:11px 18px;
-            border-radius:8px
+          <h2>Access Denied</h2>
+
+          <p style="
+            margin:15px 0;
+            color:#6b7280;
           ">
-          Go Home
-        </a>
+            You are not authorized to access
+            the admin dashboard.
+          </p>
+
+          <a
+            href="index.html"
+            style="
+              display:inline-block;
+              background:#2563eb;
+              color:white;
+              text-decoration:none;
+              padding:11px 18px;
+              border-radius:8px;
+            ">
+            Go Home
+          </a>
+
+        </div>
 
       </div>
-
-    </div>
 
     `;
 
     return false;
 
   }
+
 
   return true;
 
@@ -1033,49 +1131,62 @@ async function checkAdmin(){
 ========================= */
 
 imageInput.addEventListener(
-"change",
-()=>{
+  "change",
+  ()=>{
 
-  imagePreview.innerHTML = "";
+    imagePreview.innerHTML = "";
 
-  const files =
-    Array.from(imageInput.files || []);
+    const files =
+      Array.from(
+        imageInput.files || []
+      );
 
-  files.forEach((file,index)=>{
 
-    const reader =
-      new FileReader();
+    files.forEach(
+      (file,index)=>{
 
-    reader.onload =
-      event => {
+        const reader =
+          new FileReader();
 
-        const div =
-          document.createElement("div");
 
-        div.className =
-          "preview-card";
+        reader.onload =
+          event=>{
 
-        div.innerHTML = `
+            const div =
+              document.createElement(
+                "div"
+              );
 
-        <img
-          src="${event.target.result}"
-          alt="Product photo">
 
-        <div class="preview-label">
-          Photo ${index + 1}
-        </div>
+            div.className =
+              "preview-card";
 
-        `;
 
-        imagePreview.appendChild(div);
+            div.innerHTML = `
 
-      };
+              <img
+                src="${event.target.result}"
+                alt="Product photo">
 
-    reader.readAsDataURL(file);
+              <div class="preview-label">
+                Photo ${index + 1}
+              </div>
 
-  });
+            `;
 
-});
+
+            imagePreview.appendChild(div);
+
+          };
+
+
+        reader.readAsDataURL(file);
+
+      }
+    );
+
+  }
+);
 
 
 /* =========================
@@ -1131,7 +1242,9 @@ async function uploadImage(
     data
   } = supabase.storage
     .from("product-images")
-    .getPublicUrl(filePath);
+    .getPublicUrl(
+      filePath
+    );
 
 
   if(!data?.publicUrl){
@@ -1170,7 +1283,9 @@ async function addProduct(){
     descriptionInput.value.trim();
 
   const files =
-    Array.from(imageInput.files || []);
+    Array.from(
+      imageInput.files || []
+    );
 
 
   if(!name){
@@ -1183,7 +1298,7 @@ async function addProduct(){
 
 
   if(
-    Number.isNaN(price) ||
+    !Number.isFinite(price) ||
     price < 0
   ){
 
@@ -1195,7 +1310,7 @@ async function addProduct(){
 
 
   if(
-    Number.isNaN(stock) ||
+    !Number.isInteger(stock) ||
     stock < 0
   ){
 
@@ -1205,11 +1320,6 @@ async function addProduct(){
 
   }
 
-
-  /*
-    IMPORTANT:
-    products table DOES NOT have image column.
-  */
 
   const {
     data:product,
@@ -1238,13 +1348,13 @@ async function addProduct(){
 
 
   for(
-    let i = 0;
-    i < files.length;
+    let i=0;
+    i<files.length;
     i++
   ){
 
     saveButton.textContent =
-      `Uploading ${i + 1}/${files.length}...`;
+      `Uploading ${i+1}/${files.length}...`;
 
 
     const url =
@@ -1260,22 +1370,19 @@ async function addProduct(){
   }
 
 
-  /*
-    Save images in product_images.
-    Only columns that exist in the new schema.
-  */
-
-  if(uploadedUrls.length > 0){
+  if(uploadedUrls.length){
 
     const rows =
       uploadedUrls.map(
         (url,index)=>({
 
-          product_id:product.id,
+          product_id:
+            product.id,
 
           image_url:url,
 
-          is_primary:index === 0
+          is_primary:
+            index === 0
 
         })
       );
@@ -1332,7 +1439,9 @@ async function updateProduct(){
     descriptionInput.value.trim();
 
   const files =
-    Array.from(imageInput.files || []);
+    Array.from(
+      imageInput.files || []
+    );
 
 
   if(!name){
@@ -1345,7 +1454,7 @@ async function updateProduct(){
 
 
   if(
-    Number.isNaN(price) ||
+    !Number.isFinite(price) ||
     price < 0
   ){
 
@@ -1357,7 +1466,7 @@ async function updateProduct(){
 
 
   if(
-    Number.isNaN(stock) ||
+    !Number.isInteger(stock) ||
     stock < 0
   ){
 
@@ -1392,50 +1501,16 @@ async function updateProduct(){
   }
 
 
-  /*
-    If new images were selected,
-    upload them to product_images.
-  */
-
-  if(files.length > 0){
-
-    const uploadedUrls = [];
-
-
-    for(
-      let i = 0;
-      i < files.length;
-      i++
-    ){
-
-      saveButton.textContent =
-        `Uploading ${i + 1}/${files.length}...`;
-
-
-      const url =
-        await uploadImage(
-          files[i],
-          editingProductId,
-          i
-        );
-
-
-      uploadedUrls.push(url);
-
-    }
-
-
-    /*
-      Check if this product already
-      has a primary image.
-    */
+  if(files.length){
 
     const {
       data:existingImages,
       error:existingError
     } = await supabase
       .from("product_images")
-      .select("id,is_primary")
+      .select(
+        "id,is_primary"
+      )
       .eq(
         "product_id",
         editingProductId
@@ -1451,8 +1526,35 @@ async function updateProduct(){
 
     const hasPrimary =
       existingImages?.some(
-        image => image.is_primary === true
+        image =>
+          image.is_primary === true
       );
+
+
+    const uploadedUrls = [];
+
+
+    for(
+      let i=0;
+      i<files.length;
+      i++
+    ){
+
+      saveButton.textContent =
+        `Uploading ${i+1}/${files.length}...`;
+
+
+      const url =
+        await uploadImage(
+          files[i],
+          editingProductId,
+          i
+        );
+
+
+      uploadedUrls.push(url);
+
+    }
 
 
     const rows =
@@ -1465,7 +1567,8 @@ async function updateProduct(){
           image_url:url,
 
           is_primary:
-            !hasPrimary && index === 0
+            !hasPrimary &&
+            index === 0
 
         })
       );
@@ -1501,55 +1604,55 @@ async function updateProduct(){
 
 
 /* =========================
-   FORM SUBMIT
+   FORM
 ========================= */
 
 form.addEventListener(
-"submit",
-async event=>{
+  "submit",
+  async event=>{
 
-  event.preventDefault();
+    event.preventDefault();
 
-  hideMessage();
+    hideMessage();
 
-  saveButton.disabled = true;
+    saveButton.disabled = true;
 
 
-  try{
+    try{
 
-    if(editingProductId){
+      if(editingProductId){
 
-      await updateProduct();
+        await updateProduct();
 
-    }else{
+      }else{
 
-      await addProduct();
+        await addProduct();
+
+      }
+
+    }catch(error){
+
+      console.error(error);
+
+      showMessage(
+        "Error: " +
+        error.message,
+        "error"
+      );
+
+    }finally{
+
+      saveButton.disabled = false;
+
+      saveButton.textContent =
+        editingProductId
+          ? "💾 Update Product"
+          : "➕ Add Product";
 
     }
 
-
-  }catch(error){
-
-    console.error(error);
-
-    showMessage(
-      "Error: " + error.message,
-      "error"
-    );
-
-
-  }finally{
-
-    saveButton.disabled = false;
-
-    saveButton.textContent =
-      editingProductId
-        ? "💾 Update Product"
-        : "➕ Add Product";
-
   }
-
-});
+);
 
 
 /* =========================
@@ -1560,11 +1663,13 @@ async function loadProducts(){
 
   productsTable.innerHTML = `
 
-  <tr>
-    <td colspan="7" class="empty">
-      Loading products...
-    </td>
-  </tr>
+    <tr>
+      <td
+        colspan="7"
+        class="empty">
+        Loading products...
+      </td>
+    </tr>
 
   `;
 
@@ -1577,7 +1682,9 @@ async function loadProducts(){
     .select("*")
     .order(
       "created_at",
-      {ascending:false}
+      {
+        ascending:false
+      }
     );
 
 
@@ -1585,11 +1692,15 @@ async function loadProducts(){
 
     productsTable.innerHTML = `
 
-    <tr>
-      <td colspan="7" class="empty">
-        ${escapeHtml(error.message)}
-      </td>
-    </tr>
+      <tr>
+        <td
+          colspan="7"
+          class="empty">
+          ${escapeHtml(
+            error.message
+          )}
+        </td>
+      </tr>
 
     `;
 
@@ -1598,18 +1709,17 @@ async function loadProducts(){
   }
 
 
-  if(
-    !data ||
-    data.length === 0
-  ){
+  if(!data?.length){
 
     productsTable.innerHTML = `
 
-    <tr>
-      <td colspan="7" class="empty">
-        No products yet.
-      </td>
-    </tr>
+      <tr>
+        <td
+          colspan="7"
+          class="empty">
+          No products yet.
+        </td>
+      </tr>
 
     `;
 
@@ -1621,15 +1731,12 @@ async function loadProducts(){
   productsTable.innerHTML = "";
 
 
-  for(const product of data){
-
-    /*
-      Get product images.
-    */
+  for(
+    const product of data
+  ){
 
     const {
-      data:images,
-      error:imageError
+      data:images
     } = await supabase
       .from("product_images")
       .select(
@@ -1641,18 +1748,10 @@ async function loadProducts(){
       )
       .order(
         "is_primary",
-        {ascending:false}
+        {
+          ascending:false
+        }
       );
-
-
-    if(imageError){
-
-      console.error(
-        "Image load error:",
-        imageError
-      );
-
-    }
 
 
     const imageList =
@@ -1668,89 +1767,94 @@ async function loadProducts(){
 
 
     const imageUrl =
-      primaryImage?.image_url || "";
+      primaryImage?.image_url ||
+      "";
 
 
     const row =
-      document.createElement("tr");
+      document.createElement(
+        "tr"
+      );
 
 
     row.innerHTML = `
 
-    <td>
+      <td>
 
-      ${
-        imageUrl
-        ?
+        ${
+          imageUrl
 
-        `
-        <img
-          src="${escapeHtml(imageUrl)}"
-          class="table-image"
-          alt="Product">
-        `
+          ?
 
-        :
+          `<img
+            src="${escapeHtml(imageUrl)}"
+            class="table-image"
+            alt="Product">`
 
-        "No image"
-      }
+          :
 
-    </td>
+          "No image"
+        }
 
-
-    <td>
-      ${escapeHtml(product.name || "")}
-    </td>
+      </td>
 
 
-    <td>
-      ${escapeHtml(product.category || "-")}
-    </td>
+      <td>
+        ${escapeHtml(
+          product.name || ""
+        )}
+      </td>
 
 
-    <td>
-      ${Number(product.price || 0).toFixed(2)}
-      SEK
-    </td>
+      <td>
+        ${escapeHtml(
+          product.category || "-"
+        )}
+      </td>
 
 
-    <td>
-      ${product.stock ?? 0}
-    </td>
+      <td>
+        ${Number(
+          product.price || 0
+        ).toFixed(2)}
+        SEK
+      </td>
 
 
-    <td>
-
-      <span class="photo-count">
-
-        ${imageList.length}
-        photo(s)
-
-      </span>
-
-    </td>
+      <td>
+        ${product.stock ?? 0}
+      </td>
 
 
-    <td>
+      <td>
 
-      <div class="action-buttons">
+        <span class="photo-count">
+          ${imageList.length} photo(s)
+        </span>
 
-        <button
-          class="edit-btn"
-          data-edit="${product.id}">
-          Edit
-        </button>
+      </td>
 
 
-        <button
-          class="delete-btn"
-          data-delete="${product.id}">
-          Delete
-        </button>
+      <td>
 
-      </div>
+        <div class="action-buttons">
 
-    </td>
+          <button
+            class="edit-btn"
+            data-edit="${product.id}">
+            Edit
+          </button>
+
+
+          <button
+            class="delete-btn"
+            data-delete="${product.id}">
+            Delete
+          </button>
+
+        </div>
+
+      </td>
 
     `;
 
@@ -1856,10 +1960,6 @@ async function startEdit(id){
   imagePreview.innerHTML = "";
 
 
-  /*
-    Show existing images.
-  */
-
   const {
     data:images
   } = await supabase
@@ -1873,7 +1973,9 @@ async function startEdit(id){
     )
     .order(
       "is_primary",
-      {ascending:false}
+      {
+        ascending:false
+      }
     );
 
 
@@ -1883,7 +1985,10 @@ async function startEdit(id){
       (image,index)=>{
 
         const div =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
+
 
         div.className =
           "preview-card";
@@ -1891,24 +1996,28 @@ async function startEdit(id){
 
         div.innerHTML = `
 
-        <img
-          src="${escapeHtml(image.image_url)}"
-          alt="Existing product photo">
+          <img
+            src="${escapeHtml(
+              image.image_url
+            )}"
+            alt="Existing product photo">
 
-        <div class="preview-label">
+          <div class="preview-label">
 
-          ${
-            image.is_primary
-            ? "⭐ Primary"
-            : `Photo ${index + 1}`
-          }
+            ${
+              image.is_primary
+                ? "⭐ Primary"
+                : `Photo ${index + 1}`
+            }
 
-        </div>
+          </div>
 
         `;
 
 
-        imagePreview.appendChild(div);
+        imagePreview.appendChild(
+          div
+        );
 
       }
     );
@@ -1929,8 +2038,8 @@ async function startEdit(id){
 ========================= */
 
 cancelButton.addEventListener(
-"click",
-resetForm
+  "click",
+  resetForm
 );
 
 
@@ -1975,11 +2084,6 @@ async function deleteProduct(id){
 
   try{
 
-    /*
-      Get image URLs before
-      deleting product.
-    */
-
     const {
       data:images,
       error:imageError
@@ -1999,15 +2103,7 @@ async function deleteProduct(id){
     }
 
 
-    /*
-      Convert public URLs
-      into storage paths.
-    */
-
-    if(
-      images &&
-      images.length > 0
-    ){
+    if(images?.length){
 
       const paths =
         images
@@ -2020,10 +2116,8 @@ async function deleteProduct(id){
                   item.image_url
                 );
 
-
               const marker =
                 "/product-images/";
-
 
               const position =
                 url.pathname.indexOf(
@@ -2045,7 +2139,6 @@ async function deleteProduct(id){
                 )
               );
 
-
             }catch{
 
               return null;
@@ -2056,35 +2149,16 @@ async function deleteProduct(id){
           .filter(Boolean);
 
 
-      if(paths.length > 0){
+      if(paths.length){
 
-        const {
-          error:storageError
-        } = await supabase.storage
+        await supabase.storage
           .from("product-images")
           .remove(paths);
-
-
-        if(storageError){
-
-          console.warn(
-            "Storage delete warning:",
-            storageError
-          );
-
-        }
 
       }
 
     }
 
-
-    /*
-      Delete product.
-      product_images will also
-      be deleted automatically
-      because of ON DELETE CASCADE.
-    */
 
     const {
       error
@@ -2112,7 +2186,6 @@ async function deleteProduct(id){
 
     await loadProducts();
 
-
   }catch(error){
 
     console.error(error);
@@ -2129,18 +2202,20 @@ async function deleteProduct(id){
 
 
 /* =========================
-   LOAD ORDERS
+   LOAD PAID ORDERS ONLY
 ========================= */
 
 async function loadOrders(){
 
   ordersTable.innerHTML = `
 
-  <tr>
-    <td colspan="8" class="empty">
-      Loading orders...
-    </td>
-  </tr>
+    <tr>
+      <td
+        colspan="8"
+        class="empty">
+        Loading paid invoices...
+      </td>
+    </tr>
 
   `;
 
@@ -2151,9 +2226,15 @@ async function loadOrders(){
   } = await supabase
     .from("orders")
     .select("*")
+    .eq(
+      "payment_status",
+      "paid"
+    )
     .order(
       "created_at",
-      {ascending:false}
+      {
+        ascending:false
+      }
     );
 
 
@@ -2164,11 +2245,17 @@ async function loadOrders(){
 
     ordersTable.innerHTML = `
 
-    <tr>
-      <td colspan="8" class="empty">
-        ${escapeHtml(error.message)}
-      </td>
-    </tr>
+      <tr>
+        <td
+          colspan="8"
+          class="empty">
+
+          ${escapeHtml(
+            error.message
+          )}
+
+        </td>
+      </tr>
 
     `;
 
@@ -2177,7 +2264,9 @@ async function loadOrders(){
   }
 
 
-  orders = data || [];
+  orders =
+    data || [];
+
 
   renderOrders();
 
@@ -2185,7 +2274,7 @@ async function loadOrders(){
 
 
 /* =========================
-   RENDER ORDERS
+   RENDER PAID ORDERS
 ========================= */
 
 function renderOrders(){
@@ -2194,211 +2283,179 @@ function renderOrders(){
 
     ordersTable.innerHTML = `
 
-    <tr>
-      <td colspan="8" class="empty">
-        No orders yet.
-      </td>
-    </tr>
+      <tr>
+        <td
+          colspan="8"
+          class="empty">
+
+          No paid invoices yet.
+
+        </td>
+      </tr>
 
     `;
 
-    notificationCount.textContent = "0";
+
+    notificationCount.textContent =
+      "0";
 
     return;
 
   }
 
 
-  const newOrders =
-    orders.filter(
-      order =>
-        order.order_status === "new"
-    );
-
-
   notificationCount.textContent =
-    newOrders.length;
+    orders.length;
 
 
   ordersTable.innerHTML = "";
 
 
-  orders.forEach(order=>{
+  orders.forEach(
+    order=>{
 
-    const row =
-      document.createElement("tr");
+      const row =
+        document.createElement(
+          "tr"
+        );
 
-
-    if(
-      order.order_status === "new"
-    ){
 
       row.className =
-        "new-order-row";
+        "paid-row";
+
+
+      row.innerHTML = `
+
+        <td>
+
+          <strong>
+            #${escapeHtml(
+              order.order_number ||
+              order.id
+            )}
+          </strong>
+
+        </td>
+
+
+        <td>
+
+          ${escapeHtml(
+            order.customer_name || "-"
+          )}
+
+          <br>
+
+          <small>
+            ${escapeHtml(
+              order.customer_email || "-"
+            )}
+          </small>
+
+        </td>
+
+
+        <td>
+
+          ${escapeHtml(
+            order.customer_phone || "-"
+          )}
+
+        </td>
+
+
+        <td>
+
+          <strong>
+
+            ${Number(
+              order.total || 0
+            ).toFixed(2)}
+
+            SEK
+
+          </strong>
+
+        </td>
+
+
+        <td>
+
+          <span
+            class="status status-paid">
+
+            PAID
+
+          </span>
+
+        </td>
+
+
+        <td>
+
+          ${escapeHtml(
+            order.order_status || "new"
+          )}
+
+        </td>
+
+
+        <td>
+
+          ${formatDate(
+            order.created_at
+          )}
+
+        </td>
+
+
+        <td>
+
+          <div class="action-buttons">
+
+            <button
+              class="view-btn"
+              data-view-order="${order.id}">
+
+              View
+
+            </button>
+
+
+            <button
+              class="print-btn"
+              data-print-order="${order.id}">
+
+              🖨️ Print
+
+            </button>
+
+
+            <button
+              class="delete-btn"
+              data-delete-order="${order.id}">
+
+              🗑️ Delete
+
+            </button>
+
+          </div>
+
+        </td>
+
+      `;
+
+
+      ordersTable.appendChild(row);
 
     }
-
-
-    row.innerHTML = `
-
-    <td>
-      <strong>
-        #${escapeHtml(
-          order.order_number || order.id
-        )}
-      </strong>
-    </td>
-
-
-    <td>
-
-      ${escapeHtml(
-        order.customer_name || "-"
-      )}
-
-      <br>
-
-      <small>
-        ${escapeHtml(
-          order.customer_email || "-"
-        )}
-      </small>
-
-    </td>
-
-
-    <td>
-      ${escapeHtml(
-        order.customer_phone || "-"
-      )}
-    </td>
-
-
-    <td>
-
-      <strong>
-        ${Number(
-          order.total || 0
-        ).toFixed(2)}
-        SEK
-      </strong>
-
-    </td>
-
-
-    <td>
-
-      <span
-        class="status status-${escapeHtml(
-          order.payment_status || "pending"
-        )}">
-
-        ${escapeHtml(
-          order.payment_status || "pending"
-        )}
-
-      </span>
-
-    </td>
-
-
-    <td>
-
-      <select
-        class="order-status-select"
-        data-status="${order.id}">
-
-        <option
-          value="new"
-          ${
-            order.order_status === "new"
-            ? "selected"
-            : ""
-          }>
-          New
-        </option>
-
-        <option
-          value="processing"
-          ${
-            order.order_status === "processing"
-            ? "selected"
-            : ""
-          }>
-          Processing
-        </option>
-
-        <option
-          value="shipped"
-          ${
-            order.order_status === "shipped"
-            ? "selected"
-            : ""
-          }>
-          Shipped
-        </option>
-
-        <option
-          value="delivered"
-          ${
-            order.order_status === "delivered"
-            ? "selected"
-            : ""
-          }>
-          Delivered
-        </option>
-
-        <option
-          value="cancelled"
-          ${
-            order.order_status === "cancelled"
-            ? "selected"
-            : ""
-          }>
-          Cancelled
-        </option>
-
-      </select>
-
-    </td>
-
-
-    <td>
-      ${formatDate(order.created_at)}
-    </td>
-
-
-    <td>
-
-      <div class="action-buttons">
-
-        <button
-          class="view-btn"
-          data-view-order="${order.id}">
-          View
-        </button>
-
-
-        <button
-          class="print-btn"
-          data-print-order="${order.id}">
-          🖨️ Print
-        </button>
-
-      </div>
-
-    </td>
-
-    `;
-
-
-    ordersTable.appendChild(row);
-
-  });
+  );
 
 
   document
-    .querySelectorAll("[data-view-order]")
+    .querySelectorAll(
+      "[data-view-order]"
+    )
     .forEach(button=>{
 
       button.addEventListener(
@@ -2414,7 +2471,9 @@ function renderOrders(){
 
 
   document
-    .querySelectorAll("[data-print-order]")
+    .querySelectorAll(
+      "[data-print-order]"
+    )
     .forEach(button=>{
 
       button.addEventListener(
@@ -2430,15 +2489,16 @@ function renderOrders(){
 
 
   document
-    .querySelectorAll("[data-status]")
-    .forEach(select=>{
+    .querySelectorAll(
+      "[data-delete-order]"
+    )
+    .forEach(button=>{
 
-      select.addEventListener(
-        "change",
+      button.addEventListener(
+        "click",
         ()=>{
-          updateOrderStatus(
-            select.dataset.status,
-            select.value
+          deleteInvoice(
+            button.dataset.deleteOrder
           );
         }
       );
@@ -2449,75 +2509,26 @@ function renderOrders(){
 
 
 /* =========================
-   UPDATE ORDER STATUS
+   VIEW ORDER
 ========================= */
 
-async function updateOrderStatus(
-  orderId,
-  status
+async function viewOrder(
+  orderId
 ){
 
-  const {
-    error
-  } = await supabase
-    .from("orders")
-    .update({
-      order_status:status
-    })
-    .eq(
-      "id",
-      orderId
+  const order =
+    orders.find(
+      item =>
+        String(item.id) ===
+        String(orderId)
     );
 
 
-  if(error){
-
-    alert(
-      "Could not update order: " +
-      error.message
-    );
+  if(!order){
 
     return;
 
   }
-
-
-  const order =
-    orders.find(
-      o =>
-        String(o.id) ===
-        String(orderId)
-    );
-
-
-  if(order){
-
-    order.order_status =
-      status;
-
-  }
-
-
-  renderOrders();
-
-}
-
-
-/* =========================
-   VIEW ORDER
-========================= */
-
-async function viewOrder(orderId){
-
-  const order =
-    orders.find(
-      o =>
-        String(o.id) ===
-        String(orderId)
-    );
-
-
-  if(!order)return;
 
 
   const {
@@ -2532,14 +2543,16 @@ async function viewOrder(orderId){
     )
     .order(
       "created_at",
-      {ascending:true}
+      {
+        ascending:true
+      }
     );
 
 
   if(error){
 
     alert(
-      "Could not load order items: " +
+      "Could not load invoice items: " +
       error.message
     );
 
@@ -2567,7 +2580,7 @@ async function viewOrder(orderId){
 
 
 /* =========================
-   INVOICE
+   RENDER INVOICE
 ========================= */
 
 function renderInvoice(
@@ -2575,79 +2588,80 @@ function renderInvoice(
   items
 ){
 
-  let itemsHtml = "";
+  const itemsHtml =
+    items.length
 
+    ?
 
-  if(items.length){
-
-    itemsHtml =
-      items.map(item=>{
+    items.map(
+      item=>{
 
         const itemTotal =
           Number(
-            item.total_price ??
-            item.line_total ??
+            item.total_price ||
             (
-              Number(item.quantity || 0) *
-              Number(item.unit_price || 0)
+              Number(
+                item.quantity || 0
+              ) *
+              Number(
+                item.unit_price || 0
+              )
             )
           );
 
 
         return `
 
-        <tr>
+          <tr>
 
-          <td>
-            ${escapeHtml(
-              item.product_name || "-"
-            )}
-          </td>
+            <td>
+              ${escapeHtml(
+                item.product_name || "-"
+              )}
+            </td>
 
-          <td>
-            ${Number(
-              item.quantity || 0
-            )}
-          </td>
+            <td>
+              ${Number(
+                item.quantity || 0
+              )}
+            </td>
 
-          <td>
-            ${Number(
-              item.unit_price || 0
-            ).toFixed(2)}
-            SEK
-          </td>
+            <td>
+              ${Number(
+                item.unit_price || 0
+              ).toFixed(2)}
+              SEK
+            </td>
 
-          <td>
-            ${itemTotal.toFixed(2)}
-            SEK
-          </td>
+            <td>
+              ${itemTotal.toFixed(2)}
+              SEK
+            </td>
 
-        </tr>
+          </tr>
 
         `;
 
-      }).join("");
+      }
+    ).join("")
 
+    :
 
-  }else{
+    `
 
-    itemsHtml = `
+      <tr>
 
-    <tr>
+        <td
+          colspan="4"
+          style="text-align:center">
 
-      <td
-        colspan="4"
-        style="text-align:center">
+          No order items found.
 
-        No order items found.
+        </td>
 
-      </td>
-
-    </tr>
+      </tr>
 
     `;
-
-  }
 
 
   const address = `
@@ -2662,11 +2676,13 @@ function renderInvoice(
 
     ${
       order.apartment
-      ? ", " +
-        escapeHtml(
-          order.apartment
-        )
-      : ""
+      ?
+      ", " +
+      escapeHtml(
+        order.apartment
+      )
+      :
+      ""
     }
 
     <br>
@@ -2690,73 +2706,92 @@ function renderInvoice(
 
   invoice.innerHTML = `
 
-  <div class="invoice-top">
+    <div class="invoice-top">
 
-    <div>
+      <div>
 
-      <div class="invoice-title">
-        EB MARKETIZA
+        <div class="invoice-title">
+          EB MARKETIZA
+        </div>
+
+        <p style="
+          margin-top:6px;
+          color:#6b7280;
+        ">
+          PAID INVOICE
+        </p>
+
       </div>
 
-      <p style="
-        margin-top:6px;
-        color:#6b7280
-      ">
-        Order Invoice
-      </p>
 
-    </div>
-
-
-    <div class="invoice-number">
-
-      <strong>
-        Order #${escapeHtml(
-          order.order_number ||
-          order.id
-        )}
-      </strong>
-
-      <br>
-
-      ${formatDate(
-        order.created_at
-      )}
-
-    </div>
-
-  </div>
-
-
-  <div class="invoice-grid">
-
-    <div class="invoice-box">
-
-      <h3>
-        Customer
-      </h3>
-
-      <p>
+      <div class="invoice-number">
 
         <strong>
+
+          Invoice #
+
           ${escapeHtml(
-            order.customer_name || "-"
+            order.order_number ||
+            order.id
           )}
+
         </strong>
 
         <br>
 
-        ${escapeHtml(
-          order.customer_email || "-"
+        ${formatDate(
+          order.created_at
         )}
 
-        <br>
+      </div>
 
-        ${escapeHtml(
-          order.customer_phone || "-"
-        )}
+    </div>
 
-      </p>
+
+    <div class="invoice-grid">
+
+      <div class="invoice-box">
+
+        <h3>
+          Customer
+        </h3>
+
+        <p>
+
+          <strong>
+            ${escapeHtml(
+              order.customer_name || "-"
+            )}
+          </strong>
+
+          <br>
+
+          ${escapeHtml(
+            order.customer_email || "-"
+          )}
+
+          <br>
+
+          ${escapeHtml(
+            order.customer_phone || "-"
+          )}
+
+        </p>
+
+      </div>
+
+
+      <div class="invoice-box">
+
+        <h3>
+          Delivery Address
+        </h3>
+
+        <p>
+          ${address}
+        </p>
+
+      </div>
 
     </div>
 
@@ -2764,168 +2799,189 @@ function renderInvoice(
     <div class="invoice-box">
 
       <h3>
-        Delivery Address
+        Products
       </h3>
 
+
+      <table class="invoice-items">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Product
+            </th>
+
+            <th>
+              Quantity
+            </th>
+
+            <th>
+              Unit Price
+            </th>
+
+            <th>
+              Total
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          ${itemsHtml}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <div class="invoice-total">
+
+      <div class="invoice-total-row">
+
+        <span>
+          Subtotal
+        </span>
+
+        <strong>
+
+          ${Number(
+            order.subtotal || 0
+          ).toFixed(2)}
+
+          SEK
+
+        </strong>
+
+      </div>
+
+
+      <div class="invoice-total-row">
+
+        <span>
+          Delivery
+        </span>
+
+        <strong>
+
+          ${Number(
+            order.delivery_fee || 0
+          ).toFixed(2)}
+
+          SEK
+
+        </strong>
+
+      </div>
+
+
+      <div class="invoice-total-row final">
+
+        <span>
+          TOTAL
+        </span>
+
+        <strong>
+
+          ${Number(
+            order.total || 0
+          ).toFixed(2)}
+
+          SEK
+
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div style="margin-top:20px">
+
       <p>
-        ${address}
+
+        <strong>
+          Payment:
+        </strong>
+
+        <span
+          class="status status-paid">
+
+          PAID
+
+        </span>
+
+      </p>
+
+
+      <p style="margin-top:8px">
+
+        <strong>
+          Order Status:
+        </strong>
+
+        ${escapeHtml(
+          order.order_status ||
+          "new"
+        )}
+
+      </p>
+
+
+      <p style="margin-top:8px">
+
+        <strong>
+          Payment Reference:
+        </strong>
+
+        ${escapeHtml(
+          order.payment_reference ||
+          "-"
+        )}
+
       </p>
 
     </div>
 
-  </div>
+
+    <div class="invoice-buttons">
+
+      <button
+        class="main-btn"
+        id="invoicePrintButton"
+        type="button">
+
+        🖨️ Print Invoice
+
+      </button>
 
 
-  <div class="invoice-box">
+      <button
+        class="delete-invoice-btn"
+        id="invoiceDeleteButton"
+        type="button">
 
-    <h3>
-      Products
-    </h3>
+        🗑️ Delete Invoice
 
-
-    <table class="invoice-items">
-
-      <thead>
-
-        <tr>
-          <th>Product</th>
-          <th>Quantity</th>
-          <th>Unit Price</th>
-          <th>Total</th>
-        </tr>
-
-      </thead>
+      </button>
 
 
-      <tbody>
-        ${itemsHtml}
-      </tbody>
+      <button
+        class="close-invoice"
+        id="closeInvoice"
+        type="button">
 
-    </table>
+        Close
 
-  </div>
-
-
-  <div class="invoice-total">
-
-    <div class="invoice-total-row">
-
-      <span>
-        Subtotal
-      </span>
-
-      <strong>
-        ${Number(
-          order.subtotal || 0
-        ).toFixed(2)}
-        SEK
-      </strong>
+      </button>
 
     </div>
-
-
-    <div class="invoice-total-row">
-
-      <span>
-        Delivery
-      </span>
-
-      <strong>
-        ${Number(
-          order.delivery_fee || 0
-        ).toFixed(2)}
-        SEK
-      </strong>
-
-    </div>
-
-
-    <div class="invoice-total-row final">
-
-      <span>
-        Total
-      </span>
-
-      <strong>
-        ${Number(
-          order.total || 0
-        ).toFixed(2)}
-        SEK
-      </strong>
-
-    </div>
-
-  </div>
-
-
-  <div style="margin-top:20px">
-
-    <p>
-
-      <strong>
-        Payment:
-      </strong>
-
-      ${escapeHtml(
-        order.payment_status ||
-        "pending"
-      )}
-
-    </p>
-
-
-    <p style="margin-top:7px">
-
-      <strong>
-        Order Status:
-      </strong>
-
-      ${escapeHtml(
-        order.order_status ||
-        "new"
-      )}
-
-    </p>
-
-
-    <p style="margin-top:7px">
-
-      <strong>
-        Payment Reference:
-      </strong>
-
-      ${escapeHtml(
-        order.payment_reference ||
-        "-"
-      )}
-
-    </p>
-
-  </div>
-
-
-  <div class="invoice-buttons">
-
-    <button
-      class="main-btn"
-      id="invoicePrintButton"
-      type="button">
-
-      🖨️ Print Invoice
-
-    </button>
-
-
-    <button
-      class="close-invoice"
-      id="closeInvoice"
-      type="button">
-
-      Close
-
-    </button>
-
-  </div>
 
   `;
 
@@ -2937,7 +2993,21 @@ function renderInvoice(
     .addEventListener(
       "click",
       ()=>{
-        window.print();
+        printCurrentInvoice();
+      }
+    );
+
+
+  document
+    .getElementById(
+      "invoiceDeleteButton"
+    )
+    .addEventListener(
+      "click",
+      ()=>{
+        deleteInvoice(
+          order.id
+        );
       }
     );
 
@@ -2958,6 +3028,36 @@ function renderInvoice(
 
 
 /* =========================
+   PRINT CURRENT INVOICE
+========================= */
+
+function printCurrentInvoice(){
+
+  const printArea =
+    document.getElementById(
+      "printArea"
+    );
+
+
+  printArea.innerHTML =
+    invoice.outerHTML;
+
+
+  printArea.querySelectorAll(
+    ".invoice-buttons"
+  ).forEach(
+    element=>{
+      element.remove();
+    }
+  );
+
+
+  window.print();
+
+}
+
+
+/* =========================
    PRINT ORDER
 ========================= */
 
@@ -2965,15 +3065,143 @@ async function printOrder(
   orderId
 ){
 
-  await viewOrder(orderId);
+  await viewOrder(
+    orderId
+  );
 
 
   setTimeout(
     ()=>{
-      window.print();
+      printCurrentInvoice();
     },
     300
   );
+
+}
+
+
+/* =========================
+   DELETE INVOICE
+========================= */
+
+async function deleteInvoice(
+  orderId
+){
+
+  const order =
+    orders.find(
+      item =>
+        String(item.id) ===
+        String(orderId)
+    );
+
+
+  if(!order){
+
+    alert(
+      "Invoice not found."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    order.payment_status !==
+    "paid"
+  ){
+
+    alert(
+      "Only PAID invoices can be deleted."
+    );
+
+    return;
+
+  }
+
+
+  const invoiceNumber =
+    order.order_number ||
+    order.id;
+
+
+  const confirmed =
+    confirm(
+      `Delete paid invoice #${invoiceNumber}?\n\nThis will permanently delete the invoice and its order items.`
+    );
+
+
+  if(!confirmed){
+
+    return;
+
+  }
+
+
+  try{
+
+    const {
+      error
+    } = await supabase
+      .from("orders")
+      .delete()
+      .eq(
+        "id",
+        orderId
+      );
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    orders =
+      orders.filter(
+        item =>
+          String(item.id) !==
+          String(orderId)
+      );
+
+
+    invoice.style.display =
+      "none";
+
+
+    invoice.innerHTML =
+      "";
+
+
+    printArea.innerHTML =
+      "";
+
+
+    renderOrders();
+
+
+    showMessage(
+      `Invoice #${invoiceNumber} deleted successfully.`,
+      "success"
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Delete invoice error:",
+      error
+    );
+
+
+    alert(
+      "Could not delete invoice: " +
+      error.message
+    );
+
+  }
 
 }
 
@@ -2984,7 +3212,11 @@ async function printOrder(
 
 function formatDate(value){
 
-  if(!value)return "-";
+  if(!value){
+
+    return "-";
+
+  }
 
 
   return new Date(value)
@@ -3003,7 +3235,7 @@ function formatDate(value){
 
 
 /* =========================
-   NEW ORDER NOTIFICATION
+   NOTIFICATION
 ========================= */
 
 function showNewOrderNotification(
@@ -3011,7 +3243,7 @@ function showNewOrderNotification(
 ){
 
   notificationText.textContent =
-    `Order #${
+    `Paid invoice #${
       order.order_number ||
       order.id
     } from ${
@@ -3053,7 +3285,7 @@ document
 
 
 /* =========================
-   REALTIME ORDERS
+   REALTIME
 ========================= */
 
 function setupRealtime(){
@@ -3070,8 +3302,9 @@ function setupRealtime(){
   realtimeChannel =
     supabase
       .channel(
-        "admin-orders-realtime"
+        "admin-paid-orders-realtime"
       )
+
 
       .on(
         "postgres_changes",
@@ -3084,6 +3317,21 @@ function setupRealtime(){
 
           const newOrder =
             payload.new;
+
+
+          /*
+            ONLY PAID ORDERS
+            ARE ADDED.
+          */
+
+          if(
+            newOrder.payment_status !==
+            "paid"
+          ){
+
+            return;
+
+          }
 
 
           orders.unshift(
@@ -3101,6 +3349,7 @@ function setupRealtime(){
         }
       )
 
+
       .on(
         "postgres_changes",
         {
@@ -3110,24 +3359,61 @@ function setupRealtime(){
         },
         payload=>{
 
+          const updatedOrder =
+            payload.new;
+
+
           const index =
             orders.findIndex(
               order =>
                 String(order.id) ===
-                String(payload.new.id)
+                String(updatedOrder.id)
             );
 
 
-          if(index !== -1){
+          /*
+            If it becomes PAID,
+            add it to the list.
+          */
 
-            orders[index] =
-              payload.new;
+          if(
+            updatedOrder.payment_status ===
+            "paid"
+          ){
+
+            if(index === -1){
+
+              orders.unshift(
+                updatedOrder
+              );
+
+              showNewOrderNotification(
+                updatedOrder
+              );
+
+            }else{
+
+              orders[index] =
+                updatedOrder;
+
+            }
 
           }else{
 
-            orders.unshift(
-              payload.new
-            );
+            /*
+              If an existing paid order
+              stops being paid,
+              remove it.
+            */
+
+            if(index !== -1){
+
+              orders.splice(
+                index,
+                1
+              );
+
+            }
 
           }
 
@@ -3136,6 +3422,7 @@ function setupRealtime(){
 
         }
       )
+
 
       .subscribe(
         status=>{

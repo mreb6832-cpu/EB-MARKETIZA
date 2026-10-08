@@ -88,6 +88,19 @@
       background: #f3f4f6;
     }
 
+    .no-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ca3af;
+      font-size: 13px;
+      text-align: center;
+    }
+
     .product-name {
       font-size: 18px;
       font-weight: bold;
@@ -118,6 +131,11 @@
 
     .quantity button:hover {
       background: #d1d5db;
+    }
+
+    .quantity button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
     }
 
     .quantity span {
@@ -216,7 +234,18 @@
       color: #6b7280;
     }
 
+    .stock-warning {
+      color: #dc2626;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
     @media (max-width: 750px) {
+
+      .container {
+        margin: 20px auto;
+        padding: 15px;
+      }
 
       .cart-layout {
         grid-template-columns: 1fr;
@@ -224,20 +253,30 @@
 
       .cart-item {
         grid-template-columns: 75px 1fr;
+        gap: 12px;
       }
 
-      .cart-image {
+      .cart-image,
+      .no-image {
         width: 75px;
         height: 75px;
       }
 
       .cart-actions {
         grid-column: 1 / -1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       nav {
         flex-direction: column;
         gap: 12px;
+      }
+
+      nav a {
+        margin-left: 8px;
+        margin-right: 8px;
       }
     }
   </style>
@@ -259,7 +298,6 @@
 
 </nav>
 
-
 <div class="container">
 
   <h1>🛒 My Cart</h1>
@@ -272,39 +310,40 @@
 
 </div>
 
-
 <script type="module">
 
 import { supabase } from "./supabaseClient.js";
 
-
-const content =
-  document.getElementById("content");
-
+const content = document.getElementById("content");
 
 let cartItems = [];
 
 
-/* =========================
+/* =========================================================
    LOAD CART
-========================= */
+========================================================= */
 
 async function loadCart() {
 
+  content.innerHTML = `
+    <div class="loading">
+      Loading cart...
+    </div>
+  `;
+
   try {
+
+    /* -----------------------------------------
+       CHECK LOGIN
+    ----------------------------------------- */
 
     const {
       data: sessionData,
       error: sessionError
     } = await supabase.auth.getSession();
 
-
     if (sessionError) {
-
-      console.error(
-        "Session error:",
-        sessionError
-      );
+      console.error("Session error:", sessionError);
 
       showError(
         "Could not check your login session."
@@ -313,12 +352,7 @@ async function loadCart() {
       return;
     }
 
-
-    const session =
-      sessionData?.session;
-
-
-    /* NOT LOGGED IN */
+    const session = sessionData?.session;
 
     if (!session) {
 
@@ -326,9 +360,7 @@ async function loadCart() {
 
         <div class="empty">
 
-          <h2>
-            Please login first
-          </h2>
+          <h2>Please login first</h2>
 
           <p>
             You need to login to view your cart.
@@ -346,24 +378,22 @@ async function loadCart() {
     }
 
 
-    console.log(
-      "Logged in user:",
-      session.user.id
-    );
-
-
-    /* =========================
-       GET CART ITEMS
-    ========================= */
+    /* -----------------------------------------
+       LOAD CART ITEMS
+    ----------------------------------------- */
 
     const {
       data: cartData,
       error: cartError
     } = await supabase
       .from("cart_items")
-      .select(
-        "id, user_id, product_id, quantity, created_at"
-      )
+      .select(`
+        id,
+        user_id,
+        product_id,
+        quantity,
+        created_at
+      `)
       .eq(
         "user_id",
         session.user.id
@@ -374,7 +404,6 @@ async function loadCart() {
           ascending: false
         }
       );
-
 
     if (cartError) {
 
@@ -391,11 +420,9 @@ async function loadCart() {
     }
 
 
-    console.log(
-      "Cart rows:",
-      cartData
-    );
-
+    /* -----------------------------------------
+       EMPTY CART
+    ----------------------------------------- */
 
     if (
       !cartData ||
@@ -410,28 +437,44 @@ async function loadCart() {
     }
 
 
-    /* =========================
-       GET PRODUCT IDS
-    ========================= */
+    /* -----------------------------------------
+       PRODUCT IDS
+    ----------------------------------------- */
 
-    const productIds =
-      cartData.map(
-        item => item.product_id
-      );
+    const productIds = cartData
+      .map(item => item.product_id)
+      .filter(Boolean);
 
 
-    /* =========================
-       GET PRODUCTS
-    ========================= */
+    if (productIds.length === 0) {
+
+      cartItems = [];
+
+      renderCart();
+
+      return;
+    }
+
+
+    /* -----------------------------------------
+       LOAD PRODUCTS
+       IMPORTANT:
+       NO "image" COLUMN HERE
+    ----------------------------------------- */
 
     const {
       data: products,
       error: productsError
     } = await supabase
       .from("products")
-      .select(
-        "id, name, price, image, stock"
-      )
+      .select(`
+        id,
+        name,
+        description,
+        price,
+        category,
+        stock
+      `)
       .in(
         "id",
         productIds
@@ -453,33 +496,76 @@ async function loadCart() {
     }
 
 
-    console.log(
-      "Cart products:",
-      products
-    );
+    /* -----------------------------------------
+       LOAD PRODUCT IMAGES
+       Images are stored in product_images
+    ----------------------------------------- */
+
+    const {
+      data: imageData,
+      error: imageError
+    } = await supabase
+      .from("product_images")
+      .select(`
+        id,
+        product_id,
+        image_url,
+        is_primary
+      `)
+      .in(
+        "product_id",
+        productIds
+      );
 
 
-    /* =========================
-       COMBINE CART + PRODUCTS
-    ========================= */
+    if (imageError) {
 
-    cartItems =
-      cartData.map(item => {
+      console.error(
+        "Product images error:",
+        imageError
+      );
 
-        const product =
-          products.find(
-            p =>
-              Number(p.id) ===
-              Number(item.product_id)
-          );
+      /*
+         Do NOT stop the cart if images fail.
+         Products can still be displayed.
+      */
+
+    }
 
 
-        return {
-          ...item,
-          product: product || null
-        };
+    /* -----------------------------------------
+       COMBINE EVERYTHING
+    ----------------------------------------- */
 
-      });
+    cartItems = cartData.map(item => {
+
+      const product = products?.find(
+        p => p.id === item.product_id
+      );
+
+      const productImages = (imageData || [])
+        .filter(
+          image =>
+            image.product_id === item.product_id
+        )
+        .sort(
+          (a, b) =>
+            Number(b.is_primary) -
+            Number(a.is_primary)
+        );
+
+      const image =
+        productImages.length > 0
+          ? productImages[0].image_url
+          : null;
+
+      return {
+        ...item,
+        product: product || null,
+        image
+      };
+
+    });
 
 
     renderCart();
@@ -498,9 +584,9 @@ async function loadCart() {
 }
 
 
-/* =========================
+/* =========================================================
    RENDER CART
-========================= */
+========================================================= */
 
 function renderCart() {
 
@@ -530,9 +616,6 @@ function renderCart() {
 
     return;
   }
-
-
-  let subtotal = 0;
 
 
   const validItems =
@@ -569,48 +652,80 @@ function renderCart() {
   }
 
 
+  let subtotal = 0;
+
+
   const itemsHTML =
     validItems.map(item => {
 
-      const product =
-        item.product;
-
+      const product = item.product;
 
       const price =
         Number(product.price || 0);
 
-
       const quantity =
         Number(item.quantity || 1);
-
 
       const stock =
         Number(product.stock || 0);
 
-
       const itemTotal =
         price * quantity;
-
 
       subtotal += itemTotal;
 
 
-      const image =
-        product.image ||
-        "";
+      /* -----------------------------------------
+         IMAGE
+      ----------------------------------------- */
+
+      let imageHTML = "";
+
+      if (item.image) {
+
+        imageHTML = `
+
+          <img
+            class="cart-image"
+            src="${escapeHtml(item.image)}"
+            alt="${escapeHtml(
+              product.name || "Product"
+            )}"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          >
+
+          <div
+            class="no-image"
+            style="display:none;"
+          >
+            No image
+          </div>
+
+        `;
+
+      } else {
+
+        imageHTML = `
+
+          <div class="no-image">
+            No image
+          </div>
+
+        `;
+
+      }
+
+
+      const plusDisabled =
+        stock <= 0 ||
+        quantity >= stock;
 
 
       return `
 
         <div class="cart-item">
 
-          <img
-            class="cart-image"
-            src="${escapeHtml(image)}"
-            alt="${escapeHtml(
-              product.name || "Product"
-            )}"
-          >
+          ${imageHTML}
 
 
           <div>
@@ -632,10 +747,11 @@ function renderCart() {
 
               <button
                 onclick="changeQuantity(
-                  ${item.id},
+                  '${item.id}',
                   ${quantity - 1},
                   ${stock}
                 )"
+                ${quantity <= 1 ? "" : ""}
               >
                 −
               </button>
@@ -648,15 +764,27 @@ function renderCart() {
 
               <button
                 onclick="changeQuantity(
-                  ${item.id},
+                  '${item.id}',
                   ${quantity + 1},
                   ${stock}
                 )"
+                ${plusDisabled ? "disabled" : ""}
               >
                 +
               </button>
 
             </div>
+
+
+            ${
+              stock > 0 && quantity >= stock
+                ? `
+                  <div class="stock-warning">
+                    Maximum available stock reached.
+                  </div>
+                `
+                : ""
+            }
 
           </div>
 
@@ -667,11 +795,10 @@ function renderCart() {
               ${formatSEK(itemTotal)}
             </strong>
 
-            <br>
 
             <button
               class="remove"
-              onclick="removeItem(${item.id})"
+              onclick="removeItem('${item.id}')"
             >
               🗑️ Remove
             </button>
@@ -764,180 +891,211 @@ function renderCart() {
 }
 
 
-/* =========================
+/* =========================================================
    CHANGE QUANTITY
-========================= */
+========================================================= */
 
 window.changeQuantity =
-  async function(
-    itemId,
-    newQuantity,
-    stock
+async function(
+  itemId,
+  newQuantity,
+  stock
+) {
+
+  if (
+    newQuantity < 1
   ) {
 
-    if (
-      newQuantity < 1
-    ) {
+    await removeItem(itemId);
 
-      await removeItem(
-        itemId
-      );
-
-      return;
-    }
+    return;
+  }
 
 
-    const availableStock =
-      Number(stock || 0);
+  const availableStock =
+    Number(stock || 0);
 
 
-    if (
-      availableStock > 0 &&
-      newQuantity > availableStock
-    ) {
+  if (
+    availableStock <= 0
+  ) {
 
-      alert(
-        `Only ${availableStock} item(s) available in stock.`
-      );
+    alert(
+      "This product is currently out of stock."
+    );
 
-      return;
-    }
-
-
-    const {
-      data: sessionData
-    } =
-      await supabase.auth.getSession();
+    return;
+  }
 
 
-    if (
-      !sessionData?.session
-    ) {
+  if (
+    newQuantity > availableStock
+  ) {
 
-      window.location.href =
-        "login.html";
+    alert(
+      `Only ${availableStock} item(s) available in stock.`
+    );
 
-      return;
-    }
-
-
-    const {
-      error
-    } = await supabase
-      .from("cart_items")
-      .update({
-        quantity:
-          newQuantity
-      })
-      .eq(
-        "id",
-        itemId
-      )
-      .eq(
-        "user_id",
-        sessionData.session.user.id
-      );
+    return;
+  }
 
 
-    if (error) {
-
-      console.error(
-        "Quantity update error:",
-        error
-      );
-
-      alert(
-        "Could not update quantity."
-      );
-
-      return;
-    }
+  const {
+    data: sessionData,
+    error: sessionError
+  } =
+    await supabase.auth.getSession();
 
 
-    await loadCart();
-  };
-
-
-/* =========================
-   REMOVE ITEM
-========================= */
-
-window.removeItem =
-  async function(itemId) {
-
-    const {
-      data: sessionData
-    } =
-      await supabase.auth.getSession();
-
-
-    if (
-      !sessionData?.session
-    ) {
-
-      window.location.href =
-        "login.html";
-
-      return;
-    }
-
-
-    const {
-      error
-    } = await supabase
-      .from("cart_items")
-      .delete()
-      .eq(
-        "id",
-        itemId
-      )
-      .eq(
-        "user_id",
-        sessionData.session.user.id
-      );
-
-
-    if (error) {
-
-      console.error(
-        "Remove error:",
-        error
-      );
-
-      alert(
-        "Could not remove product."
-      );
-
-      return;
-    }
-
-
-    await loadCart();
-  };
-
-
-/* =========================
-   CHECKOUT
-========================= */
-
-window.goToCheckout =
-  function() {
-
-    if (
-      cartItems.length === 0
-    ) {
-      return;
-    }
-
+  if (
+    sessionError ||
+    !sessionData?.session
+  ) {
 
     window.location.href =
-      "payment.html";
-  };
+      "login.html";
+
+    return;
+  }
 
 
-/* =========================
+  const userId =
+    sessionData.session.user.id;
+
+
+  const {
+    error
+  } = await supabase
+    .from("cart_items")
+    .update({
+      quantity: newQuantity
+    })
+    .eq(
+      "id",
+      itemId
+    )
+    .eq(
+      "user_id",
+      userId
+    );
+
+
+  if (error) {
+
+    console.error(
+      "Quantity update error:",
+      error
+    );
+
+    alert(
+      "Could not update quantity."
+    );
+
+    return;
+  }
+
+
+  await loadCart();
+};
+
+
+/* =========================================================
+   REMOVE ITEM
+========================================================= */
+
+window.removeItem =
+async function(itemId) {
+
+  const {
+    data: sessionData,
+    error: sessionError
+  } =
+    await supabase.auth.getSession();
+
+
+  if (
+    sessionError ||
+    !sessionData?.session
+  ) {
+
+    window.location.href =
+      "login.html";
+
+    return;
+  }
+
+
+  const userId =
+    sessionData.session.user.id;
+
+
+  const {
+    error
+  } = await supabase
+    .from("cart_items")
+    .delete()
+    .eq(
+      "id",
+      itemId
+    )
+    .eq(
+      "user_id",
+      userId
+    );
+
+
+  if (error) {
+
+    console.error(
+      "Remove error:",
+      error
+    );
+
+    alert(
+      "Could not remove product."
+    );
+
+    return;
+  }
+
+
+  await loadCart();
+};
+
+
+/* =========================================================
+   CHECKOUT
+========================================================= */
+
+window.goToCheckout =
+function() {
+
+  const validItems =
+    cartItems.filter(
+      item => item.product
+    );
+
+
+  if (
+    validItems.length === 0
+  ) {
+
+    alert(
+      "Your cart is empty."
+    );
+
+    return;
+  }
+
+
+  window.location.href =
+    "payment.html";
+};
+
+
+/* =========================================================
    FORMAT SEK
-========================= */
+========================================================= */
 
 function formatSEK(value) {
 
@@ -953,13 +1111,13 @@ function formatSEK(value) {
 }
 
 
-/* =========================
+/* =========================================================
    ESCAPE HTML
-========================= */
+========================================================= */
 
 function escapeHtml(value) {
 
-  return String(value || "")
+  return String(value ?? "")
     .replaceAll(
       "&",
       "&amp;"
@@ -983,9 +1141,9 @@ function escapeHtml(value) {
 }
 
 
-/* =========================
+/* =========================================================
    ERROR
-========================= */
+========================================================= */
 
 function showError(message) {
 
@@ -1001,8 +1159,9 @@ function showError(message) {
         ${escapeHtml(message)}
       </p>
 
+
       <button
-        onclick="location.reload()"
+        onclick="loadCart()"
         style="
           margin-top:20px;
           padding:10px 18px;
@@ -1022,9 +1181,9 @@ function showError(message) {
 }
 
 
-/* =========================
+/* =========================================================
    START
-========================= */
+========================================================= */
 
 loadCart();
 

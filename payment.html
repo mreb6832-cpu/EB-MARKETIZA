@@ -114,6 +114,12 @@
       border-color: #2563eb;
     }
 
+    input[readonly] {
+      background: #f8fafc;
+      color: #475569;
+      cursor: not-allowed;
+    }
+
     .product {
       display: flex;
       align-items: center;
@@ -410,11 +416,7 @@
 
   <div id="checkout" class="checkout" style="display:none;">
 
-    <!-- LEFT SIDE -->
-
     <div>
-
-      <!-- DELIVERY ADDRESS -->
 
       <div class="card">
 
@@ -431,6 +433,7 @@
               id="customerName"
               type="text"
               placeholder="John Doe"
+              autocomplete="name"
               required
             >
           </div>
@@ -444,6 +447,7 @@
               id="customerPhone"
               type="tel"
               placeholder="070 123 45 67"
+              autocomplete="tel"
               required
             >
           </div>
@@ -457,6 +461,8 @@
               id="customerEmail"
               type="email"
               placeholder="john@example.com"
+              autocomplete="email"
+              readonly
               required
             >
           </div>
@@ -470,6 +476,7 @@
               id="street"
               type="text"
               placeholder="Examplegatan"
+              autocomplete="street-address"
               required
             >
           </div>
@@ -508,6 +515,7 @@
               id="postalCode"
               type="text"
               placeholder="123 45"
+              autocomplete="postal-code"
               required
             >
           </div>
@@ -521,6 +529,7 @@
               id="city"
               type="text"
               placeholder="Stockholm"
+              autocomplete="address-level2"
               required
             >
           </div>
@@ -534,15 +543,13 @@
               id="country"
               type="text"
               value="Sweden"
+              autocomplete="country-name"
             >
           </div>
 
         </div>
 
       </div>
-
-
-      <!-- ORDER -->
 
       <div class="card">
 
@@ -573,16 +580,11 @@
 
     </div>
 
-
-    <!-- RIGHT SIDE -->
-
     <div class="card">
 
       <h2>💳 Payment Method</h2>
 
       <div class="payment-methods">
-
-        <!-- STRIPE -->
 
         <div class="payment-option">
 
@@ -620,48 +622,6 @@
           </label>
 
         </div>
-
-
-        <!-- PAYPAL -->
-
-        <div class="payment-option">
-
-          <input
-            type="radio"
-            id="paypal"
-            name="payment"
-            value="paypal"
-          >
-
-          <label
-            for="paypal"
-            class="payment-label"
-          >
-
-            <div class="payment-icon">
-              🅿️
-            </div>
-
-            <div class="payment-text">
-
-              <div class="payment-name">
-                PayPal
-              </div>
-
-              <div class="payment-description">
-                Pay securely with PayPal
-              </div>
-
-            </div>
-
-            <div class="check"></div>
-
-          </label>
-
-        </div>
-
-
-        <!-- SWISH -->
 
         <div class="payment-option">
 
@@ -701,9 +661,7 @@
 
       </div>
 
-
       <div id="message" class="message"></div>
-
 
       <button
         id="payButton"
@@ -712,7 +670,6 @@
       >
         Pay Now
       </button>
-
 
       <div class="secure">
         🔒 Secure checkout • EB MARKETIZA
@@ -723,7 +680,6 @@
   </div>
 
 </div>
-
 
 <script type="module">
 
@@ -755,7 +711,6 @@
 
   const message =
     document.getElementById("message");
-
 
   const customerName =
     document.getElementById("customerName");
@@ -822,9 +777,15 @@
       const {
         data: {
           session
-        }
+        },
+        error: sessionError
       } =
         await supabase.auth.getSession();
+
+
+      if (sessionError) {
+        throw sessionError;
+      }
 
 
       if (!session) {
@@ -841,8 +802,16 @@
         session.user;
 
 
+      /*
+       * IMPORTANT:
+       * The email comes directly from
+       * Supabase Auth.
+       */
+
       customerEmail.value =
         currentUser.email || "";
+
+      customerEmail.readOnly = true;
 
 
       const {
@@ -928,7 +897,10 @@
 
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "Checkout loading error:",
+        error
+      );
 
       loading.style.display =
         "none";
@@ -1047,7 +1019,10 @@
     ];
 
 
-    for (const [field, name] of fields) {
+    for (
+      const [field, name]
+      of fields
+    ) {
 
       if (!field.value.trim()) {
 
@@ -1068,10 +1043,32 @@
         .includes("@")
     ) {
 
-      customerEmail.focus();
+      throw new Error(
+        "Your account email is invalid."
+      );
+
+    }
+
+
+    /*
+     * Make absolutely sure that
+     * the checkout email is the
+     * authenticated user's email.
+     */
+
+    if (
+      currentUser &&
+      currentUser.email &&
+      customerEmail.value
+        .trim()
+        .toLowerCase() !==
+      currentUser.email
+        .trim()
+        .toLowerCase()
+    ) {
 
       throw new Error(
-        "Please enter a valid email address."
+        "The checkout email must match your logged-in account."
       );
 
     }
@@ -1081,7 +1078,39 @@
 
   /* CREATE ORDER */
 
-  async function createOrder(paymentMethod) {
+  async function createOrder(
+    paymentMethod
+  ) {
+
+    if (!currentUser) {
+
+      throw new Error(
+        "You must be logged in to place an order."
+      );
+
+    }
+
+
+    if (!currentUser.email) {
+
+      throw new Error(
+        "Your account does not have an email address."
+      );
+
+    }
+
+
+    /*
+     * IMPORTANT:
+     * Never trust the email typed into
+     * the form. Use Supabase Auth email.
+     */
+
+    const authenticatedEmail =
+      currentUser.email
+        .trim()
+        .toLowerCase();
+
 
     const orderData = {
 
@@ -1089,7 +1118,7 @@
         customerName.value.trim(),
 
       customer_email:
-        customerEmail.value.trim(),
+        authenticatedEmail,
 
       customer_phone:
         customerPhone.value.trim(),
@@ -1110,16 +1139,21 @@
         city.value.trim(),
 
       country:
-        country.value.trim() || "Sweden",
+        country.value.trim() ||
+        "Sweden",
 
       subtotal:
-        Number(total.toFixed(2)),
+        Number(
+          total.toFixed(2)
+        ),
 
       delivery_fee:
         0,
 
       total:
-        Number(total.toFixed(2)),
+        Number(
+          total.toFixed(2)
+        ),
 
       payment_status:
         "pending",
@@ -1136,23 +1170,52 @@
     };
 
 
+    console.log(
+      "Creating order:",
+      orderData
+    );
+
+
     const {
       data: order,
       error: orderError
     } =
       await supabase
         .from("orders")
-        .insert(orderData)
+        .insert(
+          orderData
+        )
         .select()
         .single();
 
 
     if (orderError) {
 
-      throw orderError;
+      console.error(
+        "Orders INSERT error:",
+        orderError
+      );
+
+      throw new Error(
+        orderError.message ||
+        "Unable to create order."
+      );
 
     }
 
+
+    if (!order) {
+
+      throw new Error(
+        "Order was not returned by Supabase."
+      );
+
+    }
+
+
+    /*
+     * CREATE ORDER ITEMS
+     */
 
     const orderItems =
       cartItems
@@ -1162,18 +1225,26 @@
             products.find(
               p =>
                 String(p.id) ===
-                String(cartItem.product_id)
+                String(
+                  cartItem.product_id
+                )
             );
 
 
-          if (!product) return null;
+          if (!product) {
+            return null;
+          }
 
 
           const quantity =
-            Number(cartItem.quantity) || 1;
+            Number(
+              cartItem.quantity
+            ) || 1;
 
           const price =
-            Number(product.price) || 0;
+            Number(
+              product.price
+            ) || 0;
 
 
           return {
@@ -1188,17 +1259,22 @@
               product.name,
 
             product_image:
-              product.image || null,
+              product.image ||
+              null,
 
-            quantity,
+            quantity:
+
+              quantity,
 
             unit_price:
               price,
 
             line_total:
               Number(
-                (price * quantity)
-                  .toFixed(2)
+                (
+                  price *
+                  quantity
+                ).toFixed(2)
               )
 
           };
@@ -1223,12 +1299,22 @@
     } =
       await supabase
         .from("order_items")
-        .insert(orderItems);
+        .insert(
+          orderItems
+        );
 
 
     if (itemError) {
 
-      throw itemError;
+      console.error(
+        "Order items INSERT error:",
+        itemError
+      );
+
+      throw new Error(
+        itemError.message ||
+        "Order was created, but order items could not be saved."
+      );
 
     }
 
@@ -1278,14 +1364,15 @@
         }
 
 
-        payButton.disabled = true;
+        payButton.disabled =
+          true;
 
         payButton.textContent =
           "Creating order...";
 
 
         /*
-         * CREATE ORDER IN SUPABASE
+         * CREATE ORDER
          */
 
         const order =
@@ -1305,47 +1392,49 @@
 
           const items =
             cartItems
-              .map(cartItem => {
+              .map(
+                cartItem => {
 
-                const product =
-                  products.find(
-                    p =>
-                      String(p.id) ===
-                      String(
-                        cartItem.product_id
-                      )
-                  );
+                  const product =
+                    products.find(
+                      p =>
+                        String(p.id) ===
+                        String(
+                          cartItem.product_id
+                        )
+                    );
 
 
-                if (!product) {
-                  return null;
+                  if (!product) {
+                    return null;
+                  }
+
+
+                  return {
+
+                    product_id:
+                      product.id,
+
+                    name:
+                      product.name,
+
+                    price:
+                      Number(
+                        product.price
+                      ),
+
+                    quantity:
+                      Number(
+                        cartItem.quantity
+                      ),
+
+                    order_id:
+                      order.id
+
+                  };
+
                 }
-
-
-                return {
-
-                  product_id:
-                    product.id,
-
-                  name:
-                    product.name,
-
-                  price:
-                    Number(
-                      product.price
-                    ),
-
-                  quantity:
-                    Number(
-                      cartItem.quantity
-                    ),
-
-                  order_id:
-                    order.id
-
-                };
-
-              })
+              )
               .filter(Boolean);
 
 
@@ -1361,11 +1450,12 @@
                     "application/json"
                 },
 
-                body: JSON.stringify({
-                  items,
-                  orderId:
-                    order.id
-                })
+                body:
+                  JSON.stringify({
+                    items,
+                    orderId:
+                      order.id
+                  })
 
               }
             );
@@ -1373,12 +1463,16 @@
 
           const contentType =
             response.headers
-              .get("content-type") || "";
+              .get(
+                "content-type"
+              ) || "";
 
 
           if (
             !contentType
-              .includes("application/json")
+              .includes(
+                "application/json"
+              )
           ) {
 
             throw new Error(
@@ -1424,131 +1518,6 @@
 
 
         /*
-         * PAYPAL
-         */
-
-        if (
-          selected.value ===
-          "paypal"
-        ) {
-
-          const items =
-            cartItems
-              .map(cartItem => {
-
-                const product =
-                  products.find(
-                    p =>
-                      String(p.id) ===
-                      String(
-                        cartItem.product_id
-                      )
-                  );
-
-
-                if (!product) {
-                  return null;
-                }
-
-
-                return {
-
-                  product_id:
-                    product.id,
-
-                  name:
-                    product.name,
-
-                  price:
-                    Number(
-                      product.price
-                    ),
-
-                  quantity:
-                    Number(
-                      cartItem.quantity
-                    ),
-
-                  order_id:
-                    order.id
-
-                };
-
-              })
-              .filter(Boolean);
-
-
-          const response =
-            await fetch(
-              "/api/paypal-create-order",
-              {
-
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-
-                body: JSON.stringify({
-                  items,
-                  orderId:
-                    order.id
-                })
-
-              }
-            );
-
-
-          const contentType =
-            response.headers
-              .get("content-type") || "";
-
-
-          if (
-            !contentType
-              .includes("application/json")
-          ) {
-
-            throw new Error(
-              "PayPal API did not return JSON."
-            );
-
-          }
-
-
-          const data =
-            await response.json();
-
-
-          if (!response.ok) {
-
-            throw new Error(
-              data.error ||
-              "PayPal checkout failed."
-            );
-
-          }
-
-
-          if (!data.approvalUrl) {
-
-            throw new Error(
-              "PayPal approval URL was not returned."
-            );
-
-          }
-
-
-          window.location.href =
-            data.approvalUrl;
-
-          return;
-
-        }
-
-
-        /*
          * SWISH
          */
 
@@ -1558,8 +1527,8 @@
         ) {
 
           showMessage(
-            `Order #${order.order_number} was created. Swish payment is not connected yet.`,
-            "info"
+            `Order #${order.order_number} was created successfully. Swish payment is not connected yet.`,
+            "success"
           );
 
 
@@ -1576,7 +1545,10 @@
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          "Checkout error:",
+          error
+        );
 
 
         showMessage(
@@ -1640,4 +1612,3 @@
 
 </body>
 </html>
-

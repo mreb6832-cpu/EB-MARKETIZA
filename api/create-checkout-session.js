@@ -1,47 +1,28 @@
 
 import Stripe from "stripe";
 
-export const config = {
-  api: {
-    bodyParser: false
-  }
-};
-
 const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY
 );
 
-const SUPABASE_URL =
-  process.env.SUPABASE_URL;
-
+const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY =
   process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-async function readRawBody(req) {
-  const chunks = [];
+const FRONTEND_URL = (
+  process.env.FRONTEND_URL ||
+  "https://ebmarketiza.vercel.app"
+).replace(/\/+$/, "");
 
-  for await (const chunk of req) {
-    chunks.push(
-      Buffer.isBuffer(chunk)
-        ? chunk
-        : Buffer.from(chunk)
-    );
-  }
-
-  return Buffer.concat(chunks);
-}
-
-async function supabaseRequest(path, options = {}) {
+async function supabaseRequest(path) {
   const response = await fetch(
     `${SUPABASE_URL}/rest/v1/${path}`,
     {
-      ...options,
       headers: {
         apikey: SUPABASE_SERVICE_ROLE_KEY,
         Authorization:
           `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-        "Content-Type": "application/json",
-        ...options.headers
+        Accept: "application/json"
       }
     }
   );
@@ -50,295 +31,198 @@ async function supabaseRequest(path, options = {}) {
 
   if (!response.ok) {
     throw new Error(
-      `Supabase error ${response.status}: ${text}`
+      `Supabase ${response.status}: ${text}`
     );
   }
 
-  return text ? JSON.parse(text) : null;
+  return text ? JSON.parse(text) : [];
 }
 
 export default async function handler(req, res) {
+  res.setHeader("Cache-Control", "no-store");
+
   if (req.method !== "POST") {
-    return res.status(405).send(
-      "Method not allowed"
-    );
+    return res.status(405).json({
+      success: false,
+      error: "Method not allowed"
+    });
   }
 
   if (
     !process.env.STRIPE_SECRET_KEY ||
-    !process.env.STRIPE_WEBHOOK_SECRET ||
     !SUPABASE_URL ||
     !SUPABASE_SERVICE_ROLE_KEY
   ) {
     console.error(
-      "Webhook environment variables are missing"
+      "Missing server environment variables"
     );
 
-    return res.status(500).send(
-      "Server configuration error"
-    );
-  }
-
-  let event;
-
-  try {
-    const rawBody = await readRawBody(req);
-    const signature =
-      req.headers["stripe-signature"];
-
-    event = stripe.webhooks.constructEvent(
-      rawBody,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
-  } catch (error) {
-    console.error(
-      "Stripe signature verification failed:",
-      error.message
-    );
-
-    return res.status(400).send(
-      "Invalid webhook signature"
-    );
-  }
-
-  if (
-    event.type !== "checkout.session.completed" &&
-    event.type !== "checkout.session.async_payment_succeeded"
-  ) {
-    return res.status(200).json({
-      received: true,
-      ignored: true
+    return res.status(500).json({
+      success: false,
+      error: "Payment server configuration error"
     });
   }
 
   try {
-    const session = event.data.object;
+    const body =
+      typeof req.body === "string"
+        ? JSON.parse(req.body)
+        : req.body;
 
-    if (session.payment_status !== "paid") {
-      return res.status(200).json({
-        received: true,
-        paymentNotCompleted: true
-      });
-    }
-
-    const orderId =
-      session.metadata?.order_id ||
-      session.client_reference_id;
-
-    if (!orderId) {
-      throw new Error(
-        "Checkout Session has no order ID"
-      );
-    }
-
-    // Prevent processing the same paid session twice.
-    const existingPayment = await supabaseRequest(
-      `orders?payment_reference=eq.${encodeURIComponent(session.id)}&select=id`
-    );
+    const orderId = body?.orderId;
 
     if (
-      Array.isArray(existingPayment) &&
-      existingPayment.length > 0
+      typeof orderId !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId)
     ) {
-      return res.status(200).json({
-        received: true,
-        alreadyProcessed: true
+      return res.status(400).json({
+        success: false,
+        error: "A valid orderId is required"
       });
     }
 
-    const lineItems =
-      await stripe.checkout.sessions.listLineItems(
-        session.id,
-        {
-          limit: 100,
-          expand: ["data.price.product"]
-        }
-      );
+    // Find the existing order.
+    const orders = await supabaseRequest(
+      `orders?id=eq.${encodeURIComponent(orderId)}&select=id,payment_status,customer_email&limit=1`
+    );
 
-    const items = lineItems.data.map((line) => {
-      const product =
-        line.price?.product;
+    const order = orders[0];
 
-      const productMetadata =
-        product &&
-        typeof product === "object" &&
-        !product.deleted
-          ? product.metadata
-          : {};
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        error: "Order not found"
+      });
+    }
 
-      const quantity = line.quantity || 1;
-      const unitPrice =
-        (line.amount_subtotal || 0) /
-        100 /
-        quantity;
+    // Never start another checkout for an already-paid order.
+    if (order.payment_status === "paid") {
+      return res.status(409).json({
+        success: false,
+        error: "This order is already paid"
+      });
+    }
 
-      const item = {
-        order_id: orderId,
-        product_name:
-          line.description || "EB-MARKETIZA Product",
-        quantity,
-        unit_price: unitPrice,
-        total_price:
-          (line.amount_subtotal || 0) / 100
-      };
+    if (order.payment_status !== "pending") {
+      return res.status(409).json({
+        success: false,
+        error: "This order is not awaiting payment"
+      });
+    }
 
-      const productId =
-        productMetadata?.product_id;
+    // Read item names and prices from the database,
+    // not from values submitted by the browser.
+    const orderItems = await supabaseRequest(
+      `order_items?order_id=eq.${encodeURIComponent(orderId)}&select=product_name,quantity,unit_price`
+    );
 
-      // Only include a valid UUID when available.
+    if (!orderItems.length) {
+      return res.status(400).json({
+        success: false,
+        error: "No items were found for this order"
+      });
+    }
+
+    const lineItems = orderItems.map((item) => {
+      const quantity = Number(item.quantity);
+      const price = Number(item.unit_price);
+
       if (
-        typeof productId === "string" &&
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(productId)
+        !Number.isSafeInteger(quantity) ||
+        quantity < 1 ||
+        !Number.isFinite(price) ||
+        price <= 0 ||
+        !item.product_name
       ) {
-        item.product_id = productId;
+        throw new Error(
+          "An order item has invalid price or quantity"
+        );
       }
 
-      return item;
+      const unitAmount = Math.round(price * 100);
+
+      if (
+        !Number.isSafeInteger(unitAmount) ||
+        unitAmount < 1
+      ) {
+        throw new Error(
+          "An order item has an invalid SEK amount"
+        );
+      }
+
+      return {
+        quantity,
+        price_data: {
+          currency: "sek",
+          unit_amount: unitAmount,
+          product_data: {
+            name: String(item.product_name).slice(0, 200)
+          }
+        }
+      };
     });
 
-    const shipping =
-      session.shipping_details ||
-      session.collected_information?.shipping_details;
+    const session =
+      await stripe.checkout.sessions.create({
+        mode: "payment",
+        line_items: lineItems,
 
-    const address =
-      shipping?.address ||
-      session.customer_details?.address ||
-      {};
+        client_reference_id: orderId,
 
-    const customerName =
-      shipping?.name ||
-      session.customer_details?.name ||
-      null;
+        metadata: {
+          order_id: orderId
+        },
 
-    const email =
-      session.customer_details?.email ||
-      session.customer_email ||
-      null;
+        payment_intent_data: {
+          metadata: {
+            order_id: orderId
+          }
+        },
 
-    const phone =
-      session.customer_details?.phone ||
-      null;
+        ...(order.customer_email
+          ? { customer_email: order.customer_email }
+          : {}),
 
-    const subtotal = items.reduce(
-      (sum, item) => sum + item.total_price,
-      0
-    );
+        // Collect a Swedish shipping address in Stripe.
+        shipping_address_collection: {
+          allowed_countries: ["SE"]
+        },
 
-    const total =
-      (session.amount_total || 0) / 100;
+        // Disable Managed Payments to avoid its
+        // product tax-code requirement, if supported
+        // by your Stripe account/API configuration.
+        managed_payments: {
+          enabled: false
+        },
 
-    const orderPayload = {
-      id: orderId,
-      order_number:
-        `EB-${session.id.slice(-12).toUpperCase()}`,
-      customer_name: customerName,
-      customer_email: email,
-      customer_phone: phone,
-      street: address.line1 || null,
-      house_number: null,
-      apartment: address.line2 || null,
-      postal_code: address.postal_code || null,
-      city: address.city || null,
-      country: address.country || "SE",
-      subtotal,
-      delivery_fee: Math.max(0, total - subtotal),
-      total,
-      payment_status: "paid",
-      order_status: "processing",
-      payment_reference: session.id,
-      notes: null
-    };
+        success_url:
+          `${FRONTEND_URL}/payment.html?payment=success&session_id={CHECKOUT_SESSION_ID}`,
 
-    // Update an existing pending order, or create it.
-    const existingOrder = await supabaseRequest(
-      `orders?id=eq.${encodeURIComponent(orderId)}&select=id`
-    );
+        cancel_url:
+          `${FRONTEND_URL}/payment.html?payment=cancelled&order_id=${encodeURIComponent(orderId)}`
+      });
 
-    if (
-      Array.isArray(existingOrder) &&
-      existingOrder.length > 0
-    ) {
-      const updatePayload = {
-        payment_status: "paid",
-        payment_reference: session.id,
-        order_status: "processing",
-        subtotal,
-        delivery_fee: Math.max(0, total - subtotal),
-        total,
-        updated_at: new Date().toISOString()
-      };
-
-      if (customerName) {
-        updatePayload.customer_name = customerName;
-      }
-      if (email) {
-        updatePayload.customer_email = email;
-      }
-      if (phone) {
-        updatePayload.customer_phone = phone;
-      }
-      if (address.line1) {
-        updatePayload.street = address.line1;
-      }
-      if (address.postal_code) {
-        updatePayload.postal_code = address.postal_code;
-      }
-      if (address.city) {
-        updatePayload.city = address.city;
-      }
-      if (address.country) {
-        updatePayload.country = address.country;
-      }
-      if (address.line2) {
-        updatePayload.apartment = address.line2;
-      }
-
-      await supabaseRequest(
-        `orders?id=eq.${encodeURIComponent(orderId)}`,
-        {
-          method: "PATCH",
-          body: JSON.stringify(updatePayload)
-        }
+    if (!session.url) {
+      throw new Error(
+        "Stripe did not return a checkout URL"
       );
-    } else {
-      await supabaseRequest("orders", {
-        method: "POST",
-        headers: {
-          Prefer: "return=minimal"
-        },
-        body: JSON.stringify(orderPayload)
-      });
     }
-
-    // Insert purchased items after saving the order.
-    if (items.length > 0) {
-      await supabaseRequest("order_items", {
-        method: "POST",
-        headers: {
-          Prefer: "return=minimal"
-        },
-        body: JSON.stringify(items)
-      });
-    }
-
-    console.log(
-      "Paid order saved:",
-      orderId
-    );
 
     return res.status(200).json({
-      received: true,
+      success: true,
+      url: session.url,
+      sessionId: session.id,
       orderId
     });
   } catch (error) {
     console.error(
-      "Stripe webhook processing failed:",
+      "Create checkout session failed:",
       error.message
     );
 
     return res.status(500).json({
-      error: "Order processing failed"
+      success: false,
+      error: "Could not start payment. Check server logs."
     });
   }
 }

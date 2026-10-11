@@ -1,1 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secure Checkout | EB-MARKETIZA</title>
+  <meta name="theme-color" content="#ffffff">
 
+  <style>
+    :root {
+      --orange: #ff5a00;
+      --orange-light: #fff2e9;
+      --dark: #171717;
+      --muted: #6b7280;
+      --line: #e7e7e7;
+      --background: #f6f7f9;
+      --green: #16834a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--dark);
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    button, input { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      max-width: 1150px;
+      margin: auto;
+      min-height: 72px;
+      padding: 15px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -.6px;
+      color: var(--orange);
+    }
+
+    .secure {
+      font-size: 13px;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    main {
+      max-width: 1150px;
+      margin: 35px auto;
+      padding: 0 20px 45px;
+    }
+
+    .heading { margin-bottom: 25px; }
+
+    h1 {
+      font-size: clamp(26px, 4vw, 36px);
+      margin: 0 0 10px;
+      letter-spacing: -1px;
+    }
+
+    h2 { font-size: 19px; margin: 0 0 20px; }
+
+    .subheading {
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, .8fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 22px rgba(0,0,0,.025);
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field { min-width: 0; }
+    .wide { grid-column: 1 / -1; }
+
+    label.field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"] {
+      width: 100%;
+      border: 1px solid #d6d9de;
+      background: white;
+      border-radius: 9px;
+      padding: 13px 12px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(255,90,0,.10);
+    }
+
+    .methods {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .method {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 15px 12px;
+      border: 1px solid #dedfe3;
+      border-radius: 12px;
+      cursor: pointer;
+      min-height: 77px;
+      transition: .15s ease;
+    }
+
+    .method:has(input:checked) {
+      border-color: var(--orange);
+      background: var(--orange-light);
+      box-shadow: 0 0 0 1px var(--orange);
+    }
+
+    .method input {
+      accent-color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .method-icon {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      background: white;
+      border: 1px solid #eeeeee;
+      border-radius: 9px;
+      font-size: 19px;
+    }
+
+    .method-name {
+      font-size: 13px;
+      font-weight: 800;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .method-desc {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .method-badge {
+      font-size: 9px;
+      color: #8a4b00;
+      background: #ffebc7;
+      border-radius: 4px;
+      padding: 3px 5px;
+      margin-top: 5px;
+      display: inline-block;
+    }
+
+    .method-status {
+      font-size: 11px;
+      color: var(--muted);
+      margin: 14px 0 0;
+      line-height: 1.5;
+    }
+
+    .order-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid #eeeeee;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .order-line:last-child { border-bottom: 0; }
+
+    .muted { color: var(--muted); }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+
+    .total-row {
+      border-top: 1px solid var(--line);
+      margin-top: 18px;
+      padding-top: 19px;
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .primary-button {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      margin-top: 22px;
+      background: var(--orange);
+      color: white;
+      border: 0;
+      border-radius: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+
+    .primary-button:hover { background: #e94f00; }
+    .primary-button:disabled { opacity: .55; cursor: not-allowed; }
+
+    .trust {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-top: 14px;
+    }
+
+    .notice {
+      display: none;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .notice.error { display: block; background: #fff0f0; color: #a40000; }
+    .notice.info { display: block; background: #eef5ff; color: #174a86; }
+    .notice.success { display: block; background: #eaf8ee; color: #176534; }
+
+    .country {
+      border: 1px solid var(--line);
+      background: #f9fafb;
+      border-radius: 9px;
+      padding: 13px;
+      font-size: 14px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 25px 15px;
+    }
+
+    @media (max-width: 760px) {
+      main { margin: 22px auto; padding: 0 13px 30px; }
+      .layout { grid-template-columns: 1fr; gap: 0; }
+      .card { padding: 18px; border-radius: 13px; }
+      .fields { grid-template-columns: 1fr; }
+      .wide { grid-column: auto; }
+      .methods { grid-template-columns: 1fr 1fr; gap: 9px; }
+      .method { padding: 12px 8px; gap: 7px; }
+      .method-icon { width: 31px; height: 31px; font-size: 16px; }
+      .method-name { font-size: 12px; }
+      .method-desc { font-size: 10px; }
+      .nav { padding: 14px; }
+      .brand { font-size: 19px; }
+    }
+
+    @media (max-width: 380px) {
+      .methods { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <a class="brand" href="index.html">EB-MARKETIZA</a>
+      <div class="secure">🔒 Secure checkout</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="heading">
+      <h1>Checkout</h1>
+      <p class="subheading">
+        Almost yours! Enter your delivery details and choose how you want to pay.
+      </p>
+    </div>
+
+    <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+    <form id="checkoutForm">
+      <div class="layout">
+        <section>
+          <div class="card">
+            <h2>📦 Delivery information</h2>
+
+            <div class="fields">
+              <div class="field wide">
+                <label class="field-label" for="customer_name">Full name *</label>
+                <input id="customer_name" type="text" autocomplete="name"
+                       maxlength="150" required>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="customer_email">Email *</label>
+                <input id="customer_email" type="email" autocomplete="email"
+                       maxlength="254" required>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="customer_phone">Phone number</label>
+                <input id="customer_phone" type="tel" autocomplete="tel"
+                       maxlength="40">
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="street">Street / road *</label>
+                <input id="street" type="text" autocomplete="address-line1"
+                       maxlength="150" required>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="house_number">House number *</label>
+                <input id="house_number" type="text" maxlength="30" required>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="apartment">Apartment</label>
+                <input id="apartment" type="text" autocomplete="address-line2"
+                       maxlength="50">
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="postal_code">Postal code *</label>
+                <input id="postal_code" type="text" autocomplete="postal-code"
+                       maxlength="20" required>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="city">City *</label>
+                <input id="city" type="text" autocomplete="address-level2"
+                       maxlength="100" required>
+              </div>
+
+              <div class="field wide">
+                <label class="field-label">Country</label>
+                <div class="country">🇸🇪 Sweden</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>💳 Choose payment method</h2>
+
+            <div class="methods">
+              <label class="method">
+                <input type="radio" name="payment_method" value="stripe" checked>
+                <span class="method-icon">💳</span>
+                <span>
+                  <span class="method-name">Card</span>
+                  <span class="method-desc">Visa, Mastercard</span>
+                </span>
+              </label>
+
+              <label class="method">
+                <input type="radio" name="payment_method" value="paypal">
+                <span class="method-icon">P</span>
+                <span>
+                  <span class="method-name">PayPal</span>
+                  <span class="method-desc">Pay with PayPal</span>
+                  <span class="method-badge">Setup required</span>
+                </span>
+              </label>
+
+              <label class="method">
+                <input type="radio" name="payment_method" value="swish">
+                <span class="method-icon">📱</span>
+                <span>
+                  <span class="method-name">Swish</span>
+                  <span class="method-desc">Swedish mobile payment</span>
+                  <span class="method-badge">Setup required</span>
+                </span>
+              </label>
+
+              <label class="method">
+                <input type="radio" name="payment_method" value="apple_pay">
+                <span class="method-icon">🍎</span>
+                <span>
+                  <span class="method-name">Apple Pay</span>
+                  <span class="method-desc">Compatible Apple devices</span>
+                  <span class="method-badge">Provider setup</span>
+                </span>
+              </label>
+
+              <label class="method">
+                <input type="radio" name="payment_method" value="google_pay">
+                <span class="method-icon">G</span>
+                <span>
+                  <span class="method-name">Google Pay</span>
+                  <span class="method-desc">Compatible devices</span>
+                  <span class="method-badge">Provider setup</span>
+                </span>
+              </label>
+
+              <label class="method">
+                <input type="radio" name="payment_method" value="invoice">
+                <span class="method-icon">🧾</span>
+                <span>
+                  <span class="method-name">Invoice</span>
+                  <span class="method-desc">Pay later</span>
+                  <span class="method-badge">Setup required</span>
+                </span>
+              </label>
+            </div>
+
+            <p id="methodStatus" class="method-status">
+              Card payments are processed securely by Stripe.
+            </p>
+
+            <button class="primary-button" id="payButton" type="submit">
+              Continue to secure payment →
+            </button>
+
+            <p class="trust">
+              🔒 Your order is saved before payment starts.<br>
+              Payment is only marked as paid after provider confirmation.
+            </p>
+          </div>
+        </section>
+
+        <aside>
+          <div class="card">
+            <h2>🛍️ Order summary</h2>
+            <div id="cartContents">
+              <p class="small">Loading your cart...</p>
+            </div>
+
+            <div class="summary-row">
+              <span class="muted">Subtotal</span>
+              <strong id="subtotal">0.00 SEK</strong>
+            </div>
+
+            <div class="summary-row">
+              <span class="muted">Delivery</span>
+              <strong style="color:var(--green)">FREE</strong>
+            </div>
+
+            <div class="summary-row total-row">
+              <span>Total</span>
+              <span id="total">0.00 SEK</span>
+            </div>
+
+            <p class="small">
+              Prices are shown in Swedish kronor (SEK). Review your order
+              before continuing.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </form>
+  </main>
+
+  <footer>© EB-MARKETIZA · Sweden · Secure checkout</footer>
+
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const supabase = createClient(
+      "https://wgzjqklwxsqqykysxwho.supabase.co",
+      "sb_publishable_sNeM4jQUsRfnr84Wz5SnyA_3_je4sa7"
+    );
+
+    const form = document.getElementById("checkoutForm");
+    const payButton = document.getElementById("payButton");
+    const notice = document.getElementById("notice");
+    const cartContents = document.getElementById("cartContents");
+    const methodStatus = document.getElementById("methodStatus");
+
+    let currentUser = null;
+    let cartItems = [];
+    let productsById = new Map();
+    let subtotal = 0;
+    let busy = false;
+
+    const methodMessages = {
+      stripe: "Card payments are processed securely by Stripe.",
+      paypal: "PayPal requires a connected PayPal server integration before it can accept payment.",
+      swish: "Swish requires a supported payment provider and merchant configuration.",
+      apple_pay: "Apple Pay must be enabled and configured with your payment provider.",
+      google_pay: "Google Pay must be enabled and configured with your payment provider.",
+      invoice: "Invoice payment requires a real invoicing provider or a verified manual-payment workflow."
+    };
+
+    function showNotice(message, type = "error") {
+      notice.className = "notice " + type;
+      notice.textContent = message;
+      notice.style.display = "block";
+    }
+
+    function clearNotice() {
+      notice.className = "notice";
+      notice.textContent = "";
+      notice.style.display = "none";
+    }
+
+    function money(value) {
+      return Number(value).toLocaleString("sv-SE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + " SEK";
+    }
+
+    function productIdOf(item) {
+      return item.product_id || item.productId || item.product;
+    }
+
+    function quantityOf(item) {
+      return Number(item.quantity ?? item.qty ?? 1);
+    }
+
+    function productName(product) {
+      return product.name || product.title || product.product_name || "Product";
+    }
+
+    function productPrice(product) {
+      return Number(product.price);
+    }
+
+    document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+      radio.addEventListener("change", () => {
+        methodStatus.textContent = methodMessages[radio.value];
+      });
+    });
+
+    async function loadCheckout() {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+
+      currentUser = data.session?.user || null;
+
+      if (!currentUser) {
+        payButton.disabled = true;
+        cartContents.textContent = "Please log in to load your cart.";
+        showNotice("Please log in to your account before checking out.", "info");
+        return;
+      }
+
+      document.getElementById("customer_email").value = currentUser.email || "";
+      document.getElementById("customer_name").value =
+        currentUser.user_metadata?.full_name || "";
+      document.getElementById("customer_phone").value =
+        currentUser.user_metadata?.phone || "";
+
+      const { data: cart, error: cartError } = await supabase
+        .from("cart_items")
+        .select("*")
+        .eq("user_id", currentUser.id);
+
+      if (cartError) throw new Error("Could not load cart: " + cartError.message);
+
+      cartItems = cart || [];
+
+      if (!cartItems.length) {
+        renderCart();
+        payButton.disabled = true;
+        showNotice("Your cart is empty. Add products before checkout.", "info");
+        return;
+      }
+
+      const ids = [...new Set(cartItems.map(productIdOf).filter(Boolean))];
+
+      if (!ids.length) {
+        throw new Error("Cart items are missing product_id.");
+      }
+
+      const { data: products, error: productsError } = await supabase
+        .from("products")
+        .select("id, name, price")
+        .in("id", ids);
+
+      if (productsError) throw new Error("Could not load products: " + productsError.message);
+
+      productsById = new Map((products || []).map(p => [String(p.id), p]));
+      renderCart();
+
+      if (subtotal <= 0) {
+        payButton.disabled = true;
+        showNotice("Your cart total is invalid. Please check your cart.", "error");
+      }
+    }
+
+    function renderCart() {
+      cartContents.replaceChildren();
+      subtotal = 0;
+
+      if (!cartItems.length) {
+        cartContents.textContent = "Your cart is empty.";
+      }
+
+      for (const item of cartItems) {
+        const product = productsById.get(String(productIdOf(item)));
+        const quantity = quantityOf(item);
+
+        if (!product || !Number.isInteger(quantity) || quantity < 1) {
+          const warning = document.createElement("p");
+          warning.className = "small";
+          warning.textContent = "A cart item is unavailable. Please update your cart.";
+          cartContents.appendChild(warning);
+          continue;
+        }
+
+        const price = productPrice(product);
+        if (!Number.isFinite(price) || price < 0) {
+          throw new Error("Invalid product price: " + productName(product));
+        }
+
+        const lineTotal = Math.round(price * 100) * quantity / 100;
+        subtotal += lineTotal;
+
+        const row = document.createElement("div");
+        row.className = "order-line";
+
+        const left = document.createElement("div");
+        const name = document.createElement("strong");
+        name.textContent = productName(product);
+
+        const qty = document.createElement("div");
+        qty.className = "muted";
+        qty.textContent = "Quantity: " + quantity;
+        left.append(name, qty);
+
+        const right = document.createElement("strong");
+        right.textContent = money(lineTotal);
+        row.append(left, right);
+        cartContents.appendChild(row);
+      }
+
+      subtotal = Math.round(subtotal * 100) / 100;
+      document.getElementById("subtotal").textContent = money(subtotal);
+      document.getElementById("total").textContent = money(subtotal);
+    }
+
+    function requiredValue(id, label) {
+      const value = document.getElementById(id).value.trim();
+      if (!value) throw new Error(label + " is required.");
+      return value;
+    }
+
+    async function submitCheckout() {
+      if (!currentUser) throw new Error("Please log in before checkout.");
+      if (!cartItems.length || subtotal <= 0) throw new Error("Your cart is empty.");
+
+      const selectedMethod = form.querySelector(
+        'input[name="payment_method"]:checked'
+      )?.value;
+
+      if (!selectedMethod) throw new Error("Please select a payment method.");
+
+      // This frontend currently has a working server flow for Stripe only.
+      // Do not create pending orders for payment methods that have no backend.
+      if (selectedMethod !== "stripe") {
+        throw new Error(
+          methodMessages[selectedMethod] +
+          " No order has been created and no payment has been taken. Choose Card (Stripe) or configure that provider first."
+        );
+      }
+
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
+
+      if (sessionError || !sessionData.session?.user) {
+        throw new Error("Your login session has expired. Please log in again.");
+      }
+
+      const address = {
+        customer_name: requiredValue("customer_name", "Full name"),
+        customer_email: requiredValue("customer_email", "Email"),
+        customer_phone: document.getElementById("customer_phone").value.trim(),
+        street: requiredValue("street", "Street / road"),
+        house_number: requiredValue("house_number", "House number"),
+        apartment: document.getElementById("apartment").value.trim(),
+        postal_code: requiredValue("postal_code", "Postal code"),
+        city: requiredValue("city", "City")
+      };
+
+      // Validate all cart products before creating any database records.
+      const items = cartItems.map(item => {
+        const product = productsById.get(String(productIdOf(item)));
+        const quantity = quantityOf(item);
+
+        if (!product || !Number.isInteger(quantity) || quantity < 1) {
+          throw new Error("A product or quantity in your cart is invalid.");
+        }
+
+        const price = productPrice(product);
+        if (!Number.isFinite(price) || price < 0) {
+          throw new Error("Invalid product price.");
+        }
+
+        return {
+          product_id: product.id,
+          product_name: productName(product),
+          quantity,
+          unit_price: Math.round(price * 100) / 100,
+          total_price: Math.round(price * 100) / 100 * quantity,
+          name: productName(product),
+          price,
+          quantityForStripe: quantity
+        };
+      });
+
+      const orderData = {
+        ...address,
+        country: "Sweden",
+        subtotal,
+        delivery_fee: 0,
+        total: subtotal,
+        payment_status: "pending",
+        order_status: "new",
+        payment_reference: null,
+        notes: "Payment method: Stripe"
+      };
+
+      // 1. Create order first.
+      const { data: order, error: orderError } = await supabase
+        .from("orders")
+        .insert(orderData)
+        .select("id, order_number, total")
+        .single();
+
+      if (orderError) {
+        console.error("Orders INSERT error:", orderError);
+        throw new Error("Could not save order: " + orderError.message);
+      }
+
+      if (!order?.id) throw new Error("Supabase did not return the order ID.");
+
+      // 2. Save the order's items before contacting Stripe.
+      const orderItems = items.map(item => ({
+        order_id: order.id,
+        product_id: item.product_id,
+        product_name: item.product_name,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        total_price: item.total_price
+      }));
+
+      const { error: itemsError } = await supabase
+        .from("order_items")
+        .insert(orderItems);
+
+      if (itemsError) {
+        console.error("Order items INSERT error:", itemsError);
+        throw new Error(
+          "Order " + order.id + " was saved, but its items failed to save: " +
+          itemsError.message +
+          ". Payment was not started. Contact the store administrator before retrying."
+        );
+      }
+
+      // 3. Create Stripe session only after both database inserts succeeded.
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: order.id,
+          items: items.map(item => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantityForStripe
+          }))
+        })
+      });
+
+      let stripeData;
+      try {
+        stripeData = await response.json();
+      } catch {
+        throw new Error(
+          "Order was saved, but the payment server returned an invalid response."
+        );
+      }
+
+      if (!response.ok || !stripeData.url) {
+        console.error("Stripe session error:", stripeData);
+        throw new Error(
+          "Order was saved, but Stripe could not start: " +
+          (stripeData.error || "Unknown payment error")
+        );
+      }
+
+      window.location.assign(stripeData.url);
+    }
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (busy) return;
+
+      clearNotice();
+
+      if (!form.reportValidity()) return;
+
+      busy = true;
+      payButton.disabled = true;
+      payButton.textContent = "Saving order...";
+
+      try {
+        await submitCheckout();
+      } catch (error) {
+        console.error("Checkout error:", error);
+        showNotice(error.message || "Checkout failed.", "error");
+        payButton.disabled = false;
+        payButton.textContent = "Continue to secure payment →";
+      } finally {
+        busy = false;
+      }
+    });
+
+    try {
+      await loadCheckout();
+    } catch (error) {
+      console.error("Checkout initialization error:", error);
+      showNotice("Could not load checkout: " + error.message, "error");
+      payButton.disabled = true;
+    }
+  </script>
+</body>
+</html>

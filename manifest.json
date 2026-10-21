@@ -1,7 +1,7 @@
 {
-  "name": "E&B MARKETIZA",
+  "name": "E&amp;B MARKETIZA",
   "short_name": "EB MARKETIZA",
-  "description": "E&B MARKETIZA online shopping app in Sweden.",
+  "description": "E&amp;B MARKETIZA online shopping app in Sweden.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

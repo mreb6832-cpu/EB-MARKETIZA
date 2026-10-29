@@ -1,0 +1,20 @@
+<!-- Put inside <head> -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#ff5a00">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="EB-MARKETIZA">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
+<!-- Put immediately before </body> -->
+<script src="./install.js" defer></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => console.log("EB-MARKETIZA PWA ready"))
+      .catch(err => console.error("PWA error:", err));
+  });
+}
+</script>

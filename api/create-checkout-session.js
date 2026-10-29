@@ -8,145 +8,707 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-module.exports = async function handler(req, res) {
+// ============================================================
+// FALLBACK EXCHANGE RATES
+// 1 SEK = X target currency
+// ============================================================
+
+const FALLBACK_RATES = {
+  SEK: 1,
+  EUR: 0.087,
+  USD: 0.10,
+  GBP: 0.075,
+  NOK: 0.95,
+  DKK: 0.65,
+  CHF: 0.086,
+  PLN: 0.37,
+  CZK: 2.20,
+  ISK: 13.5,
+  HUF: 34,
+  RON: 0.43,
+  BGN: 0.17,
+  CAD: 0.14,
+  AUD: 0.15,
+  NZD: 0.17,
+  JPY: 15,
+  CNY: 0.72,
+  INR: 8.5,
+  BRL: 0.53,
+  ZAR: 1.75,
+  AED: 0.37,
+  SAR: 0.38,
+  TRY: 4.2
+};
+
+// ============================================================
+// COUNTRY → CURRENCY
+// ============================================================
+
+const COUNTRY_CURRENCY = {
+  SE: "SEK",
+
+  AT: "EUR",
+  BE: "EUR",
+  CY: "EUR",
+  EE: "EUR",
+  FI: "EUR",
+  FR: "EUR",
+  DE: "EUR",
+  GR: "EUR",
+  IE: "EUR",
+  IT: "EUR",
+  LV: "EUR",
+  LT: "EUR",
+  LU: "EUR",
+  MT: "EUR",
+  NL: "EUR",
+  PT: "EUR",
+  SK: "EUR",
+  SI: "EUR",
+  ES: "EUR",
+  HR: "EUR",
+
+  NO: "NOK",
+  DK: "DKK",
+  IS: "ISK",
+
+  GB: "GBP",
+  CH: "CHF",
+  PL: "PLN",
+  CZ: "CZK",
+  HU: "HUF",
+  RO: "RON",
+  BG: "BGN",
+  TR: "TRY",
+
+  US: "USD",
+  CA: "CAD",
+
+  AU: "AUD",
+  NZ: "NZD",
+
+  JP: "JPY",
+  CN: "CNY",
+  IN: "INR",
+
+  BR: "BRL",
+
+  ZA: "ZAR",
+  AE: "AED",
+  SA: "SAR"
+};
+
+// ============================================================
+// CURRENCIES SUPPORTED BY STRIPE
+// ============================================================
+
+const ALLOWED_CURRENCIES = [
+  "SEK",
+  "EUR",
+  "USD",
+  "GBP",
+  "NOK",
+  "DKK",
+  "CHF",
+  "PLN",
+  "CZK",
+  "ISK",
+  "HUF",
+  "RON",
+  "BGN",
+  "CAD",
+  "AUD",
+  "NZD",
+  "JPY",
+  "CNY",
+  "INR",
+  "BRL",
+  "ZAR",
+  "AED",
+  "SAR",
+  "TRY"
+];
+
+// ============================================================
+// GET LIVE SEK EXCHANGE RATES
+// ============================================================
+
+async function getExchangeRates() {
+  try {
+    const response = await fetch(
+      "https://open.er-api.com/v6/latest/SEK"
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Exchange-rate server returned HTTP ${response.status}`
+      );
+    }
+
+    const data = await response.json();
+
+    if (
+      data &&
+      data.result === "success" &&
+      data.rates
+    ) {
+      return {
+        ...FALLBACK_RATES,
+        ...data.rates,
+        SEK: 1
+      };
+    }
+
+    throw new Error("Invalid exchange-rate response.");
+  } catch (error) {
+    console.error(
+      "Exchange-rate request failed. Using fallback rates.",
+      error
+    );
+
+    return {
+      ...FALLBACK_RATES
+    };
+  }
+}
+
+// ============================================================
+// CONVERT SEK → TARGET CURRENCY
+// ============================================================
+
+function convertFromSEK(
+  amountSEK,
+  currency,
+  rates
+) {
+  const amount = Number(amountSEK);
+
+  if (!Number.isFinite(amount) || amount < 0) {
+    throw new Error("Invalid SEK amount.");
+  }
+
+  const rate =
+    Number(rates[currency]);
+
+  if (
+    !Number.isFinite(rate) ||
+    rate <= 0
+  ) {
+    throw new Error(
+      `Exchange rate for ${currency} is unavailable.`
+    );
+  }
+
+  return amount * rate;
+}
+
+// ============================================================
+// STRIPE MINOR UNIT
+// ============================================================
+//
+// Most currencies use 2 decimal places.
+// JPY, ISK and HUF are treated as zero-decimal currencies
+// for Stripe.
+// ============================================================
+
+function toStripeMinorUnit(
+  amount,
+  currency
+) {
+  const zeroDecimalCurrencies = [
+    "JPY",
+    "ISK",
+    "HUF"
+  ];
+
+  if (
+    zeroDecimalCurrencies.includes(
+      currency
+    )
+  ) {
+    return Math.round(amount);
+  }
+
+  return Math.round(amount * 100);
+}
+
+// ============================================================
+// COUNTRY CURRENCY
+// ============================================================
+
+function getCurrencyFromCountry(
+  countryCode
+) {
+  const code =
+    String(
+      countryCode || ""
+    ).toUpperCase();
+
+  return (
+    COUNTRY_CURRENCY[code] ||
+    "SEK"
+  );
+}
+
+// ============================================================
+// MAIN VERCEL FUNCTION
+// ============================================================
+
+module.exports = async function handler(
+  req,
+  res
+) {
+
+  // ----------------------------------------------------------
+  // CORS
+  // ----------------------------------------------------------
+
   res.setHeader(
     "Access-Control-Allow-Origin",
     "https://ebmarketiza.vercel.app"
   );
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "POST, OPTIONS"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+
 
   if (req.method === "OPTIONS") {
-    return res.status(204).end();
+    return res
+      .status(204)
+      .end();
   }
+
 
   if (req.method !== "POST") {
-    return res.status(405).json({
-      error: "Method not allowed"
-    });
+    return res
+      .status(405)
+      .json({
+        error:
+          "Method not allowed"
+      });
   }
 
+
   try {
-    if (!process.env.STRIPE_SECRET_KEY) {
-      throw new Error("STRIPE_SECRET_KEY is missing");
+
+    // --------------------------------------------------------
+    // ENVIRONMENT VARIABLES
+    // --------------------------------------------------------
+
+    if (
+      !process.env.STRIPE_SECRET_KEY
+    ) {
+      throw new Error(
+        "STRIPE_SECRET_KEY is missing"
+      );
     }
 
-    if (!process.env.SUPABASE_URL) {
-      throw new Error("SUPABASE_URL is missing");
+
+    if (
+      !process.env.SUPABASE_URL
+    ) {
+      throw new Error(
+        "SUPABASE_URL is missing"
+      );
     }
 
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      throw new Error("SUPABASE_SERVICE_ROLE_KEY is missing");
+
+    if (
+      !process.env.SUPABASE_SERVICE_ROLE_KEY
+    ) {
+      throw new Error(
+        "SUPABASE_SERVICE_ROLE_KEY is missing"
+      );
     }
 
-    const { orderId, currency = "SEK" } = req.body || {};
+
+    // --------------------------------------------------------
+    // REQUEST BODY
+    // --------------------------------------------------------
+
+    const body =
+      req.body || {};
+
+
+    const orderId =
+      body.orderId;
+
+
+    const requestedCurrency =
+      body.currency;
+
+
+    const countryCode =
+      body.countryCode;
+
 
     if (!orderId) {
-      return res.status(400).json({
-        error: "orderId is required"
-      });
+      return res
+        .status(400)
+        .json({
+          error:
+            "orderId is required"
+        });
     }
 
-    const allowedCurrencies = ["SEK", "EUR", "USD"];
-    const selectedCurrency = String(currency).toUpperCase();
 
-    if (!allowedCurrencies.includes(selectedCurrency)) {
-      return res.status(400).json({
-        error: "Unsupported currency"
-      });
+    // --------------------------------------------------------
+    // DETERMINE CUSTOMER CURRENCY
+    // --------------------------------------------------------
+
+    let selectedCurrency =
+      String(
+        requestedCurrency || ""
+      ).toUpperCase();
+
+
+    // Country is authoritative when supplied.
+    // This prevents a customer from accidentally getting
+    // the wrong currency.
+    if (countryCode) {
+
+      const countryCurrency =
+        getCurrencyFromCountry(
+          countryCode
+        );
+
+      selectedCurrency =
+        countryCurrency;
     }
 
-    const { data: order, error: orderError } = await supabase
-      .from("orders")
-      .select("id, total, payment_status")
-      .eq("id", orderId)
-      .single();
 
-    if (orderError || !order) {
-      return res.status(404).json({
-        error: "Order not found"
-      });
-    }
-
-    if (order.payment_status === "paid") {
-      return res.status(400).json({
-        error: "This order has already been paid."
-      });
-    }
-
-    const { data: items, error: itemsError } = await supabase
-      .from("order_items")
-      .select(
-        "product_name, quantity, unit_price, total_price"
+    if (
+      !ALLOWED_CURRENCIES.includes(
+        selectedCurrency
       )
-      .eq("order_id", orderId);
+    ) {
+
+      selectedCurrency =
+        "SEK";
+    }
+
+
+    // --------------------------------------------------------
+    // GET ORDER
+    // --------------------------------------------------------
+
+    const {
+      data: order,
+      error: orderError
+    } =
+      await supabase
+        .from("orders")
+        .select(
+          "id, total, payment_status"
+        )
+        .eq(
+          "id",
+          orderId
+        )
+        .single();
+
+
+    if (
+      orderError ||
+      !order
+    ) {
+
+      console.error(
+        "Order lookup error:",
+        orderError
+      );
+
+      return res
+        .status(404)
+        .json({
+          error:
+            "Order not found"
+        });
+    }
+
+
+    // --------------------------------------------------------
+    // PREVENT DOUBLE PAYMENT
+    // --------------------------------------------------------
+
+    if (
+      order.payment_status ===
+      "paid"
+    ) {
+
+      return res
+        .status(400)
+        .json({
+          error:
+            "This order has already been paid."
+        });
+    }
+
+
+    // --------------------------------------------------------
+    // GET ORDER ITEMS
+    // --------------------------------------------------------
+    //
+    // IMPORTANT:
+    // unit_price is ALWAYS the admin's SEK price.
+    //
+    // Example:
+    // Admin price = 100 SEK
+    //
+    // We convert it below only for Stripe.
+    // --------------------------------------------------------
+
+    const {
+      data: items,
+      error: itemsError
+    } =
+      await supabase
+        .from("order_items")
+        .select(
+          "product_name, quantity, unit_price, total_price"
+        )
+        .eq(
+          "order_id",
+          orderId
+        );
+
 
     if (itemsError) {
+
+      console.error(
+        "Order items error:",
+        itemsError
+      );
+
       throw itemsError;
     }
 
-    if (!items || items.length === 0) {
-      return res.status(400).json({
-        error: "No items found for this order."
-      });
+
+    if (
+      !items ||
+      items.length === 0
+    ) {
+
+      return res
+        .status(400)
+        .json({
+          error:
+            "No items found for this order."
+        });
     }
 
-    const line_items = items.map((item) => {
-      const quantity = Number(item.quantity);
-      const unitPrice = Number(item.unit_price);
 
-      if (!Number.isInteger(quantity) || quantity < 1) {
-        throw new Error("Invalid item quantity.");
-      }
+    // --------------------------------------------------------
+    // GET EXCHANGE RATES
+    // --------------------------------------------------------
 
-      if (!Number.isFinite(unitPrice) || unitPrice < 0) {
-        throw new Error("Invalid item price.");
-      }
+    const rates =
+      await getExchangeRates();
 
-      return {
-        quantity,
-        price_data: {
-          currency: selectedCurrency.toLowerCase(),
-          product_data: {
-            name: item.product_name
-          },
-          unit_amount: Math.round(unitPrice * 100)
+
+    // --------------------------------------------------------
+    // CREATE STRIPE LINE ITEMS
+    // --------------------------------------------------------
+
+    const line_items =
+      items.map(item => {
+
+        const quantity =
+          Number(
+            item.quantity
+          );
+
+
+        const unitPriceSEK =
+          Number(
+            item.unit_price
+          );
+
+
+        if (
+          !Number.isInteger(
+            quantity
+          ) ||
+          quantity < 1
+        ) {
+
+          throw new Error(
+            "Invalid item quantity."
+          );
         }
-      };
-    });
+
+
+        if (
+          !Number.isFinite(
+            unitPriceSEK
+          ) ||
+          unitPriceSEK < 0
+        ) {
+
+          throw new Error(
+            "Invalid item price."
+          );
+        }
+
+
+        // Admin price is SEK.
+        const convertedUnitPrice =
+          convertFromSEK(
+            unitPriceSEK,
+            selectedCurrency,
+            rates
+          );
+
+
+        const stripeAmount =
+          toStripeMinorUnit(
+            convertedUnitPrice,
+            selectedCurrency
+          );
+
+
+        if (
+          !Number.isInteger(
+            stripeAmount
+          ) ||
+          stripeAmount < 0
+        ) {
+
+          throw new Error(
+            "Invalid Stripe amount."
+          );
+        }
+
+
+        return {
+
+          quantity,
+
+          price_data: {
+
+            currency:
+              selectedCurrency.toLowerCase(),
+
+            product_data: {
+
+              name:
+                item.product_name,
+
+              metadata: {
+                original_price_sek:
+                  String(
+                    unitPriceSEK
+                  )
+              }
+
+            },
+
+            unit_amount:
+              stripeAmount
+
+          }
+
+        };
+
+      });
+
+
+    // --------------------------------------------------------
+    // FRONTEND URL
+    // --------------------------------------------------------
 
     const frontendUrl =
       process.env.FRONTEND_URL ||
       "https://ebmarketiza.vercel.app";
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items,
 
-      success_url:
-        `${frontendUrl}/account.html?payment=success&order_id=${encodeURIComponent(orderId)}`,
+    // --------------------------------------------------------
+    // CREATE STRIPE CHECKOUT
+    // --------------------------------------------------------
 
-      cancel_url:
-        `${frontendUrl}/payment.html?payment=cancelled&order_id=${encodeURIComponent(orderId)}`,
+    const session =
+      await stripe.checkout.sessions.create({
 
-      metadata: {
-        order_id: String(orderId)
-      },
+        mode:
+          "payment",
 
-      billing_address_collection: "auto"
-    });
+        line_items,
 
-    return res.status(200).json({
-      url: session.url,
-      sessionId: session.id
-    });
+        success_url:
+          `${frontendUrl}/account.html?payment=success&order_id=${encodeURIComponent(orderId)}`,
+
+        cancel_url:
+          `${frontendUrl}/payment.html?payment=cancelled&order_id=${encodeURIComponent(orderId)}`,
+
+        metadata: {
+
+          order_id:
+            String(orderId),
+
+          currency:
+            selectedCurrency,
+
+          country_code:
+            String(
+              countryCode || ""
+            ),
+
+          source_currency:
+            "SEK"
+
+        },
+
+        billing_address_collection:
+          "auto"
+
+      });
+
+
+    // --------------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------------
+
+    return res
+      .status(200)
+      .json({
+
+        url:
+          session.url,
+
+        sessionId:
+          session.id,
+
+        currency:
+          selectedCurrency
+
+      });
+
+
   } catch (error) {
-    console.error("Stripe checkout error:", error);
 
-    return res.status(500).json({
-      error:
-        error?.message ||
-        "Unable to create Stripe Checkout session."
-    });
+    console.error(
+      "Stripe checkout error:",
+      error
+    );
+
+
+    return res
+      .status(500)
+      .json({
+
+        error:
+          error?.message ||
+          "Unable to create Stripe Checkout session."
+
+      });
+
   }
+
 };

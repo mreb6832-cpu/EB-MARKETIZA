@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Order Details | EB MARKETIZA</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f3f4f6;
+    color:#111827;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:16px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.logo{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.nav{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.nav a{
+    color:white;
+    text-decoration:none;
+    background:#2563eb;
+    padding:9px 13px;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.container{
+    max-width:950px;
+    margin:30px auto;
+    padding:0 15px;
+}
+
+.actions{
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:0;
+    border-radius:8px;
+    padding:11px 16px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:bold;
+    text-decoration:none;
+    display:inline-block;
+}
+
+.back-btn{
+    background:#111827;
+    color:white;
+}
+
+.print-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.loading{
+    background:white;
+    padding:40px;
+    text-align:center;
+    border-radius:14px;
+}
+
+.error{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:25px;
+    border-radius:12px;
+}
+
+.invoice{
+    background:white;
+    padding:35px;
+    border-radius:14px;
+    box-shadow:0 4px 20px rgba(0,0,0,.07);
+}
+
+.invoice-header{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    border-bottom:2px solid #111827;
+    padding-bottom:20px;
+    margin-bottom:25px;
+}
+
+.brand{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.subtitle{
+    color:#6b7280;
+    margin-top:5px;
+}
+
+.invoice-number{
+    text-align:right;
+}
+
+.invoice-number h2{
+    font-size:21px;
+}
+
+.invoice-number p{
+    color:#6b7280;
+    margin-top:6px;
+    font-size:13px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+    margin-bottom:25px;
+}
+
+.box{
+    background:#f9fafb;
+    border-radius:10px;
+    padding:17px;
+}
+
+.box h3{
+    font-size:15px;
+    margin-bottom:10px;
+}
+
+.box p{
+    line-height:1.7;
+    color:#374151;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+th,
+td{
+    border-bottom:1px solid #e5e7eb;
+    padding:12px 8px;
+    text-align:left;
+}
+
+th{
+    background:#f9fafb;
+    font-size:13px;
+}
+
+td{
+    font-size:14px;
+}
+
+.product-image{
+    width:48px;
+    height:48px;
+    object-fit:cover;
+    border-radius:7px;
+    vertical-align:middle;
+    margin-right:8px;
+}
+
+.product-cell{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.totals{
+    width:340px;
+    max-width:100%;
+    margin-left:auto;
+    margin-top:25px;
+}
+
+.total-row{
+    display:flex;
+    justify-content:space-between;
+    padding:9px 0;
+}
+
+.final-total{
+    border-top:2px solid #111827;
+    margin-top:6px;
+    padding-top:13px;
+    font-size:21px;
+    font-weight:bold;
+}
+
+.status-section{
+    margin-top:30px;
+    border-top:1px solid #e5e7eb;
+    padding-top:22px;
+}
+
+.status-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.status-box{
+    padding:15px;
+    border-radius:10px;
+    background:#f9fafb;
+}
+
+.status-box span{
+    display:block;
+    font-size:12px;
+    color:#6b7280;
+    margin-bottom:6px;
+}
+
+.badge{
+    display:inline-block;
+    padding:6px 11px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+    text-transform:capitalize;
+}
+
+.paid,
+.delivered{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.pending,
+.new{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.processing{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.shipped{
+    background:#cffafe;
+    color:#155e75;
+}
+
+.failed,
+.cancelled{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.refunded{
+    background:#ede9fe;
+    color:#5b

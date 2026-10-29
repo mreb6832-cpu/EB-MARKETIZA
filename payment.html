@@ -72,6 +72,7 @@
       border-radius: 7px;
       padding: 0 8px;
       background: #fff;
+      cursor: pointer;
     }
 
     main {
@@ -264,6 +265,15 @@
       font-weight: 800;
     }
 
+    .currency-status {
+      margin-top: 10px;
+      padding: 9px 11px;
+      border-radius: 8px;
+      background: #f5f7fa;
+      color: #555;
+      font-size: 12px;
+    }
+
     .empty {
       color: var(--muted);
       font-size: 13px;
@@ -315,6 +325,7 @@
 
   <div class="currency-bar">
     <label for="marketCurrency">Currency: </label>
+
     <select id="marketCurrency">
       <option value="SEK">SEK kr</option>
       <option value="EUR">EUR €</option>
@@ -351,20 +362,22 @@
   </header>
 
   <main>
+
     <h1>Secure checkout</h1>
 
     <p class="subtitle">
       Enter your delivery address and continue to secure payment.
     </p>
 
-    <div id="notice"
-         class="notice"
-         role="status"
-         aria-live="polite"></div>
+    <div
+      id="notice"
+      class="notice"
+      role="status"
+      aria-live="polite">
+    </div>
 
     <div class="layout">
 
-      <!-- DELIVERY -->
       <section class="card">
 
         <h2 class="section-title">
@@ -386,8 +399,7 @@
                 type="text"
                 autocomplete="name"
                 maxlength="150"
-                required
-              >
+                required>
             </div>
 
             <div class="field">
@@ -400,8 +412,7 @@
                 name="phone"
                 type="tel"
                 autocomplete="tel"
-                maxlength="30"
-              >
+                maxlength="30">
             </div>
 
             <div class="field full">
@@ -415,8 +426,7 @@
                 type="email"
                 autocomplete="email"
                 maxlength="254"
-                required
-              >
+                required>
             </div>
 
             <div class="field">
@@ -430,8 +440,7 @@
                 type="text"
                 autocomplete="address-line1"
                 maxlength="150"
-                required
-              >
+                required>
             </div>
 
             <div class="field">
@@ -444,8 +453,7 @@
                 name="houseNumber"
                 type="text"
                 maxlength="30"
-                required
-              >
+                required>
             </div>
 
             <div class="field">
@@ -457,8 +465,7 @@
                 id="apartment"
                 name="apartment"
                 type="text"
-                maxlength="30"
-              >
+                maxlength="30">
             </div>
 
             <div class="field">
@@ -472,8 +479,7 @@
                 type="text"
                 autocomplete="postal-code"
                 maxlength="20"
-                required
-              >
+                required>
             </div>
 
             <div class="field full">
@@ -487,8 +493,7 @@
                 type="text"
                 autocomplete="address-level2"
                 maxlength="100"
-                required
-              >
+                required>
             </div>
 
             <div class="field full">
@@ -500,8 +505,8 @@
                 id="country"
                 name="country"
                 autocomplete="country-name"
-                required
-              ></select>
+                required>
+              </select>
             </div>
 
           </div>
@@ -515,8 +520,7 @@
             id="payButton"
             class="pay-button"
             type="submit"
-            disabled
-          >
+            disabled>
             Loading checkout...
           </button>
 
@@ -529,7 +533,7 @@
 
       </section>
 
-      <!-- ORDER SUMMARY -->
+
       <aside class="card">
 
         <h2 class="section-title">
@@ -557,14 +561,21 @@
           <span id="total">0 kr</span>
         </div>
 
+        <div
+          id="currencyStatus"
+          class="currency-status">
+          Currency: SEK
+        </div>
+
         <p class="note">
-          We currently deliver across Europe and the United States.
-          Delivery is FREE.
+          Delivery is FREE. Prices are converted from the
+          original SEK price.
         </p>
 
       </aside>
 
     </div>
+
   </main>
 
   <footer>
@@ -587,10 +598,6 @@
     } from "./market-config.js";
 
 
-    // =========================================================
-    // ELEMENTS
-    // =========================================================
-
     const form =
       document.getElementById("checkoutForm");
 
@@ -606,122 +613,174 @@
     const countrySelect =
       document.getElementById("country");
 
+    const currencySelect =
+      document.getElementById("marketCurrency");
 
-    // =========================================================
-    // STATE
-    // =========================================================
+    const currencyStatus =
+      document.getElementById("currencyStatus");
+
 
     let currentUser = null;
-
     let cart = [];
-
     let subtotal = 0;
-
     let ready = false;
-
     let submitting = false;
-
     let needsLogin = false;
-
     let orderCreated = false;
 
-
-    // =========================================================
-    // YEAR
-    // =========================================================
 
     document.getElementById("year").textContent =
       new Date().getFullYear();
 
 
-    // =========================================================
-    // COUNTRY LIST
-    // =========================================================
+    /* ========================================================
+       COUNTRY LIST
+    ======================================================== */
 
     countrySelect.innerHTML =
       MARKET_COUNTRIES
-        .map(
-          ([code, name]) =>
-            `<option value="${name}" data-code="${code}">
+        .map(([code, name]) => {
+          return `
+            <option
+              value="${name}"
+              data-code="${code}">
               ${name}
-            </option>`
-        )
+            </option>
+          `;
+        })
         .join("");
 
 
-    // Default Sweden
     countrySelect.value = "Sweden";
 
 
-    // =========================================================
-    // INITIAL COUNTRY / CURRENCY
-    // =========================================================
+    /* ========================================================
+       COUNTRY / CURRENCY
+    ======================================================== */
 
-    const initialCountryCode =
-      countrySelect
-        .selectedOptions[0]
-        ?.dataset
-        .code || "SE";
+    function getCountryCode() {
 
-    setMarketCountry(initialCountryCode);
+      return (
+        countrySelect
+          .selectedOptions[0]
+          ?.dataset
+          .code || "SE"
+      );
+
+    }
+
+
+    function getCurrentCurrency() {
+
+      return getCurrency(
+        getCountryCode()
+      );
+
+    }
+
+
+    function updatePaymentCurrency() {
+
+      const countryCode =
+        getCountryCode();
+
+      const currency =
+        getCurrency(countryCode);
+
+      setMarketCountry(countryCode);
+
+      currencySelect.value =
+        currency;
+
+      updateCurrencyDisplay();
+
+      currencyStatus.textContent =
+        `Currency: ${currency} · Prices converted from SEK`;
+
+      renderCart();
+
+    }
+
+
+    /* ========================================================
+       MONEY
+    ======================================================== */
+
+    function money(amount) {
+
+      const currency =
+        getCurrentCurrency();
+
+      return formatMoneyFromSEK(
+        Number(amount) || 0,
+        currency
+      );
+
+    }
+
+
+    /* ========================================================
+       INITIALIZE
+    ======================================================== */
 
     initMarketSelector();
 
-    updateCurrencyDisplay();
+    updatePaymentCurrency();
 
 
-    // =========================================================
-    // MONEY
-    // =========================================================
-
-    const money = amount =>
-      formatMoneyFromSEK(
-        amount,
-        getCurrency(
-          countrySelect
-            .selectedOptions[0]
-            ?.dataset
-            .code || "SE"
-        )
-      );
-
-
-    // =========================================================
-    // COUNTRY CHANGE
-    // =========================================================
+    /* ========================================================
+       COUNTRY CHANGE
+    ======================================================== */
 
     countrySelect.addEventListener(
       "change",
       () => {
 
-        const countryCode =
-          countrySelect
-            .selectedOptions[0]
-            ?.dataset
-            .code || "SE";
+        updatePaymentCurrency();
 
-        setMarketCountry(countryCode);
-
-        updateCurrencyDisplay();
-
-        renderCart();
       }
     );
 
 
-    // =========================================================
-    // NOTICE
-    // =========================================================
+    /* ========================================================
+       CURRENCY CHANGE
+       Country remains the source of truth.
+    ======================================================== */
+
+    currencySelect.addEventListener(
+      "change",
+      () => {
+
+        const countryCode =
+          getCountryCode();
+
+        const countryCurrency =
+          getCurrency(countryCode);
+
+        currencySelect.value =
+          countryCurrency;
+
+        updatePaymentCurrency();
+
+      }
+    );
+
+
+    /* ========================================================
+       NOTICE
+    ======================================================== */
 
     function showNotice(
       message,
       type = "error"
     ) {
 
-      notice.textContent = message;
+      notice.textContent =
+        message;
 
       notice.className =
         "notice " + type;
+
     }
 
 
@@ -729,28 +788,33 @@
 
       notice.textContent = "";
 
-      notice.className = "notice";
+      notice.className =
+        "notice";
+
     }
 
 
-    // =========================================================
-    // BUTTON
-    // =========================================================
+    /* ========================================================
+       BUTTON
+    ======================================================== */
 
     function setButton(
       message,
       disabled = true
     ) {
 
-      payButton.textContent = message;
+      payButton.textContent =
+        message;
 
-      payButton.disabled = disabled;
+      payButton.disabled =
+        disabled;
+
     }
 
 
-    // =========================================================
-    // RENDER CART
-    // =========================================================
+    /* ========================================================
+       RENDER CART
+    ======================================================== */
 
     function renderCart() {
 
@@ -762,12 +826,15 @@
         const empty =
           document.createElement("p");
 
-        empty.className = "empty";
+        empty.className =
+          "empty";
 
         empty.textContent =
           "Your cart is empty.";
 
-        cartItemsElement.append(empty);
+        cartItemsElement.append(
+          empty
+        );
 
       } else {
 
@@ -855,12 +922,13 @@
         "total"
       ).textContent =
         money(subtotal);
+
     }
 
 
-    // =========================================================
-    // ADDRESS
-    // =========================================================
+    /* ========================================================
+       ADDRESS
+    ======================================================== */
 
     function getAddress() {
 
@@ -899,13 +967,15 @@
 
         country:
           value("country")
+
       };
+
     }
 
 
-    // =========================================================
-    // LOAD CHECKOUT
-    // =========================================================
+    /* ========================================================
+       LOAD CHECKOUT
+    ======================================================== */
 
     async function loadCheckout() {
 
@@ -937,6 +1007,7 @@
           );
 
           return;
+
         }
 
 
@@ -970,6 +1041,7 @@
           );
 
           return;
+
         }
 
 
@@ -1012,6 +1084,7 @@
           );
 
           return;
+
         }
 
 
@@ -1074,6 +1147,7 @@
               throw new Error(
                 "A product in your cart is unavailable. Update your cart."
               );
+
             }
 
 
@@ -1091,14 +1165,25 @@
 
             if (
               !Number.isFinite(price) ||
-              price < 0 ||
+              price < 0
+            ) {
+
+              throw new Error(
+                "A product has an invalid price."
+              );
+
+            }
+
+
+            if (
               !Number.isInteger(quantity) ||
               quantity < 1
             ) {
 
               throw new Error(
-                "A product has an invalid price or quantity."
+                "A product has an invalid quantity."
               );
+
             }
 
 
@@ -1113,6 +1198,7 @@
                 product.name +
                 "."
               );
+
             }
 
 
@@ -1175,9 +1261,9 @@
     }
 
 
-    // =========================================================
-    // SUBMIT
-    // =========================================================
+    /* ========================================================
+       SUBMIT
+    ======================================================== */
 
     form.addEventListener(
       "submit",
@@ -1194,6 +1280,7 @@
             "login.html";
 
           return;
+
         }
 
 
@@ -1212,6 +1299,7 @@
           );
 
           return;
+
         }
 
 
@@ -1227,6 +1315,7 @@
           );
 
           return;
+
         }
 
 
@@ -1241,9 +1330,9 @@
 
         try {
 
-          // ---------------------------------------------------
-          // CHECK SESSION
-          // ---------------------------------------------------
+          /* ===================================================
+             CHECK SESSION
+          =================================================== */
 
           const {
             data: sessionData,
@@ -1265,16 +1354,18 @@
             throw new Error(
               "Your session expired. Please log in again."
             );
+
           }
 
 
-          // ---------------------------------------------------
-          // RECHECK PRODUCTS
-          // ---------------------------------------------------
+          /* ===================================================
+             RECHECK PRODUCTS
+          =================================================== */
 
           const ids =
             cart.map(
-              item => item.id
+              item =>
+                item.id
             );
 
 
@@ -1324,6 +1415,7 @@
                   item.name +
                   " is no longer available."
                 );
+
               }
 
 
@@ -1343,6 +1435,7 @@
                   product.name +
                   "."
                 );
+
               }
 
 
@@ -1357,6 +1450,7 @@
                   product.name +
                   "."
                 );
+
               }
 
 
@@ -1381,17 +1475,17 @@
           renderCart();
 
 
-          // ---------------------------------------------------
-          // ADDRESS
-          // ---------------------------------------------------
+          /* ===================================================
+             ADDRESS
+          =================================================== */
 
           const address =
             getAddress();
 
 
-          // ---------------------------------------------------
-          // CREATE PENDING ORDER
-          // ---------------------------------------------------
+          /* ===================================================
+             CREATE PENDING ORDER
+          =================================================== */
 
           const {
             data: order,
@@ -1408,7 +1502,8 @@
 
                 subtotal,
 
-                delivery_fee: 0,
+                delivery_fee:
+                  0,
 
                 total:
                   subtotal,
@@ -1431,9 +1526,9 @@
           orderCreated = true;
 
 
-          // ---------------------------------------------------
-          // ORDER ITEMS
-          // ---------------------------------------------------
+          /* ===================================================
+             ORDER ITEMS
+          =================================================== */
 
           const orderItems =
             cart.map(item => ({
@@ -1450,8 +1545,7 @@
               quantity:
                 item.quantity,
 
-              // IMPORTANT:
-              // Always store original admin SEK price.
+              // ADMIN PRICE ALWAYS REMAINS SEK
               unit_price:
                 item.price,
 
@@ -1479,23 +1573,20 @@
               itemsError
             );
 
-
             throw new Error(
               "Your order was created, but its items could not be saved. Contact the store before trying again. Order ID: " +
               order.id
             );
+
           }
 
 
-          // ---------------------------------------------------
-          // CUSTOMER CURRENCY
-          // ---------------------------------------------------
+          /* ===================================================
+             COUNTRY → CURRENCY
+          =================================================== */
 
           const countryCode =
-            countrySelect
-              .selectedOptions[0]
-              ?.dataset
-              .code || "SE";
+            getCountryCode();
 
 
           const currency =
@@ -1504,9 +1595,9 @@
             );
 
 
-          // ---------------------------------------------------
-          // EB SHOP PAYMENT API
-          // ---------------------------------------------------
+          /* ===================================================
+             EB SHOP PAYMENT API
+          =================================================== */
 
           const response =
             await fetch(
@@ -1554,25 +1645,16 @@
           } catch {
 
             console.error(
-              "Payment API returned non-JSON:",
-              {
-                status:
-                  response.status,
-
-                responsePreview:
-                  responseText.slice(
-                    0,
-                    500
-                  )
-              }
+              "Payment API non-JSON response:",
+              responseText
             );
-
 
             throw new Error(
               "Payment server returned an unexpected response (HTTP " +
               response.status +
               "). Your order may still be pending. Check your order status before retrying."
             );
+
           }
 
 
@@ -1582,21 +1664,21 @@
           ) {
 
             console.error(
-              "Stripe API error:",
+              "Payment API error:",
               result
             );
 
-
             throw new Error(
               result.error ||
-              "Stripe could not start checkout. Your order may still be pending."
+              "Stripe could not start checkout."
             );
+
           }
 
 
-          // ---------------------------------------------------
-          // SECURE REDIRECT
-          // ---------------------------------------------------
+          /* ===================================================
+             SECURE REDIRECT
+          =================================================== */
 
           const checkoutUrl =
             new URL(
@@ -1612,13 +1694,13 @@
             throw new Error(
               "The payment server returned an invalid secure URL."
             );
+
           }
 
 
           window.location.assign(
             checkoutUrl.href
           );
-
 
         } catch (error) {
 
@@ -1660,9 +1742,9 @@
     );
 
 
-    // =========================================================
-    // START
-    // =========================================================
+    /* ========================================================
+       START
+    ======================================================== */
 
     loadCheckout();
 

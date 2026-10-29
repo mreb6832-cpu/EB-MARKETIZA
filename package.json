@@ -1,9 +1,10 @@
 {
-  "name": "eb-marketiza",
+  "name": "ebshop",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
     "stripe": "^18.5.0"
   }
 }

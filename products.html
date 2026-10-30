@@ -1,2586 +1,972 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta charset="UTF-8">
+<title>Products | EB MARKETIZA</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<meta
+  name="description"
+  content="Shop products at EB MARKETIZA."
+>
 
-  <!-- =========================
-       GOOGLE SEARCH CONSOLE
-       DON'T REMOVE
-  ========================= -->
-  <meta
-    name="google-site-verification"
-    content="w1xjlGEr733FoAZAauHPqOYr5VTdH4t9pbAeVH5VR0s"
-  >
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
-  <!-- =========================
-       SEO
-  ========================= -->
+body{
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  color:#111827;
+}
 
-  <title>
-    Shop Clothing & Fashion | E&B MARKETIZA
-  </title>
+header{
+  background:#111827;
+  color:white;
+  padding:16px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+}
 
-  <meta
-    name="description"
-    content="Shop clothing and fashion online at E&B MARKETIZA across Europe and the USA. Prices are available in EUR, USD and SEK."
-  >
+header h1{
+  font-size:22px;
+}
 
-  <meta
-    name="keywords"
-    content="online store Europe USA, clothing online, fashion products, buy clothes online, EUR USD SEK"
-  >
+nav{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
 
-  <meta
-    name="robots"
-    content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-  >
+nav a{
+  color:white;
+  text-decoration:none;
+}
 
-  <meta
-    name="author"
-    content="E&B MARKETIZA"
-  >
+main{
+  max-width:1200px;
+  margin:30px auto;
+  padding:0 18px;
+}
 
-  <meta
-    name="language"
-    content="English"
-  >
+.page-title{
+  margin-bottom:25px;
+}
 
-  <meta
-    name="revisit-after"
-    content="7 days"
-  >
+.page-title h2{
+  font-size:30px;
+  margin-bottom:8px;
+}
 
-  <!-- Canonical -->
-  <link
-    rel="canonical"
-    href="https://ebmarketiza.vercel.app/products.html"
-  >
+.page-title p{
+  color:#6b7280;
+}
 
-  <!-- =========================
-       OPEN GRAPH
-  ========================= -->
+.filters{
+  background:white;
+  padding:18px;
+  border-radius:12px;
+  margin-bottom:25px;
 
-  <meta
-    property="og:type"
-    content="website"
-  >
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-  <meta
-    property="og:site_name"
-    content="E&B MARKETIZA"
-  >
+#search{
+  flex:1;
+  min-width:220px;
+  padding:12px;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  font-size:15px;
+}
 
-  <meta
-    property="og:title"
-    content="Shop Clothing & Fashion | E&B MARKETIZA"
-  >
+.category-button{
+  padding:11px 15px;
+  border:0;
+  border-radius:8px;
+  background:#e5e7eb;
+  cursor:pointer;
+}
 
-  <meta
-    property="og:description"
-    content="Discover clothing and fashion products at E&B MARKETIZA. Shop online for Europe and USA with prices available in EUR, USD and SEK."
-  >
+.category-button.active{
+  background:#111827;
+  color:white;
+}
 
-  <meta
-    property="og:url"
-    content="https://ebmarketiza.vercel.app/products.html"
-  >
+#message{
+  display:none;
+  background:#fee2e2;
+  color:#991b1b;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
 
-  <meta
-    property="og:locale"
-    content="en_SE"
-  >
+#loading{
+  text-align:center;
+  padding:40px;
+  background:white;
+  border-radius:12px;
+}
 
-  <!-- =========================
-       TWITTER / X
-  ========================= -->
+#productsGrid{
+  display:grid;
+  grid-template-columns:
+    repeat(auto-fill,minmax(230px,1fr));
+  gap:22px;
+}
 
-  <meta
-    name="twitter:card"
-    content="summary_large_image"
-  >
+.product-card{
+  background:white;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 5px 18px rgba(0,0,0,.07);
+  transition:transform .2s;
+}
 
-  <meta
-    name="twitter:title"
-    content="Shop Clothing & Fashion | E&B MARKETIZA"
-  >
+.product-card:hover{
+  transform:translateY(-3px);
+}
 
-  <meta
-    name="twitter:description"
-    content="Shop clothing and fashion online at E&B MARKETIZA across Europe and the USA. Prices available in EUR, USD and SEK."
-  >
+.product-image{
+  width:100%;
+  height:250px;
+  background:#f3f4f6;
 
-  <meta
-    name="theme-color"
-    content="#050505"
-  >
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
-  <!-- =========================
-       STRUCTURED DATA
-  ========================= -->
+  overflow:hidden;
+}
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "Shop Clothing & Fashion",
-    "url": "https://ebmarketiza.vercel.app/products.html",
-    "description": "Browse clothing and fashion products available at E&B MARKETIZA.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "E&B MARKETIZA",
-      "url": "https://ebmarketiza.vercel.app/"
-    },
-    "about": {
-      "@type": "Thing",
-      "name": "Clothing and Fashion"
-    },
-    "inLanguage": "en-SE"
+.product-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.no-image{
+  color:#777;
+  font-size:15px;
+}
+
+.product-info{
+  padding:17px;
+}
+
+.product-name{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.product-category{
+  color:#6b7280;
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.product-price{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.product-stock{
+  font-size:14px;
+  margin-bottom:15px;
+}
+
+.view-button{
+  display:block;
+  width:100%;
+  padding:12px;
+  background:#111827;
+  color:white;
+  text-decoration:none;
+  text-align:center;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+.view-button:hover{
+  background:#2563eb;
+}
+
+.empty{
+  grid-column:1/-1;
+  text-align:center;
+  background:white;
+  padding:40px;
+  border-radius:12px;
+  color:#6b7280;
+}
+
+@media(max-width:600px){
+
+  main{
+    padding:0 12px;
   }
-  </script>
 
-  <style>
+  .page-title h2{
+    font-size:25px;
+  }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  #productsGrid{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
 
-    html {
-      scroll-behavior: smooth;
-    }
+  .product-image{
+    height:190px;
+  }
 
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #fff;
-      color: #111;
-      min-height: 100vh;
-    }
+  .product-info{
+    padding:12px;
+  }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+  .product-name{
+    font-size:15px;
+  }
 
-    button,
-    input,
-    select {
-      font: inherit;
-    }
+  .product-price{
+    font-size:17px;
+  }
 
-    /* =========================
-       HEADER
-    ========================= */
+}
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+@media(max-width:380px){
 
-      background: #050505;
-      color: #fff;
+  #productsGrid{
+    grid-template-columns:1fr;
+  }
 
-      border-bottom: 1px solid #222;
-    }
-
-    .header-main {
-      width: 100%;
-      max-width: 1250px;
-      min-height: 70px;
-
-      margin: 0 auto;
-      padding: 12px 20px;
-
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .logo {
-      flex-shrink: 0;
-
-      font-size: 22px;
-      font-weight: 900;
-
-      letter-spacing: -0.5px;
-      white-space: nowrap;
-    }
-
-    .logo span {
-      color: #00d084;
-    }
-
-    /* Currency */
-
-    .currency-area {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      flex-shrink: 0;
-    }
-
-    .currency-area label {
-      color: #ccc;
-      font-size: 14px;
-    }
-
-    .currency-area select {
-      height: 42px;
-
-      padding: 0 12px;
-
-      background: #111;
-      color: #fff;
-
-      border: 1px solid #333;
-      border-radius: 8px;
-
-      outline: none;
-    }
-
-    .currency-area select:focus {
-      border-color: #00d084;
-    }
-
-    /* Search */
-
-    .search-area {
-      flex: 1;
-      max-width: 520px;
-      margin-left: auto;
-    }
-
-    .search-area input {
-      width: 100%;
-      height: 42px;
-
-      padding: 0 15px;
-
-      background: #111;
-      color: #fff;
-
-      border: 1px solid #333;
-      border-radius: 8px;
-
-      outline: none;
-    }
-
-    .search-area input::placeholder {
-      color: #999;
-    }
-
-    .search-area input:focus {
-      border-color: #00d084;
-    }
-
-    /* Login / Register */
-
-    .desktop-auth {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      flex-shrink: 0;
-    }
-
-    .auth-link {
-      min-height: 40px;
-
-      padding: 10px 15px;
-
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 7px;
-      border: 1px solid #00d084;
-
-      font-size: 14px;
-      font-weight: 700;
-
-      transition: 0.2s ease;
-    }
-
-    .login-link {
-      color: #00d084;
-      background: transparent;
-    }
-
-    .register-link {
-      color: #000;
-      background: #00d084;
-    }
-
-    .auth-link:hover {
-      opacity: 0.88;
-      transform: translateY(-1px);
-    }
-
-    /* Mobile button */
-
-    .menu-button {
-      display: none;
-
-      width: 42px;
-      height: 42px;
-
-      border: 1px solid #333;
-      border-radius: 8px;
-
-      background: #111;
-      color: #fff;
-
-      font-size: 23px;
-      cursor: pointer;
-    }
-
-    /* =========================
-       NAVIGATION
-    ========================= */
-
-    .desktop-nav {
-      background: #0b0b0b;
-      border-top: 1px solid #1c1c1c;
-    }
-
-    .nav-inner {
-      max-width: 1250px;
-      margin: 0 auto;
-      padding: 0 20px;
-
-      display: flex;
-      align-items: center;
-    }
-
-    .nav-list {
-      list-style: none;
-
-      display: flex;
-      align-items: center;
-      gap: 25px;
-
-      min-height: 46px;
-    }
-
-    .nav-list a {
-      color: #d7d7d7;
-
-      font-size: 14px;
-      font-weight: 700;
-
-      transition: 0.2s ease;
-    }
-
-    .nav-list a:hover {
-      color: #00d084;
-    }
-
-    /* =========================
-       MOBILE MENU
-    ========================= */
-
-    .mobile-menu {
-      display: none;
-
-      background: #080808;
-
-      border-top: 1px solid #222;
-
-      padding: 10px 20px 20px;
-    }
-
-    .mobile-menu.open {
-      display: block;
-    }
-
-    .mobile-menu a {
-      display: block;
-
-      padding: 14px 0;
-
-      color: #fff;
-      font-weight: 700;
-
-      border-bottom: 1px solid #222;
-    }
-
-    .mobile-menu a:hover {
-      color: #00d084;
-    }
-
-    .mobile-auth {
-      display: flex;
-      gap: 10px;
-
-      padding-top: 15px;
-    }
-
-    .mobile-auth a {
-      width: 50%;
-
-      text-align: center;
-
-      border: 1px solid #00d084;
-      border-radius: 7px;
-
-      padding: 11px 10px;
-    }
-
-    .mobile-auth .mobile-register {
-      background: #00d084;
-      color: #000;
-    }
-
-    /* =========================
-       HERO
-    ========================= */
-
-    .hero {
-      background: #f4f4f4;
-      padding: 75px 20px;
-    }
-
-    .hero-inner {
-      max-width: 1250px;
-      margin: 0 auto;
-    }
-
-    .hero h1 {
-      max-width: 850px;
-
-      font-size: clamp(48px, 8vw, 88px);
-      line-height: 0.92;
-
-      letter-spacing: -4px;
-
-      margin-bottom: 25px;
-    }
-
-    .hero h1 span {
-      color: #00b871;
-    }
-
-    .hero p {
-      max-width: 650px;
-
-      color: #555;
-
-      font-size: 18px;
-      line-height: 1.65;
-
-      margin-bottom: 30px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .hero-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
-      min-height: 48px;
-
-      padding: 13px 20px;
-
-      border-radius: 8px;
-
-      font-weight: 800;
-
-      transition: 0.2s ease;
-    }
-
-    .hero-primary {
-      background: #00d084;
-      color: #000;
-    }
-
-    .hero-secondary {
-      background: #111;
-      color: #fff;
-    }
-
-    .hero-button:hover {
-      transform: translateY(-1px);
-      opacity: 0.9;
-    }
-
-    /* =========================
-       GENERAL SECTION
-    ========================= */
-
-    .section {
-      width: 100%;
-      max-width: 1250px;
-
-      margin: 0 auto;
-
-      padding: 60px 20px;
-    }
-
-    .section-title {
-      font-size: 30px;
-      margin-bottom: 25px;
-    }
-
-    /* =========================
-       CATEGORIES
-    ========================= */
-
-    .categories {
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, 1fr);
-
-      gap: 15px;
-    }
-
-    .category-button {
-      min-height: 110px;
-
-      padding: 20px;
-
-      border: 1px solid #ddd;
-      border-radius: 11px;
-
-      background: #fff;
-      color: #111;
-
-      text-align: center;
-
-      cursor: pointer;
-
-      transition: 0.2s ease;
-    }
-
-    .category-button:hover,
-    .category-button.active {
-      border-color: #00d084;
-
-      transform: translateY(-2px);
-
-      box-shadow:
-        0 6px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    .category-button strong {
-      display: block;
-
-      margin-bottom: 8px;
-
-      font-size: 16px;
-    }
-
-    .category-button small {
-      color: #777;
-    }
-
-    /* =========================
-       PRODUCTS
-    ========================= */
-
-    .products-heading {
-      display: flex;
-
-      justify-content: space-between;
-      align-items: center;
-
-      gap: 15px;
-
-      margin-bottom: 25px;
-    }
-
-    .products-heading .section-title {
-      margin: 0;
-    }
-
-    .show-all-button {
-      padding: 10px 14px;
-
-      background: #fff;
-      color: #111;
-
-      border: 1px solid #ccc;
-      border-radius: 7px;
-
-      cursor: pointer;
-
-      font-weight: 700;
-    }
-
-    .show-all-button:hover {
-      border-color: #00d084;
-    }
-
-    .products-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, 1fr);
-
-      gap: 20px;
-    }
-
-    .product-card {
-      overflow: hidden;
-
-      background: #fff;
-
-      border: 1px solid #e1e1e1;
-      border-radius: 12px;
-
-      transition: 0.2s ease;
-    }
-
-    .product-card:hover {
-      transform: translateY(-3px);
-
-      box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    .product-image {
-      width: 100%;
-      height: 220px;
-
-      display: block;
-
-      object-fit: cover;
-
-      background: #f1f1f1;
-    }
-
-    .product-content {
-      padding: 16px;
-    }
-
-    .product-category {
-      margin-bottom: 7px;
-
-      color: #00a866;
-
-      font-size: 11px;
-      font-weight: 800;
-
-      text-transform: uppercase;
-
-      letter-spacing: 0.5px;
-    }
-
-    .product-name {
-      min-height: 42px;
-
-      font-size: 17px;
-      font-weight: 800;
-
-      line-height: 1.3;
-
-      margin-bottom: 10px;
-    }
-
-    .product-price {
-      margin-bottom: 14px;
-
-      font-size: 19px;
-      font-weight: 900;
-    }
-
-    .view-product {
-      width: 100%;
-      min-height: 42px;
-
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      background: #111;
-      color: #fff;
-
-      border-radius: 7px;
-
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .view-product:hover {
-      background: #00d084;
-      color: #000;
-    }
-
-    .loading,
-    .empty-products {
-      grid-column: 1 / -1;
-
-      padding: 50px 20px;
-
-      text-align: center;
-
-      color: #666;
-    }
-
-    /* =========================
-       FEATURES
-    ========================= */
-
-    .features-section {
-      background: #050505;
-      color: #fff;
-    }
-
-    .features-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      gap: 20px;
-    }
-
-    .feature-card {
-      padding: 25px;
-
-      border: 1px solid #292929;
-      border-radius: 11px;
-    }
-
-    .feature-card h3 {
-      color: #00d084;
-      margin-bottom: 10px;
-    }
-
-    .feature-card p {
-      color: #aaa;
-      line-height: 1.6;
-    }
-
-    /* =========================
-       FOOTER
-    ========================= */
-
-    footer {
-      background: #050505;
-      color: #999;
-
-      border-top: 1px solid #222;
-
-      padding: 30px 20px;
-    }
-
-    .footer-inner {
-      max-width: 1250px;
-
-      margin: 0 auto;
-
-      display: flex;
-
-      justify-content: space-between;
-      align-items: center;
-
-      gap: 20px;
-
-      flex-wrap: wrap;
-    }
-
-    .footer-links {
-      display: flex;
-
-      gap: 18px;
-
-      flex-wrap: wrap;
-    }
-
-    .footer-links a:hover {
-      color: #00d084;
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
-    @media (max-width: 1050px) {
-
-      .products-grid {
-        grid-template-columns:
-          repeat(3, 1fr);
-      }
-
-      .categories {
-        grid-template-columns:
-          repeat(2, 1fr);
-      }
-
-    }
-
-    @media (max-width: 800px) {
-
-      .header-main {
-        min-height: 64px;
-
-        padding: 10px 15px;
-      }
-
-      .logo {
-        font-size: 19px;
-      }
-
-      .search-area,
-      .desktop-auth,
-      .desktop-nav {
-        display: none;
-      }
-
-      .currency-area {
-        display: none;
-      }
-
-      .menu-button {
-        display: block;
-
-        margin-left: auto;
-      }
-
-      .hero {
-        padding: 55px 15px;
-      }
-
-      .hero h1 {
-        font-size:
-          clamp(46px, 15vw, 72px);
-
-        letter-spacing: -3px;
-      }
-
-      .hero p {
-        font-size: 16px;
-      }
-
-      .section {
-        padding: 45px 15px;
-      }
-
-      .products-grid {
-        grid-template-columns:
-          repeat(2, 1fr);
-
-        gap: 13px;
-      }
-
-      .product-image {
-        height: 175px;
-      }
-
-      .product-content {
-        padding: 12px;
-      }
-
-      .product-name {
-        font-size: 15px;
-      }
-
-      .product-price {
-        font-size: 17px;
-      }
-
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
-
-    }
-
-    @media (max-width: 500px) {
-
-      .categories {
-        grid-template-columns:
-          repeat(2, 1fr);
-
-        gap: 10px;
-      }
-
-      .category-button {
-        min-height: 95px;
-
-        padding: 15px 8px;
-      }
-
-      .products-heading {
-        align-items: flex-start;
-
-        flex-direction: column;
-      }
-
-      .products-grid {
-        grid-template-columns:
-          repeat(2, 1fr);
-      }
-
-      .product-image {
-        height: 155px;
-      }
-
-      .product-content {
-        padding: 10px;
-      }
-
-      .product-category {
-        font-size: 10px;
-      }
-
-      .product-name {
-        font-size: 14px;
-
-        min-height: 38px;
-      }
-
-      .product-price {
-        font-size: 16px;
-
-        margin-bottom: 10px;
-      }
-
-      .view-product {
-        min-height: 38px;
-
-        font-size: 13px;
-      }
-
-      .hero-buttons {
-        flex-direction: column;
-      }
-
-      .hero-button {
-        width: 100%;
-      }
-
-      .footer-inner {
-        align-items: flex-start;
-
-        flex-direction: column;
-      }
-
-    }
-
-    @media (max-width: 360px) {
-
-      .products-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .product-image {
-        height: 210px;
-      }
-
-    }
-
-  </style>
-
+}
+</style>
 </head>
 
 <body>
 
-  <!-- =========================
-       HEADER
-  ========================= -->
+<header>
 
-  <header>
+  <h1>EB MARKETIZA</h1>
 
-    <!-- Currency -->
-    <div
-      style="
-        max-width:1250px;
-        margin:8px auto;
-        padding:0 20px;
-        text-align:right;
-      "
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="cart.html">🛒 Cart</a>
+    <a href="account.html">Account</a>
+  </nav>
+
+</header>
+
+
+<main>
+
+  <div class="page-title">
+
+    <h2>Latest Products</h2>
+
+    <p>
+      Discover products available at EB MARKETIZA.
+    </p>
+
+  </div>
+
+
+  <div class="filters">
+
+    <input
+      id="search"
+      type="search"
+      placeholder="Search products..."
     >
 
-      <label for="marketCurrency">
-        Currency:
-      </label>
-
-      <select id="marketCurrency">
-
-        <option value="EUR">
-          EUR €
-        </option>
-
-        <option value="USD">
-          USD $
-        </option>
-
-        <option value="SEK">
-          SEK kr
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <div class="header-main">
-
-      <a
-        href="index.html"
-        class="logo"
-      >
-        E&B <span>MARKETIZA</span>
-      </a>
-
-
-      <div class="search-area">
-
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="Search clothing..."
-          autocomplete="off"
-          aria-label="Search clothing products"
-        >
-
-      </div>
-
-
-      <!-- Desktop Login/Register -->
-
-      <div class="desktop-auth">
-
-        <a
-          href="login.html"
-          class="auth-link login-link"
-        >
-          Login
-        </a>
-
-        <a
-          href="register.html"
-          class="auth-link register-link"
-        >
-          Register
-        </a>
-
-      </div>
-
-
-      <!-- Mobile menu button -->
-
-      <button
-        id="menuButton"
-        class="menu-button"
-        type="button"
-        aria-label="Open menu"
-        aria-expanded="false"
-      >
-        ☰
-      </button>
-
-    </div>
-
-
-    <!-- Desktop Navigation -->
-
-    <nav class="desktop-nav">
-
-      <div class="nav-inner">
-
-        <ul class="nav-list">
-
-          <li>
-            <a href="index.html">
-              Home
-            </a>
-          </li>
-
-          <li>
-            <a href="products.html">
-              Products
-            </a>
-          </li>
-
-          <li>
-            <a href="about.html">
-              About
-            </a>
-          </li>
-
-          <li>
-            <a href="contact.html">
-              Contact
-            </a>
-          </li>
-
-          <li>
-            <a href="orders.html">
-              Orders
-            </a>
-          </li>
-
-          <li>
-            <a href="cart.html">
-              Cart
-            </a>
-          </li>
-
-          <li>
-            <a href="account.html">
-              Account
-            </a>
-          </li>
-
-        </ul>
-
-      </div>
-
-    </nav>
-
-
-    <!-- Mobile Navigation -->
-
-    <div
-      id="mobileMenu"
-      class="mobile-menu"
+    <button
+      class="category-button active"
+      data-category="all"
+      type="button"
     >
+      All
+    </button>
 
-      <a href="index.html">
-        Home
-      </a>
+    <div id="categoryButtons"></div>
 
-      <a href="products.html">
-        Products
-      </a>
+  </div>
 
-      <a href="about.html">
-        About
-      </a>
 
-      <a href="contact.html">
-        Contact
-      </a>
+  <div id="message"></div>
 
-      <a href="orders.html">
-        Orders
-      </a>
 
-      <a href="cart.html">
-        Cart
-      </a>
+  <div id="loading">
+    Loading products...
+  </div>
 
-      <a href="account.html">
-        Account
-      </a>
 
+  <div id="productsGrid"></div>
 
-      <div class="mobile-auth">
+</main>
 
-        <a
-          href="login.html"
-          class="mobile-login"
-        >
-          Login
-        </a>
 
-        <a
-          href="register.html"
-          class="mobile-register"
-        >
-          Register
-        </a>
+<script type="module">
 
-      </div>
+import { supabase } from "./supabaseClient.js";
 
-    </div>
 
-  </header>
+/* ==========================================
+   ELEMENTS
+========================================== */
 
+const loading =
+  document.getElementById("loading");
 
-  <!-- =========================
-       MAIN
-  ========================= -->
+const productsGrid =
+  document.getElementById("productsGrid");
 
-  <main>
+const message =
+  document.getElementById("message");
 
-    <!-- HERO -->
+const search =
+  document.getElementById("search");
 
-    <section class="hero">
+const categoryButtons =
+  document.getElementById("categoryButtons");
 
-      <div class="hero-inner">
 
-        <h1>
+/* ==========================================
+   DATA
+========================================== */
 
-          SHOP.<br>
+let products = [];
 
-          <span>
-            FASHION.
-          </span><br>
+let selectedCategory = "all";
 
-          EASY.
 
-        </h1>
+/* ==========================================
+   PRICE
+========================================== */
 
+function formatPrice(price){
 
-        <p>
+  return new Intl.NumberFormat(
+    "sv-SE",
+    {
+      style:"currency",
+      currency:"SEK"
+    }
+  ).format(Number(price || 0));
 
-          Discover clothing and fashion
-          products at E&B MARKETIZA.
-          Shop online across Europe and the USA with
-          prices available in EUR, USD and SEK.
+}
 
-        </p>
 
+/* ==========================================
+   IMAGE URL
+========================================== */
 
-        <div class="hero-buttons">
+function getImageURL(image){
 
-          <a
-            href="#products"
-            class="hero-button hero-primary"
-          >
-            Shop Clothing
-          </a>
+  if(!image){
+    return "";
+  }
 
+  return (
+    image.image_url ||
+    image.public_url ||
+    image.url ||
+    image.image ||
+    ""
+  );
 
-          <a
-            href="register.html"
-            class="hero-button hero-secondary"
-          >
-            Create Account
-          </a>
+}
 
-        </div>
 
-      </div>
+/* ==========================================
+   LOAD PRODUCTS
+========================================== */
 
-    </section>
+async function loadProducts(){
 
-
-    <!-- =========================
-         CATEGORIES
-    ========================= -->
-
-    <section class="section">
-
-      <h2 class="section-title">
-        Clothing Categories
-      </h2>
-
-
-      <div class="categories">
-
-        <button
-          class="category-button active"
-          data-category="all"
-          type="button"
-        >
-
-          <strong>
-            All Clothing
-          </strong>
-
-          <small>
-            View everything
-          </small>
-
-        </button>
-
-
-        <button
-          class="category-button"
-          data-category="fashion"
-          type="button"
-        >
-
-          <strong>
-            Fashion
-          </strong>
-
-          <small>
-            Clothing & style
-          </small>
-
-        </button>
-
-
-        <button
-          class="category-button"
-          data-category="men"
-          type="button"
-        >
-
-          <strong>
-            Men
-          </strong>
-
-          <small>
-            Men's clothing
-          </small>
-
-        </button>
-
-
-        <button
-          class="category-button"
-          data-category="women"
-          type="button"
-        >
-
-          <strong>
-            Women
-          </strong>
-
-          <small>
-            Women's clothing
-          </small>
-
-        </button>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         PRODUCTS
-    ========================= -->
-
-    <section
-      class="section"
-      id="products"
-    >
-
-      <div class="products-heading">
-
-        <h2 class="section-title">
-          Latest Clothing
-        </h2>
-
-
-        <button
-          id="showAllButton"
-          class="show-all-button"
-          type="button"
-        >
-          Show All
-        </button>
-
-      </div>
-
-
-      <div
-        id="productsGrid"
-        class="products-grid"
-      >
-
-        <div class="loading">
-          Loading products...
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         FEATURES
-    ========================= -->
-
-    <section class="features-section">
-
-      <div class="section">
-
-        <div class="features-grid">
-
-          <div class="feature-card">
-
-            <h3>
-              Secure Shopping
-            </h3>
-
-            <p>
-              Shop clothing through a simple
-              and secure online shopping
-              experience.
-            </p>
-
-          </div>
-
-
-          <div class="feature-card">
-
-            <h3>
-              Easy Account
-            </h3>
-
-            <p>
-              Create an account and manage
-              your shopping experience from
-              your phone or computer.
-            </p>
-
-          </div>
-
-
-          <div class="feature-card">
-
-            <h3>
-              Sweden
-            </h3>
-
-            <p>
-              E&B MARKETIZA is designed for
-              customers across Europe and the USA with prices
-              available in EUR, USD and SEK.
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-  <!-- =========================
-       FOOTER
-  ========================= -->
-
-  <footer>
-
-    <div class="footer-inner">
-
-      <div>
-        © 2026 E&B MARKETIZA
-      </div>
-
-
-      <div class="footer-links">
-
-        <a href="about.html">
-          About
-        </a>
-
-        <a href="contact.html">
-          Contact
-        </a>
-
-        <a href="login.html">
-          Login
-        </a>
-
-        <a href="register.html">
-          Register
-        </a>
-
-      </div>
-
-    </div>
-
-  </footer>
-
-
-  <!-- =========================
-       SUPABASE JAVASCRIPT
-       DON'T REMOVE
-  ========================= -->
-
-  <script type="module">
-
-    import {
-      initMarketSelector,
-      formatMoneyFromSEK
-    } from "./market-config.js";
-
-
-    import {
-      supabase
-    } from "./supabaseClient.js";
-
-
-    /* =========================
-       MARKET SELECTOR
-    ========================= */
-
-    initMarketSelector();
-
-
-    /* =========================
-       ELEMENTS
-    ========================= */
-
-    const productsGrid =
-      document.getElementById(
-        "productsGrid"
-      );
-
-
-    const searchInput =
-      document.getElementById(
-        "searchInput"
-      );
-
-
-    const showAllButton =
-      document.getElementById(
-        "showAllButton"
-      );
-
-
-    const categoryButtons =
-      document.querySelectorAll(
-        ".category-button"
-      );
-
-
-    const menuButton =
-      document.getElementById(
-        "menuButton"
-      );
-
-
-    const mobileMenu =
-      document.getElementById(
-        "mobileMenu"
-      );
-
-
-    /* =========================
-       VARIABLES
-    ========================= */
-
-    let allProducts = [];
-
-    let selectedCategory = "all";
-
-
-    /* =========================
-       ESCAPE HTML
-    ========================= */
-
-    function escapeHTML(value) {
-
-      return String(value ?? "")
-
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-
-        .replace(
-          /</g,
-          "&lt;"
-        )
-
-        .replace(
-          />/g,
-          "&gt;"
-        )
-
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-
-        .replace(
-          /'/g,
-          "&#039;"
+  loading.style.display =
+    "block";
+
+  productsGrid.innerHTML = "";
+
+  message.style.display =
+    "none";
+
+
+  try{
+
+    /* ======================================
+       PRODUCTS
+    ====================================== */
+
+    const {
+      data:productData,
+      error:productError
+    } =
+      await supabase
+        .from("products")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
         );
 
-    }
 
+    if(productError){
 
-    /* =========================
-       PRODUCT NAME
-    ========================= */
-
-    function getProductName(product) {
-
-      return (
-        product.name ||
-        product.title ||
-        "Product"
+      throw new Error(
+        productError.message
       );
 
     }
 
 
-    /* =========================
-       PRODUCT CATEGORY
-    ========================= */
+    products =
+      productData || [];
 
-    function getProductCategory(product) {
 
-      return (
-        product.category ||
-        "Fashion"
+    /* ======================================
+       PRODUCT IMAGES
+
+       Uses the same columns as admin.html:
+       id
+       product_id
+       image_url
+       is_primary
+    ====================================== */
+
+    const {
+      data:imageData,
+      error:imageError
+    } =
+      await supabase
+        .from("product_images")
+        .select(
+          "id,product_id,image_url,is_primary"
+        )
+        .order(
+          "is_primary",
+          {
+            ascending:false
+          }
+        );
+
+
+    if(imageError){
+
+      console.error(
+        "Product images error:",
+        imageError
       );
 
     }
 
 
-    /* =========================
-       GET IMAGE URL
-    ========================= */
-
-    function getImageURL(imageRow) {
-
-      if (!imageRow) {
-        return "";
-      }
+    const imageMap =
+      new Map();
 
 
-      const possibleURL =
+    (imageData || []).forEach(
+      image => {
 
-        imageRow.image_url ||
+        if(!imageMap.has(
+          image.product_id
+        )){
 
-        imageRow.url ||
-
-        imageRow.public_url ||
-
-        imageRow.image ||
-
-        "";
-
-
-      if (
-
-        typeof possibleURL === "string" &&
-
-        possibleURL.trim()
-
-      ) {
-
-        return possibleURL.trim();
-
-      }
-
-
-      return "";
-
-    }
-
-
-    /* =========================
-       PRODUCT IMAGE
-    ========================= */
-
-    function getProductImage(product) {
-
-      /*
-        1. product_images
-      */
-
-      if (
-
-        Array.isArray(
-          product.product_images
-        ) &&
-
-        product.product_images.length > 0
-
-      ) {
-
-        const firstImage =
-
-          product.product_images
-
-            .map(
-              getImageURL
-            )
-
-            .find(
-              Boolean
-            );
-
-
-        if (firstImage) {
-
-          return firstImage;
-
-        }
-
-      }
-
-
-      /*
-        2. products.image
-      */
-
-      if (
-
-        product.image &&
-
-        typeof product.image === "string" &&
-
-        product.image.trim()
-
-      ) {
-
-        return product.image.trim();
-
-      }
-
-
-      /*
-        3. products.images array
-      */
-
-      if (
-
-        Array.isArray(
-          product.images
-        ) &&
-
-        product.images.length > 0
-
-      ) {
-
-        const first =
-
-          product.images.find(
-            item =>
-
-              typeof item === "string" &&
-
-              item.trim()
+          imageMap.set(
+            image.product_id,
+            []
           );
 
-
-        if (first) {
-
-          return first;
-
         }
 
-      }
-
-
-      /*
-        4. products.images JSON string
-      */
-
-      if (
-
-        typeof product.images === "string" &&
-
-        product.images.trim()
-
-      ) {
-
-        try {
-
-          const parsed =
-
-            JSON.parse(
-              product.images
-            );
-
-
-          if (
-
-            Array.isArray(parsed) &&
-
-            parsed.length > 0
-
-          ) {
-
-            const first =
-
-              parsed.find(
-                item =>
-
-                  typeof item === "string" &&
-
-                  item.trim()
-              );
-
-
-            if (first) {
-
-              return first;
-
-            }
-
-          }
-
-        } catch {
-
-          return product.images.trim();
-
-        }
+        imageMap
+          .get(image.product_id)
+          .push(image);
 
       }
+    );
 
 
-      return "";
+    /* ======================================
+       ATTACH IMAGES TO PRODUCTS
+    ====================================== */
 
-    }
+    products =
+      products.map(product => ({
 
+        ...product,
 
-    /* =========================
-       PRODUCT PRICE
-    ========================= */
+        product_images:
+          imageMap.get(product.id) || []
 
-    function getProductPrice(product) {
-
-      const price =
-        Number(product.price);
-
-
-      if (
-        !Number.isFinite(price)
-      ) {
-
-        return formatMoneyFromSEK(0);
-
-      }
+      }));
 
 
-      return formatMoneyFromSEK(price);
+    /* ======================================
+       CATEGORIES
+    ====================================== */
 
-    }
-
-
-    /* =========================
-       RENDER PRODUCTS
-    ========================= */
-
-    function renderProducts(
-      products
-    ) {
-
-      if (!products.length) {
-
-        productsGrid.innerHTML = `
-
-          <div class="empty-products">
-
-            <strong>
-              No clothing products found.
-            </strong>
-
-            <br><br>
-
-            Try another search
-            or category.
-
-          </div>
-
-        `;
-
-        return;
-
-      }
+    createCategoryButtons();
 
 
-      productsGrid.innerHTML =
+    /* ======================================
+       DISPLAY
+    ====================================== */
 
+    renderProducts();
+
+
+  }catch(error){
+
+    console.error(
+      "PRODUCTS ERROR:",
+      error
+    );
+
+
+    message.style.display =
+      "block";
+
+    message.textContent =
+      "Could not load products: " +
+      error.message;
+
+
+  }finally{
+
+    loading.style.display =
+      "none";
+
+  }
+
+}
+
+
+/* ==========================================
+   CATEGORIES
+========================================== */
+
+function createCategoryButtons(){
+
+  categoryButtons.innerHTML = "";
+
+
+  const categories =
+    [
+      ...new Set(
         products
-
-          .map(product => {
-
-            const id =
-
-              encodeURIComponent(
-                product.id
-              );
-
-
-            const name =
-
-              getProductName(
-                product
-              );
-
-
-            const category =
-
-              getProductCategory(
-                product
-              );
-
-
-            const image =
-
-              getProductImage(
-                product
-              );
-
-
-            /* =========================
-               IMAGE HTML
-            ========================= */
-
-            const imageHTML = image
-
-              ? `
-
-                <img
-
-                  class="product-image"
-
-                  src="${escapeHTML(image)}"
-
-                  alt="${escapeHTML(name)} clothing"
-
-                  loading="lazy"
-
-                  onerror="
-                    this.style.display='none';
-                    this.nextElementSibling.style.display='flex';
-                  "
-
-                >
-
-
-                <div
-
-                  class="product-image"
-
-                  style="
-                    display:none;
-                    align-items:center;
-                    justify-content:center;
-                    color:#777;
-                  "
-
-                >
-
-                  No image
-
-                </div>
-
-              `
-
-              : `
-
-                <div
-
-                  class="product-image"
-
-                  style="
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    color:#777;
-                  "
-
-                >
-
-                  No image
-
-                </div>
-
-              `;
-
-
-            return `
-
-              <article
-
-                class="product-card"
-
-                itemscope
-
-                itemtype="https://schema.org/Product"
-
-              >
-
-                ${imageHTML}
-
-
-                <div class="product-content">
-
-
-                  <div class="product-category">
-
-                    ${escapeHTML(category)}
-
-                  </div>
-
-
-                  <div
-
-                    class="product-name"
-
-                    itemprop="name"
-
-                  >
-
-                    ${escapeHTML(name)}
-
-                  </div>
-
-
-                  <div
-
-                    class="product-price"
-
-                    itemprop="offers"
-
-                    itemscope
-
-                    itemtype="https://schema.org/Offer"
-
-                  >
-
-                    <span
-
-                      itemprop="price"
-
-                      content="${Number(product.price) || 0}"
-
-                    >
-
-                      ${getProductPrice(product)}
-
-                    </span>
-
-
-                    <meta
-
-                      itemprop="priceCurrency"
-
-                      content="SEK"
-
-                    >
-
-
-                    <link
-
-                      itemprop="availability"
-
-                      href="https://schema.org/InStock"
-
-                    >
-
-                  </div>
-
-
-                  <a
-
-                    class="view-product"
-
-                    href="product-details.html?id=${id}"
-
-                    aria-label="View ${escapeHTML(name)}"
-
-                  >
-
-                    View Product
-
-                  </a>
-
-
-                </div>
-
-              </article>
-
-            `;
-
-          })
-
-          .join("");
-
-    }
-
-
-    /* =========================
-       FILTER PRODUCTS
-    ========================= */
-
-    function filterProducts() {
-
-      const search =
-
-        searchInput.value
-
-          .trim()
-
-          .toLowerCase();
-
-
-      const filtered =
-
-        allProducts.filter(
-          product => {
-
-            const name =
-
-              getProductName(
-                product
-              )
-
-                .toLowerCase();
-
-
-            const category =
-
-              getProductCategory(
-                product
-              )
-
-                .toLowerCase();
-
-
-            const matchesSearch =
-
-              !search ||
-
-              name.includes(search) ||
-
-              category.includes(search);
-
-
-            const matchesCategory =
-
-              selectedCategory === "all" ||
-
-              category ===
-                selectedCategory.toLowerCase();
-
-
-            return (
-
-              matchesSearch &&
-
-              matchesCategory
-
-            );
-
-          }
+          .map(
+            product =>
+              product.category
+          )
+          .filter(Boolean)
+      )
+    ]
+    .sort();
+
+
+  categories.forEach(
+    category => {
+
+      const button =
+        document.createElement(
+          "button"
         );
 
+      button.type = "button";
 
-      renderProducts(
-        filtered
+      button.className =
+        "category-button";
+
+      button.textContent =
+        category;
+
+
+      button.addEventListener(
+        "click",
+        ()=>{
+
+          selectedCategory =
+            category;
+
+          document
+            .querySelectorAll(
+              ".category-button"
+            )
+            .forEach(
+              item =>
+                item.classList.remove(
+                  "active"
+                )
+            );
+
+          button.classList.add(
+            "active"
+          );
+
+          renderProducts();
+
+        }
+      );
+
+
+      categoryButtons.appendChild(
+        button
       );
 
     }
+  );
 
 
-    /* =========================
-       LOAD PRODUCTS
-    ========================= */
+  const allButton =
+    document.querySelector(
+      '[data-category="all"]'
+    );
 
-    async function loadProducts() {
 
-      productsGrid.innerHTML = `
+  allButton.addEventListener(
+    "click",
+    ()=>{
 
-        <div class="loading">
+      selectedCategory =
+        "all";
 
-          Loading products...
+      document
+        .querySelectorAll(
+          ".category-button"
+        )
+        .forEach(
+          item =>
+            item.classList.remove(
+              "active"
+            )
+        );
+
+      allButton.classList.add(
+        "active"
+      );
+
+      renderProducts();
+
+    }
+  );
+
+}
+
+
+/* ==========================================
+   GET PRODUCT IMAGE
+========================================== */
+
+function getProductImage(product){
+
+  const images =
+    product.product_images || [];
+
+
+  /* Primary image first */
+
+  const primary =
+    images.find(
+      image =>
+        image.is_primary === true &&
+        getImageURL(image)
+    );
+
+
+  if(primary){
+
+    return getImageURL(primary);
+
+  }
+
+
+  /* Any product_images image */
+
+  const firstImage =
+    images.find(
+      image =>
+        getImageURL(image)
+    );
+
+
+  if(firstImage){
+
+    return getImageURL(
+      firstImage
+    );
+
+  }
+
+
+  /* Fallback to products.image */
+
+  return (
+    product.image ||
+    product.image_url ||
+    product.public_url ||
+    ""
+  );
+
+}
+
+
+/* ==========================================
+   RENDER PRODUCTS
+========================================== */
+
+function renderProducts(){
+
+  productsGrid.innerHTML = "";
+
+
+  const searchText =
+    search.value
+      .trim()
+      .toLowerCase();
+
+
+  const filtered =
+    products.filter(
+      product => {
+
+        const matchesSearch =
+          !searchText ||
+          String(
+            product.name || ""
+          )
+          .toLowerCase()
+          .includes(searchText) ||
+
+          String(
+            product.category || ""
+          )
+          .toLowerCase()
+          .includes(searchText);
+
+
+        const matchesCategory =
+          selectedCategory === "all" ||
+          String(
+            product.category || ""
+          ).toLowerCase() ===
+          String(
+            selectedCategory
+          ).toLowerCase();
+
+
+        return (
+          matchesSearch &&
+          matchesCategory
+        );
+
+      }
+    );
+
+
+  if(!filtered.length){
+
+    productsGrid.innerHTML = `
+      <div class="empty">
+        No products found.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  filtered.forEach(
+    product => {
+
+      const image =
+        getProductImage(
+          product
+        );
+
+
+      const stock =
+        Number(
+          product.stock || 0
+        );
+
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+      card.className =
+        "product-card";
+
+
+      card.innerHTML = `
+
+        <div class="product-image">
+
+          ${
+            image
+
+            ?
+
+            `<img
+              src="${escapeHtml(image)}"
+              alt="${escapeHtml(product.name || "Product")}"
+              loading="lazy"
+            >`
+
+            :
+
+            `<span class="no-image">
+              No image
+            </span>`
+          }
+
+        </div>
+
+
+        <div class="product-info">
+
+          <div class="product-name">
+            ${escapeHtml(
+              product.name ||
+              "Unnamed Product"
+            )}
+          </div>
+
+
+          <div class="product-category">
+            ${escapeHtml(
+              product.category ||
+              "General"
+            )}
+          </div>
+
+
+          <div class="product-price">
+            ${formatPrice(
+              product.price
+            )}
+          </div>
+
+
+          <div class="product-stock">
+
+            ${
+              stock > 0
+
+              ?
+
+              `In stock: ${stock}`
+
+              :
+
+              `Out of stock`
+            }
+
+          </div>
+
+
+          <a
+            class="view-button"
+            href="product-details.html?id=${encodeURIComponent(product.id)}"
+          >
+            View Product
+          </a>
 
         </div>
 
       `;
 
 
-      try {
+      /* ====================================
+         IMAGE ERROR
+      ==================================== */
 
-        /*
-          STEP 1
-          LOAD PRODUCTS
-        */
-
-        const {
-
-          data: products,
-
-          error: productsError
-
-        } = await supabase
-
-          .from("products")
-
-          .select("*")
-
-          .order(
-
-            "created_at",
-
-            {
-              ascending: false
-            }
-
-          );
-
-
-        if (productsError) {
-
-          throw productsError;
-
-        }
-
-
-        /*
-          STEP 2
-          LOAD PRODUCT IMAGES
-        */
-
-        const {
-
-          data: imageRows,
-
-          error: imagesError
-
-        } = await supabase
-
-          .from("product_images")
-
-          .select("*")
-
-          .order(
-
-            "sort_order",
-
-            {
-              ascending: true
-            }
-
-          );
-
-
-        /*
-          If product_images fails,
-          continue using products.image
-        */
-
-        if (imagesError) {
-
-          console.warn(
-
-            "Product images could not be loaded:",
-
-            imagesError
-
-          );
-
-        }
-
-
-        const images =
-          imageRows || [];
-
-
-        /*
-          STEP 3
-          CONNECT IMAGES TO PRODUCTS
-        */
-
-        allProducts =
-
-          (products || []).map(
-            product => {
-
-              const productImages =
-
-                images.filter(
-
-                  image =>
-
-                    String(
-                      image.product_id
-                    ) ===
-
-                    String(
-                      product.id
-                    )
-
-                );
-
-
-              return {
-
-                ...product,
-
-                product_images:
-                  productImages
-
-              };
-
-            }
-          );
-
-
-        /*
-          DEBUG
-        */
-
-        console.log(
-          "Products loaded:",
-          allProducts
+      const imageElement =
+        card.querySelector(
+          ".product-image img"
         );
 
 
-        console.log(
-          "Product images loaded:",
-          images
-        );
+      if(imageElement){
 
+        imageElement.addEventListener(
+          "error",
+          ()=>{
 
-        /*
-          STEP 4
-          RENDER
-        */
-
-        renderProducts(
-          allProducts
-        );
-
-
-      } catch (error) {
-
-        console.error(
-
-          "Products error:",
-
-          error
-
-        );
-
-
-        productsGrid.innerHTML = `
-
-          <div class="empty-products">
-
-            <strong>
-
-              Could not load products.
-
-            </strong>
-
-            <br><br>
-
-            Please try again later.
-
-          </div>
-
-        `;
-
-      }
-
-    }
-
-
-    /* =========================
-       SEARCH
-    ========================= */
-
-    searchInput.addEventListener(
-
-      "input",
-
-      filterProducts
-
-    );
-
-
-    /* =========================
-       CATEGORIES
-    ========================= */
-
-    categoryButtons.forEach(
-
-      button => {
-
-        button.addEventListener(
-
-          "click",
-
-          () => {
-
-            categoryButtons.forEach(
-
-              item => {
-
-                item.classList.remove(
-                  "active"
-                );
-
-              }
-
-            );
-
-
-            button.classList.add(
-              "active"
-            );
-
-
-            selectedCategory =
-
-              button.dataset.category ||
-
-              "all";
-
-
-            filterProducts();
+            imageElement.parentElement.innerHTML = `
+              <span class="no-image">
+                Image could not be loaded
+              </span>
+            `;
 
           }
-
         );
 
       }
 
-    );
 
-
-    /* =========================
-       SHOW ALL
-    ========================= */
-
-    showAllButton.addEventListener(
-
-      "click",
-
-      () => {
-
-        searchInput.value = "";
-
-        selectedCategory = "all";
-
-
-        categoryButtons.forEach(
-
-          button => {
-
-            button.classList.remove(
-              "active"
-            );
-
-          }
-
-        );
-
-
-        const allButton =
-
-          document.querySelector(
-
-            '[data-category="all"]'
-
-          );
-
-
-        if (allButton) {
-
-          allButton.classList.add(
-            "active"
-          );
-
-        }
-
-
-        renderProducts(
-          allProducts
-        );
-
-      }
-
-    );
-
-
-    /* =========================
-       MOBILE MENU
-    ========================= */
-
-    menuButton.addEventListener(
-
-      "click",
-
-      () => {
-
-        const isOpen =
-
-          mobileMenu.classList.toggle(
-            "open"
-          );
-
-
-        menuButton.setAttribute(
-
-          "aria-expanded",
-
-          String(isOpen)
-
-        );
-
-
-        menuButton.setAttribute(
-
-          "aria-label",
-
-          isOpen
-
-            ? "Close menu"
-
-            : "Open menu"
-
-        );
-
-      }
-
-    );
-
-
-    /* =========================
-       CLOSE MOBILE MENU
-    ========================= */
-
-    mobileMenu
-
-      .querySelectorAll("a")
-
-      .forEach(
-
-        link => {
-
-          link.addEventListener(
-
-            "click",
-
-            () => {
-
-              mobileMenu.classList.remove(
-                "open"
-              );
-
-
-              menuButton.setAttribute(
-
-                "aria-expanded",
-
-                "false"
-
-              );
-
-            }
-
-          );
-
-        }
-
+      productsGrid.appendChild(
+        card
       );
 
+    }
+  );
 
-    /* =========================
-       START
-    ========================= */
+}
 
-    loadProducts();
 
-  </script>
+/* ==========================================
+   ESCAPE HTML
+========================================== */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* ==========================================
+   SEARCH
+========================================== */
+
+search.addEventListener(
+  "input",
+  renderProducts
+);
+
+
+/* ==========================================
+   START
+========================================== */
+
+loadProducts();
+
+</script>
 
 </body>
 </html>

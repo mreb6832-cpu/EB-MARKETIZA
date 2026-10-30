@@ -169,7 +169,8 @@
     }
 
     button,
-    input {
+    input,
+    select {
       font: inherit;
     }
 
@@ -213,6 +214,39 @@
 
     .logo span {
       color: #00d084;
+    }
+
+    /* Currency */
+
+    .currency-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      flex-shrink: 0;
+    }
+
+    .currency-area label {
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .currency-area select {
+      height: 42px;
+
+      padding: 0 12px;
+
+      background: #111;
+      color: #fff;
+
+      border: 1px solid #333;
+      border-radius: 8px;
+
+      outline: none;
+    }
+
+    .currency-area select:focus {
+      border-color: #00d084;
     }
 
     /* Search */
@@ -807,6 +841,10 @@
         display: none;
       }
 
+      .currency-area {
+        display: none;
+      }
+
       .menu-button {
         display: block;
 
@@ -956,7 +994,39 @@
   ========================= -->
 
   <header>
-  <div style="max-width:1250px;margin:8px auto;padding:0 20px;text-align:right;"><label for="marketCurrency">Currency: </label><select id="marketCurrency"><option value="EUR">EUR €</option><option value="USD">USD $</option><option value="SEK">SEK kr</option></select></div>
+
+    <!-- Currency -->
+    <div
+      style="
+        max-width:1250px;
+        margin:8px auto;
+        padding:0 20px;
+        text-align:right;
+      "
+    >
+
+      <label for="marketCurrency">
+        Currency:
+      </label>
+
+      <select id="marketCurrency">
+
+        <option value="EUR">
+          EUR €
+        </option>
+
+        <option value="USD">
+          USD $
+        </option>
+
+        <option value="SEK">
+          SEK kr
+        </option>
+
+      </select>
+
+    </div>
+
 
     <div class="header-main">
 
@@ -966,6 +1036,7 @@
       >
         E&B <span>MARKETIZA</span>
       </a>
+
 
       <div class="search-area">
 
@@ -978,6 +1049,7 @@
         >
 
       </div>
+
 
       <!-- Desktop Login/Register -->
 
@@ -999,6 +1071,7 @@
 
       </div>
 
+
       <!-- Mobile menu button -->
 
       <button
@@ -1012,6 +1085,7 @@
       </button>
 
     </div>
+
 
     <!-- Desktop Navigation -->
 
@@ -1069,6 +1143,7 @@
 
     </nav>
 
+
     <!-- Mobile Navigation -->
 
     <div
@@ -1103,6 +1178,7 @@
       <a href="account.html">
         Account
       </a>
+
 
       <div class="mobile-auth">
 
@@ -1140,17 +1216,27 @@
       <div class="hero-inner">
 
         <h1>
+
           SHOP.<br>
-          <span>FASHION.</span><br>
+
+          <span>
+            FASHION.
+          </span><br>
+
           EASY.
+
         </h1>
 
+
         <p>
+
           Discover clothing and fashion
           products at E&B MARKETIZA.
           Shop online across Europe and the USA with
           prices available in EUR, USD and SEK.
+
         </p>
+
 
         <div class="hero-buttons">
 
@@ -1160,6 +1246,7 @@
           >
             Shop Clothing
           </a>
+
 
           <a
             href="register.html"
@@ -1185,6 +1272,7 @@
         Clothing Categories
       </h2>
 
+
       <div class="categories">
 
         <button
@@ -1192,6 +1280,7 @@
           data-category="all"
           type="button"
         >
+
           <strong>
             All Clothing
           </strong>
@@ -1199,13 +1288,16 @@
           <small>
             View everything
           </small>
+
         </button>
+
 
         <button
           class="category-button"
           data-category="fashion"
           type="button"
         >
+
           <strong>
             Fashion
           </strong>
@@ -1213,13 +1305,16 @@
           <small>
             Clothing & style
           </small>
+
         </button>
+
 
         <button
           class="category-button"
           data-category="men"
           type="button"
         >
+
           <strong>
             Men
           </strong>
@@ -1227,13 +1322,16 @@
           <small>
             Men's clothing
           </small>
+
         </button>
+
 
         <button
           class="category-button"
           data-category="women"
           type="button"
         >
+
           <strong>
             Women
           </strong>
@@ -1241,6 +1339,7 @@
           <small>
             Women's clothing
           </small>
+
         </button>
 
       </div>
@@ -1263,6 +1362,7 @@
           Latest Clothing
         </h2>
 
+
         <button
           id="showAllButton"
           class="show-all-button"
@@ -1272,6 +1372,7 @@
         </button>
 
       </div>
+
 
       <div
         id="productsGrid"
@@ -1311,6 +1412,7 @@
 
           </div>
 
+
           <div class="feature-card">
 
             <h3>
@@ -1324,6 +1426,7 @@
             </p>
 
           </div>
+
 
           <div class="feature-card">
 
@@ -1360,6 +1463,7 @@
         © 2026 E&B MARKETIZA
       </div>
 
+
       <div class="footer-links">
 
         <a href="about.html">
@@ -1391,12 +1495,23 @@
   ========================= -->
 
   <script type="module">
-    import { initMarketSelector, formatMoneyFromSEK } from "./market-config.js";
-    initMarketSelector();
+
+    import {
+      initMarketSelector,
+      formatMoneyFromSEK
+    } from "./market-config.js";
+
 
     import {
       supabase
     } from "./supabaseClient.js";
+
+
+    /* =========================
+       MARKET SELECTOR
+    ========================= */
+
+    initMarketSelector();
 
 
     /* =========================
@@ -1408,25 +1523,30 @@
         "productsGrid"
       );
 
+
     const searchInput =
       document.getElementById(
         "searchInput"
       );
+
 
     const showAllButton =
       document.getElementById(
         "showAllButton"
       );
 
+
     const categoryButtons =
       document.querySelectorAll(
         ".category-button"
       );
 
+
     const menuButton =
       document.getElementById(
         "menuButton"
       );
+
 
     const mobileMenu =
       document.getElementById(
@@ -1450,22 +1570,27 @@
     function escapeHTML(value) {
 
       return String(value ?? "")
+
         .replace(
           /&/g,
           "&amp;"
         )
+
         .replace(
           /</g,
           "&lt;"
         )
+
         .replace(
           />/g,
           "&gt;"
         )
+
         .replace(
           /"/g,
           "&quot;"
         )
+
         .replace(
           /'/g,
           "&#039;"
@@ -1504,61 +1629,198 @@
 
 
     /* =========================
+       GET IMAGE URL
+    ========================= */
+
+    function getImageURL(imageRow) {
+
+      if (!imageRow) {
+        return "";
+      }
+
+
+      const possibleURL =
+
+        imageRow.image_url ||
+
+        imageRow.url ||
+
+        imageRow.public_url ||
+
+        imageRow.image ||
+
+        "";
+
+
+      if (
+
+        typeof possibleURL === "string" &&
+
+        possibleURL.trim()
+
+      ) {
+
+        return possibleURL.trim();
+
+      }
+
+
+      return "";
+
+    }
+
+
+    /* =========================
        PRODUCT IMAGE
     ========================= */
 
     function getProductImage(product) {
 
+      /*
+        1. product_images
+      */
+
       if (
-        product.image &&
-        typeof product.image === "string"
+
+        Array.isArray(
+          product.product_images
+        ) &&
+
+        product.product_images.length > 0
+
       ) {
 
-        return product.image;
+        const firstImage =
+
+          product.product_images
+
+            .map(
+              getImageURL
+            )
+
+            .find(
+              Boolean
+            );
+
+
+        if (firstImage) {
+
+          return firstImage;
+
+        }
 
       }
 
 
+      /*
+        2. products.image
+      */
+
       if (
+
+        product.image &&
+
+        typeof product.image === "string" &&
+
+        product.image.trim()
+
+      ) {
+
+        return product.image.trim();
+
+      }
+
+
+      /*
+        3. products.images array
+      */
+
+      if (
+
         Array.isArray(
           product.images
         ) &&
+
         product.images.length > 0
+
       ) {
 
-        return product.images[0];
+        const first =
+
+          product.images.find(
+            item =>
+
+              typeof item === "string" &&
+
+              item.trim()
+          );
+
+
+        if (first) {
+
+          return first;
+
+        }
 
       }
 
 
+      /*
+        4. products.images JSON string
+      */
+
       if (
+
         typeof product.images === "string" &&
+
         product.images.trim()
+
       ) {
 
         try {
 
           const parsed =
+
             JSON.parse(
               product.images
             );
 
+
           if (
+
             Array.isArray(parsed) &&
+
             parsed.length > 0
+
           ) {
 
-            return parsed[0];
+            const first =
+
+              parsed.find(
+                item =>
+
+                  typeof item === "string" &&
+
+                  item.trim()
+              );
+
+
+            if (first) {
+
+              return first;
+
+            }
 
           }
 
         } catch {
 
-          return product.images;
+          return product.images.trim();
 
         }
 
       }
+
 
       return "";
 
@@ -1574,6 +1836,7 @@
       const price =
         Number(product.price);
 
+
       if (
         !Number.isFinite(price)
       ) {
@@ -1581,6 +1844,7 @@
         return formatMoneyFromSEK(0);
 
       }
+
 
       return formatMoneyFromSEK(price);
 
@@ -1620,56 +1884,101 @@
 
 
       productsGrid.innerHTML =
+
         products
+
           .map(product => {
 
             const id =
+
               encodeURIComponent(
                 product.id
               );
 
+
             const name =
+
               getProductName(
                 product
               );
 
+
             const category =
+
               getProductCategory(
                 product
               );
 
+
             const image =
+
               getProductImage(
                 product
               );
 
+
+            /* =========================
+               IMAGE HTML
+            ========================= */
 
             const imageHTML = image
 
               ? `
 
                 <img
+
                   class="product-image"
+
                   src="${escapeHTML(image)}"
+
                   alt="${escapeHTML(name)} clothing"
+
                   loading="lazy"
-                  onerror="this.style.display='none'"
+
+                  onerror="
+                    this.style.display='none';
+                    this.nextElementSibling.style.display='flex';
+                  "
+
                 >
+
+
+                <div
+
+                  class="product-image"
+
+                  style="
+                    display:none;
+                    align-items:center;
+                    justify-content:center;
+                    color:#777;
+                  "
+
+                >
+
+                  No image
+
+                </div>
 
               `
 
               : `
 
                 <div
+
                   class="product-image"
+
                   style="
                     display:flex;
                     align-items:center;
                     justify-content:center;
                     color:#777;
                   "
+
                 >
+
                   No image
+
                 </div>
 
               `;
@@ -1678,59 +1987,100 @@
             return `
 
               <article
+
                 class="product-card"
+
                 itemscope
+
                 itemtype="https://schema.org/Product"
+
               >
 
                 ${imageHTML}
 
+
                 <div class="product-content">
 
+
                   <div class="product-category">
+
                     ${escapeHTML(category)}
+
                   </div>
 
+
                   <div
+
                     class="product-name"
+
                     itemprop="name"
+
                   >
+
                     ${escapeHTML(name)}
+
                   </div>
 
+
                   <div
+
                     class="product-price"
+
                     itemprop="offers"
+
                     itemscope
+
                     itemtype="https://schema.org/Offer"
+
                   >
 
                     <span
+
                       itemprop="price"
+
                       content="${Number(product.price) || 0}"
+
                     >
+
                       ${getProductPrice(product)}
+
                     </span>
 
+
                     <meta
+
                       itemprop="priceCurrency"
+
                       content="SEK"
+
                     >
 
+
                     <link
+
                       itemprop="availability"
+
                       href="https://schema.org/InStock"
+
                     >
 
                   </div>
 
+
                   <a
+
                     class="view-product"
+
                     href="product-details.html?id=${id}"
+
                     aria-label="View ${escapeHTML(name)}"
+
                   >
+
                     View Product
+
                   </a>
+
 
                 </div>
 
@@ -1739,6 +2089,7 @@
             `;
 
           })
+
           .join("");
 
     }
@@ -1751,43 +2102,60 @@
     function filterProducts() {
 
       const search =
+
         searchInput.value
+
           .trim()
+
           .toLowerCase();
 
 
       const filtered =
+
         allProducts.filter(
           product => {
 
             const name =
+
               getProductName(
                 product
               )
-              .toLowerCase();
+
+                .toLowerCase();
+
 
             const category =
+
               getProductCategory(
                 product
               )
-              .toLowerCase();
+
+                .toLowerCase();
 
 
             const matchesSearch =
+
               !search ||
+
               name.includes(search) ||
+
               category.includes(search);
 
 
             const matchesCategory =
+
               selectedCategory === "all" ||
+
               category ===
                 selectedCategory.toLowerCase();
 
 
             return (
+
               matchesSearch &&
+
               matchesCategory
+
             );
 
           }
@@ -1803,7 +2171,6 @@
 
     /* =========================
        LOAD PRODUCTS
-       SUPABASE
     ========================= */
 
     async function loadProducts() {
@@ -1811,7 +2178,9 @@
       productsGrid.innerHTML = `
 
         <div class="loading">
+
           Loading products...
+
         </div>
 
       `;
@@ -1819,30 +2188,151 @@
 
       try {
 
+        /*
+          STEP 1
+          LOAD PRODUCTS
+        */
+
         const {
-          data,
-          error
+
+          data: products,
+
+          error: productsError
+
         } = await supabase
+
           .from("products")
+
           .select("*")
+
           .order(
+
             "created_at",
+
             {
               ascending: false
             }
+
           );
 
 
-        if (error) {
+        if (productsError) {
 
-          throw error;
+          throw productsError;
 
         }
 
 
-        allProducts =
-          data || [];
+        /*
+          STEP 2
+          LOAD PRODUCT IMAGES
+        */
 
+        const {
+
+          data: imageRows,
+
+          error: imagesError
+
+        } = await supabase
+
+          .from("product_images")
+
+          .select("*")
+
+          .order(
+
+            "sort_order",
+
+            {
+              ascending: true
+            }
+
+          );
+
+
+        /*
+          If product_images fails,
+          continue using products.image
+        */
+
+        if (imagesError) {
+
+          console.warn(
+
+            "Product images could not be loaded:",
+
+            imagesError
+
+          );
+
+        }
+
+
+        const images =
+          imageRows || [];
+
+
+        /*
+          STEP 3
+          CONNECT IMAGES TO PRODUCTS
+        */
+
+        allProducts =
+
+          (products || []).map(
+            product => {
+
+              const productImages =
+
+                images.filter(
+
+                  image =>
+
+                    String(
+                      image.product_id
+                    ) ===
+
+                    String(
+                      product.id
+                    )
+
+                );
+
+
+              return {
+
+                ...product,
+
+                product_images:
+                  productImages
+
+              };
+
+            }
+          );
+
+
+        /*
+          DEBUG
+        */
+
+        console.log(
+          "Products loaded:",
+          allProducts
+        );
+
+
+        console.log(
+          "Product images loaded:",
+          images
+        );
+
+
+        /*
+          STEP 4
+          RENDER
+        */
 
         renderProducts(
           allProducts
@@ -1852,8 +2342,11 @@
       } catch (error) {
 
         console.error(
+
           "Products error:",
+
           error
+
         );
 
 
@@ -1862,7 +2355,9 @@
           <div class="empty-products">
 
             <strong>
+
               Could not load products.
+
             </strong>
 
             <br><br>
@@ -1883,8 +2378,11 @@
     ========================= */
 
     searchInput.addEventListener(
+
       "input",
+
       filterProducts
+
     );
 
 
@@ -1893,13 +2391,17 @@
     ========================= */
 
     categoryButtons.forEach(
+
       button => {
 
         button.addEventListener(
+
           "click",
+
           () => {
 
             categoryButtons.forEach(
+
               item => {
 
                 item.classList.remove(
@@ -1907,6 +2409,7 @@
                 );
 
               }
+
             );
 
 
@@ -1916,16 +2419,20 @@
 
 
             selectedCategory =
+
               button.dataset.category ||
+
               "all";
 
 
             filterProducts();
 
           }
+
         );
 
       }
+
     );
 
 
@@ -1934,7 +2441,9 @@
     ========================= */
 
     showAllButton.addEventListener(
+
       "click",
+
       () => {
 
         searchInput.value = "";
@@ -1943,6 +2452,7 @@
 
 
         categoryButtons.forEach(
+
           button => {
 
             button.classList.remove(
@@ -1950,12 +2460,16 @@
             );
 
           }
+
         );
 
 
         const allButton =
+
           document.querySelector(
+
             '[data-category="all"]'
+
           );
 
 
@@ -1973,6 +2487,7 @@
         );
 
       }
+
     );
 
 
@@ -1981,29 +2496,41 @@
     ========================= */
 
     menuButton.addEventListener(
+
       "click",
+
       () => {
 
         const isOpen =
+
           mobileMenu.classList.toggle(
             "open"
           );
 
 
         menuButton.setAttribute(
+
           "aria-expanded",
+
           String(isOpen)
+
         );
 
 
         menuButton.setAttribute(
+
           "aria-label",
+
           isOpen
+
             ? "Close menu"
+
             : "Open menu"
+
         );
 
       }
+
     );
 
 
@@ -2012,26 +2539,39 @@
     ========================= */
 
     mobileMenu
+
       .querySelectorAll("a")
-      .forEach(link => {
 
-        link.addEventListener(
-          "click",
-          () => {
+      .forEach(
 
-            mobileMenu.classList.remove(
-              "open"
-            );
+        link => {
 
-            menuButton.setAttribute(
-              "aria-expanded",
-              "false"
-            );
+          link.addEventListener(
 
-          }
-        );
+            "click",
 
-      });
+            () => {
+
+              mobileMenu.classList.remove(
+                "open"
+              );
+
+
+              menuButton.setAttribute(
+
+                "aria-expanded",
+
+                "false"
+
+              );
+
+            }
+
+          );
+
+        }
+
+      );
 
 
     /* =========================

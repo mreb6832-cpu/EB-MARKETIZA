@@ -34,6 +34,10 @@
       margin-left: 15px;
     }
 
+    nav a:hover {
+      color: #60a5fa;
+    }
+
     .logo {
       font-size: 22px;
       font-weight: bold;
@@ -50,6 +54,7 @@
       margin-bottom: 20px;
       color: #2563eb;
       text-decoration: none;
+      font-weight: bold;
     }
 
     .product {
@@ -62,12 +67,31 @@
       box-shadow: 0 5px 20px rgba(0,0,0,.08);
     }
 
-    .main-image {
+    .image-box {
+      width: 100%;
+    }
+
+    .main-image-box {
       width: 100%;
       height: 450px;
-      object-fit: contain;
-      border-radius: 12px;
       background: #f3f4f6;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .no-image {
+      color: #6b7280;
+      text-align: center;
+      padding: 20px;
     }
 
     .gallery {
@@ -80,26 +104,22 @@
     .thumb {
       width: 75px;
       height: 75px;
+      min-width: 75px;
       object-fit: cover;
       border-radius: 8px;
       cursor: pointer;
       border: 2px solid transparent;
+      background: #f3f4f6;
     }
 
-    .thumb:hover {
+    .thumb:hover,
+    .thumb.active {
       border-color: #2563eb;
     }
 
     h1 {
       font-size: 32px;
       margin-bottom: 15px;
-    }
-
-    .price {
-      font-size: 28px;
-      font-weight: bold;
-      color: #2563eb;
-      margin: 20px 0;
     }
 
     .category {
@@ -109,6 +129,13 @@
       padding: 7px 12px;
       border-radius: 20px;
       margin-bottom: 20px;
+    }
+
+    .price {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2563eb;
+      margin: 20px 0;
     }
 
     .description {
@@ -121,6 +148,14 @@
     .stock {
       margin-bottom: 20px;
       font-weight: bold;
+    }
+
+    .in-stock {
+      color: #16a34a;
+    }
+
+    .out-stock {
+      color: #dc2626;
     }
 
     .quantity {
@@ -138,6 +173,10 @@
       border-radius: 8px;
       font-size: 20px;
       cursor: pointer;
+    }
+
+    .quantity button:hover {
+      background: #d1d5db;
     }
 
     .quantity span {
@@ -161,6 +200,11 @@
       background: #1d4ed8;
     }
 
+    .add-cart:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
     .message {
       text-align: center;
       padding: 50px 20px;
@@ -170,12 +214,22 @@
       color: #dc2626;
     }
 
+    .error-box {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      word-break: break-word;
+    }
+
     @media (max-width: 700px) {
       .product {
         grid-template-columns: 1fr;
       }
 
-      .main-image {
+      .main-image-box {
         height: 330px;
       }
 
@@ -192,423 +246,811 @@
 </head>
 
 <body>
-<div style="max-width:1200px;margin:8px auto;padding:0 20px;text-align:right;"><label for="marketCurrency">Currency: </label><select id="marketCurrency"><option value="EUR">EUR €</option><option value="USD">USD $</option><option value="SEK">SEK kr</option></select></div>
 
-<nav>
-  <div class="logo">EB MARKETIZA</div>
+  <div style="max-width:1200px;margin:8px auto;padding:0 20px;text-align:right;">
+    <label for="marketCurrency">Currency: </label>
 
-  <div>
-    <a href="index.html">Home</a>
-    <a href="products.html">Products</a>
-    <a href="cart.html">Cart 🛒</a>
-  </div>
-</nav>
-
-<div class="container">
-
-  <a href="products.html" class="back">
-    ← Back to Products
-  </a>
-
-  <div id="message" class="message">
-    Loading product...
+    <select id="marketCurrency">
+      <option value="EUR">EUR €</option>
+      <option value="USD">USD $</option>
+      <option value="SEK">SEK kr</option>
+    </select>
   </div>
 
-  <div id="productContainer"></div>
+  <nav>
+    <div class="logo">EB MARKETIZA</div>
 
-</div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="cart.html">Cart 🛒</a>
+    </div>
+  </nav>
 
-<script type="module">
-    import { initMarketSelector, formatMoneyFromSEK } from "./market-config.js";
-    initMarketSelector();
+  <div class="container">
 
-import { supabase } from "./supabaseClient.js";
+    <a href="products.html" class="back">
+      ← Back to Products
+    </a>
 
-const params = new URLSearchParams(window.location.search);
-const productId = params.get("id");
+    <div id="message" class="message">
+      Loading product...
+    </div>
 
-const message = document.getElementById("message");
-const productContainer = document.getElementById("productContainer");
+    <div id="productContainer"></div>
 
-let product = null;
-let images = [];
-let quantity = 1;
+  </div>
 
+  <script type="module">
 
-/* =========================
-   LOAD PRODUCT
-========================= */
+    import {
+      initMarketSelector,
+      formatMoneyFromSEK
+    } from "./market-config.js";
 
-async function loadProduct() {
-
-  if (!productId) {
-    message.innerHTML = `
-      <div class="error">
-        Product not found.
-      </div>
-    `;
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("id", productId)
-    .single();
-
-  if (error) {
-    console.error(error);
-
-    message.innerHTML = `
-      <div class="error">
-        Could not load product.
-      </div>
-    `;
-
-    return;
-  }
-
-  product = data;
+    import { supabase } from "./supabaseClient.js";
 
 
-  /* Load product images */
-
-  const { data: imageData, error: imageError } =
-    await supabase
-      .from("product_images")
-      .select("*")
-      .eq("product_id", productId)
-      .order("sort_order", {
-        ascending: true
-      });
+    try {
+      initMarketSelector();
+    } catch (error) {
+      console.warn("Currency selector error:", error);
+    }
 
 
-  if (!imageError && imageData) {
-    images = imageData;
-  }
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    const productId = params.get("id");
+
+    const message =
+      document.getElementById("message");
+
+    const productContainer =
+      document.getElementById("productContainer");
 
 
-  renderProduct();
-}
+    let product = null;
+
+    let images = [];
+
+    let quantity = 1;
 
 
-/* =========================
-   DISPLAY PRODUCT
-========================= */
+    function escapeHtml(value) {
 
-function renderProduct() {
-
-  message.style.display = "none";
-
-  let mainImage = product.image || "";
-
-  if (images.length > 0) {
-    mainImage = images[0].image_url;
-  }
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
 
-  const gallery = images.length
-    ? images.map(img => `
-        <img
-          src="${escapeHtml(img.image_url)}"
-          class="thumb"
-          onclick="changeImage('${escapeHtml(img.image_url)}')"
-          alt="Product image"
-        >
-      `).join("")
-    : "";
+    function showError(text) {
 
+      message.style.display = "block";
 
-  productContainer.innerHTML = `
+      message.innerHTML = `
+        <div class="error">
 
-    <div class="product">
+          <h2>Could not load product</h2>
 
-      <div>
+          <div class="error-box">
+            ${escapeHtml(text)}
+          </div>
 
-        <img
-          id="mainImage"
-          src="${escapeHtml(mainImage)}"
-          class="main-image"
-          alt="${escapeHtml(product.name)}"
-        >
+          <br>
 
-        <div class="gallery">
-          ${gallery}
+          <a href="products.html">
+            ← Back to Products
+          </a>
+
         </div>
-
-      </div>
-
-
-      <div>
-
-        <span class="category">
-          ${escapeHtml(product.category || "General")}
-        </span>
-
-        <h1>
-          ${escapeHtml(product.name)}
-        </h1>
-
-        <div class="price">
-          ${formatMoneyFromSEK(product.price)}
-        </div>
-
-        <div class="description">
-          ${escapeHtml(
-            product.description ||
-            "No description available."
-          )}
-        </div>
-
-        <div class="stock">
-          ${
-            Number(product.stock) > 0
-              ? `In stock: ${product.stock}`
-              : "Out of stock"
-          }
-        </div>
+      `;
+    }
 
 
-        ${
-          Number(product.stock) > 0
-          ? `
+    async function loadProduct() {
 
-            <div class="quantity">
+      if (!productId) {
 
-              <button onclick="changeQuantity(-1)">
-                −
-              </button>
+        showError("Product ID is missing.");
 
-              <span id="quantity">
-                1
-              </span>
+        return;
+      }
 
-              <button onclick="changeQuantity(1)">
-                +
-              </button>
 
-            </div>
+      try {
 
-            <button
-              class="add-cart"
-              id="addCartButton"
-              onclick="addToCart()"
-            >
-              🛒 Add to Cart
-            </button>
+        const {
+          data,
+          error
+        } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", productId)
+          .maybeSingle();
 
-          `
-          : `
 
-            <button
-              class="add-cart"
-              disabled
-            >
-              Out of Stock
-            </button>
+        if (error) {
 
-          `
+          console.error(
+            "Product error:",
+            error
+          );
+
+          showError(
+            "Product error: " +
+            error.message
+          );
+
+          return;
         }
 
-      </div>
 
-    </div>
-  `;
-}
+        if (!data) {
 
+          showError(
+            "Product was not found."
+          );
 
-/* =========================
-   CHANGE MAIN IMAGE
-========================= */
-
-window.changeImage = function(url) {
-
-  const mainImage =
-    document.getElementById("mainImage");
-
-  if (mainImage) {
-    mainImage.src = url;
-  }
-};
+          return;
+        }
 
 
-/* =========================
-   CHANGE QUANTITY
-========================= */
-
-window.changeQuantity = function(change) {
-
-  if (!product) return;
-
-  const max = Number(product.stock);
-
-  quantity += change;
-
-  if (quantity < 1) {
-    quantity = 1;
-  }
-
-  if (quantity > max) {
-    quantity = max;
-  }
-
-  const quantityElement =
-    document.getElementById("quantity");
-
-  if (quantityElement) {
-    quantityElement.textContent = quantity;
-  }
-};
+        product = data;
 
 
-/* =========================
-   ADD TO SUPABASE CART
-========================= */
+        /*
+          Load product images.
+        */
 
-window.addToCart = async function() {
-
-  if (!product) return;
-
-
-  /* Check login */
-
-  const {
-    data: {
-      session
-    }
-  } = await supabase.auth.getSession();
+        const {
+          data: imageData,
+          error: imageError
+        } = await supabase
+          .from("product_images")
+          .select("*")
+          .eq("product_id", productId)
+          .order("sort_order", {
+            ascending: true
+          });
 
 
-  if (!session) {
+        if (imageError) {
 
-    alert("Please login before adding products to your cart.");
+          console.error(
+            "Product images error:",
+            imageError
+          );
 
-    window.location.href =
-      "login.html?redirect=" +
-      encodeURIComponent(
-        window.location.pathname +
-        window.location.search
-      );
+          images = [];
 
-    return;
-  }
+        } else {
 
+          images = imageData || [];
 
-  const userId = session.user.id;
+        }
 
 
-  /* Check existing cart item */
+        console.log(
+          "PRODUCT:",
+          product
+        );
 
-  const {
-    data: existing,
-    error: existingError
-  } = await supabase
-    .from("cart_items")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("product_id", product.id)
-    .maybeSingle();
+        console.log(
+          "IMAGES:",
+          images
+        );
 
 
-  if (existingError) {
-
-    console.error(existingError);
-
-    alert(
-      "Could not check your cart. Please try again."
-    );
-
-    return;
-  }
+        renderProduct();
 
 
-  let result;
+      } catch (error) {
 
+        console.error(error);
 
-  /* Existing item */
-
-  if (existing) {
-
-    let newQuantity =
-      Number(existing.quantity) + quantity;
-
-
-    if (newQuantity > Number(product.stock)) {
-      newQuantity = Number(product.stock);
+        showError(
+          error.message ||
+          "Unexpected error."
+        );
+      }
     }
 
 
-    result = await supabase
-      .from("cart_items")
-      .update({
-        quantity: newQuantity
-      })
-      .eq("id", existing.id)
-      .eq("user_id", userId);
+    function getImageUrl(image) {
 
-  }
+      if (!image) {
+        return "";
+      }
 
 
-  /* New item */
+      /*
+        Support the normal image_url column.
+      */
 
-  else {
+      if (image.image_url) {
+        return String(
+          image.image_url
+        ).trim();
+      }
 
-    result = await supabase
-      .from("cart_items")
-      .insert({
-        user_id: userId,
-        product_id: product.id,
-        quantity: quantity
+
+      if (image.url) {
+        return String(
+          image.url
+        ).trim();
+      }
+
+
+      if (image.public_url) {
+        return String(
+          image.public_url
+        ).trim();
+      }
+
+
+      return "";
+    }
+
+
+    function renderProduct() {
+
+      message.style.display = "none";
+
+
+      /*
+        Create image URLs.
+      */
+
+      let imageUrls = [];
+
+
+      images.forEach(image => {
+
+        const url =
+          getImageUrl(image);
+
+        if (url) {
+          imageUrls.push(url);
+        }
+
       });
 
-  }
+
+      /*
+        If product_images is empty,
+        use products.image.
+      */
+
+      if (
+        imageUrls.length === 0 &&
+        product.image
+      ) {
+
+        imageUrls.push(
+          String(product.image).trim()
+        );
+
+      }
 
 
-  if (result.error) {
+      /*
+        Remove duplicate images.
+      */
 
-    console.error(result.error);
-
-    alert(
-      "Could not add product to cart."
-    );
-
-    return;
-  }
+      imageUrls = [
+        ...new Set(imageUrls)
+      ];
 
 
-  alert("Product added to your cart 🛒");
-
-  quantity = 1;
-
-  const quantityElement =
-    document.getElementById("quantity");
-
-  if (quantityElement) {
-    quantityElement.textContent = "1";
-  }
-};
+      const mainImage =
+        imageUrls.length > 0
+          ? imageUrls[0]
+          : "";
 
 
-/* =========================
-   ESCAPE HTML
-========================= */
-
-function escapeHtml(value) {
-
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+      let galleryHTML = "";
 
 
-/* START */
+      if (imageUrls.length > 0) {
 
-loadProduct();
+        galleryHTML =
+          imageUrls.map((url, index) => {
 
-</script>
+            return `
+              <img
+                src="${escapeHtml(url)}"
+                class="thumb ${
+                  index === 0
+                    ? "active"
+                    : ""
+                }"
+                data-url="${escapeHtml(url)}"
+                alt="Product image"
+              >
+            `;
+
+          }).join("");
+
+      }
+
+
+      const mainImageHTML =
+        mainImage
+
+          ? `
+            <img
+              id="mainImage"
+              src="${escapeHtml(mainImage)}"
+              class="main-image"
+              alt="${escapeHtml(product.name)}"
+            >
+          `
+
+          : `
+            <div class="no-image">
+              No product image available.
+            </div>
+          `;
+
+
+      const stock =
+        Number(product.stock || 0);
+
+
+      productContainer.innerHTML = `
+
+        <div class="product">
+
+          <div class="image-box">
+
+            <div class="main-image-box">
+              ${mainImageHTML}
+            </div>
+
+            <div class="gallery">
+              ${galleryHTML}
+            </div>
+
+          </div>
+
+
+          <div>
+
+            <span class="category">
+              ${escapeHtml(
+                product.category ||
+                "General"
+              )}
+            </span>
+
+            <h1>
+              ${escapeHtml(
+                product.name ||
+                "Product"
+              )}
+            </h1>
+
+            <div class="price">
+              ${formatMoneyFromSEK(
+                Number(product.price || 0)
+              )}
+            </div>
+
+            <div class="description">
+              ${escapeHtml(
+                product.description ||
+                "No description available."
+              )}
+            </div>
+
+
+            ${
+              stock > 0
+
+                ? `
+                  <div class="stock in-stock">
+                    In stock: ${stock}
+                  </div>
+                `
+
+                : `
+                  <div class="stock out-stock">
+                    Out of stock
+                  </div>
+                `
+            }
+
+
+            ${
+              stock > 0
+
+                ? `
+
+                  <div class="quantity">
+
+                    <button
+                      type="button"
+                      id="minusButton"
+                    >
+                      −
+                    </button>
+
+                    <span id="quantity">
+                      1
+                    </span>
+
+                    <button
+                      type="button"
+                      id="plusButton"
+                    >
+                      +
+                    </button>
+
+                  </div>
+
+                  <button
+                    class="add-cart"
+                    id="addCartButton"
+                    type="button"
+                  >
+                    🛒 Add to Cart
+                  </button>
+
+                `
+
+                : `
+
+                  <button
+                    class="add-cart"
+                    disabled
+                  >
+                    Out of Stock
+                  </button>
+
+                `
+            }
+
+          </div>
+
+        </div>
+      `;
+
+
+      /*
+        Gallery events.
+      */
+
+      document
+        .querySelectorAll(".thumb")
+        .forEach(thumb => {
+
+          thumb.addEventListener(
+            "click",
+            () => {
+
+              const url =
+                thumb.dataset.url;
+
+              const main =
+                document.getElementById(
+                  "mainImage"
+                );
+
+              if (main) {
+                main.src = url;
+              }
+
+
+              document
+                .querySelectorAll(".thumb")
+                .forEach(item => {
+                  item.classList.remove(
+                    "active"
+                  );
+                });
+
+
+              thumb.classList.add(
+                "active"
+              );
+
+            }
+          );
+
+        });
+
+
+      /*
+        Quantity buttons.
+      */
+
+      const minus =
+        document.getElementById(
+          "minusButton"
+        );
+
+      const plus =
+        document.getElementById(
+          "plusButton"
+        );
+
+
+      if (minus) {
+
+        minus.addEventListener(
+          "click",
+          () => changeQuantity(-1)
+        );
+
+      }
+
+
+      if (plus) {
+
+        plus.addEventListener(
+          "click",
+          () => changeQuantity(1)
+        );
+
+      }
+
+
+      /*
+        Add to cart.
+      */
+
+      const addButton =
+        document.getElementById(
+          "addCartButton"
+        );
+
+
+      if (addButton) {
+
+        addButton.addEventListener(
+          "click",
+          addToCart
+        );
+
+      }
+    }
+
+
+    function changeQuantity(change) {
+
+      if (!product) {
+        return;
+      }
+
+
+      const max =
+        Number(product.stock || 0);
+
+
+      quantity += change;
+
+
+      if (quantity < 1) {
+        quantity = 1;
+      }
+
+
+      if (quantity > max) {
+        quantity = max;
+      }
+
+
+      const quantityElement =
+        document.getElementById(
+          "quantity"
+        );
+
+
+      if (quantityElement) {
+
+        quantityElement.textContent =
+          quantity;
+
+      }
+    }
+
+
+    async function addToCart() {
+
+      if (!product) {
+        return;
+      }
+
+
+      const button =
+        document.getElementById(
+          "addCartButton"
+        );
+
+
+      try {
+
+        button.disabled = true;
+
+        button.textContent =
+          "Adding...";
+
+
+        const {
+          data: {
+            session
+          }
+        } =
+          await supabase.auth.getSession();
+
+
+        if (!session) {
+
+          alert(
+            "Please login before adding products to your cart."
+          );
+
+
+          window.location.href =
+            "login.html?redirect=" +
+            encodeURIComponent(
+              window.location.pathname +
+              window.location.search
+            );
+
+
+          return;
+        }
+
+
+        const userId =
+          session.user.id;
+
+
+        const {
+          data: existing,
+          error: existingError
+        } =
+          await supabase
+            .from("cart_items")
+            .select("*")
+            .eq("user_id", userId)
+            .eq("product_id", product.id)
+            .maybeSingle();
+
+
+        if (existingError) {
+
+          console.error(
+            existingError
+          );
+
+          alert(
+            "Could not check your cart."
+          );
+
+          return;
+        }
+
+
+        let result;
+
+
+        if (existing) {
+
+          let newQuantity =
+            Number(existing.quantity || 0) +
+            quantity;
+
+
+          if (
+            newQuantity >
+            Number(product.stock)
+          ) {
+
+            newQuantity =
+              Number(product.stock);
+
+          }
+
+
+          result =
+            await supabase
+              .from("cart_items")
+              .update({
+                quantity: newQuantity
+              })
+              .eq("id", existing.id)
+              .eq("user_id", userId);
+
+        } else {
+
+          result =
+            await supabase
+              .from("cart_items")
+              .insert({
+                user_id: userId,
+                product_id: product.id,
+                quantity: quantity
+              });
+
+        }
+
+
+        if (result.error) {
+
+          console.error(
+            result.error
+          );
+
+          alert(
+            "Could not add product to cart: " +
+            result.error.message
+          );
+
+          return;
+        }
+
+
+        alert(
+          "Product added to your cart 🛒"
+        );
+
+
+        quantity = 1;
+
+
+        const quantityElement =
+          document.getElementById(
+            "quantity"
+          );
+
+
+        if (quantityElement) {
+
+          quantityElement.textContent =
+            "1";
+
+        }
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Something went wrong: " +
+          error.message
+        );
+
+
+      } finally {
+
+        if (button) {
+
+          button.disabled = false;
+
+          button.textContent =
+            "🛒 Add to Cart";
+
+        }
+      }
+    }
+
+
+    /*
+      START
+    */
+
+    loadProduct();
+
+  </script>
 
 </body>
 </html>

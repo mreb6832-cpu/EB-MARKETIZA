@@ -1,245 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Product Details | EB MARKETIZA</title>
+
+  <meta
+    name="description"
+    content="View product details, photos, price and add products to your cart at EB MARKETIZA."
+  />
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      color: #111827;
+      background: #f7f7f7;
+      color: #222;
     }
 
-    nav {
-      background: #111827;
+    header {
+      background: #111;
       color: white;
       padding: 16px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    nav {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     nav a {
       color: white;
       text-decoration: none;
-      margin-left: 15px;
     }
 
-    nav a:hover {
-      color: #60a5fa;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .container {
+    main {
       max-width: 1100px;
-      margin: 40px auto;
-      padding: 20px;
+      margin: 30px auto;
+      padding: 0 18px;
     }
 
     .back {
       display: inline-block;
       margin-bottom: 20px;
-      color: #2563eb;
+      color: #111;
       text-decoration: none;
       font-weight: bold;
     }
 
-    .product {
+    .product-box {
       background: white;
-      border-radius: 16px;
+      border-radius: 14px;
       padding: 25px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 35px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.08);
+      box-shadow: 0 4px 20px rgba(0,0,0,.08);
     }
 
-    .image-box {
+    .gallery {
       width: 100%;
     }
 
     .main-image-box {
       width: 100%;
       height: 450px;
-      background: #f3f4f6;
+      background: #f3f3f3;
       border-radius: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .main-image {
+    .main-image-box img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
 
+    .thumbnails {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      overflow-x: auto;
+    }
+
+    .thumbnail {
+      width: 75px;
+      height: 75px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #eee;
+      flex-shrink: 0;
+    }
+
+    .thumbnail.active {
+      border-color: #111;
+    }
+
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .no-image {
-      color: #6b7280;
+      color: #777;
+      font-size: 18px;
       text-align: center;
       padding: 20px;
     }
 
-    .gallery {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-      overflow-x: auto;
-    }
-
-    .thumb {
-      width: 75px;
-      height: 75px;
-      min-width: 75px;
-      object-fit: cover;
-      border-radius: 8px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      background: #f3f4f6;
-    }
-
-    .thumb:hover,
-    .thumb.active {
-      border-color: #2563eb;
-    }
-
-    h1 {
+    .details h2 {
+      margin-top: 0;
       font-size: 32px;
-      margin-bottom: 15px;
-    }
-
-    .category {
-      display: inline-block;
-      background: #e5edff;
-      color: #2563eb;
-      padding: 7px 12px;
-      border-radius: 20px;
-      margin-bottom: 20px;
     }
 
     .price {
       font-size: 28px;
       font-weight: bold;
-      color: #2563eb;
       margin: 20px 0;
     }
 
     .description {
       line-height: 1.7;
-      color: #4b5563;
-      margin-bottom: 20px;
+      color: #555;
       white-space: pre-wrap;
     }
 
     .stock {
-      margin-bottom: 20px;
+      margin: 15px 0;
       font-weight: bold;
     }
 
-    .in-stock {
-      color: #16a34a;
-    }
-
-    .out-stock {
-      color: #dc2626;
-    }
-
-    .quantity {
+    .quantity-box {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 20px;
+      margin: 20px 0;
     }
 
-    .quantity button {
+    .quantity-box button {
       width: 38px;
       height: 38px;
       border: none;
-      background: #e5e7eb;
-      border-radius: 8px;
-      font-size: 20px;
+      background: #111;
+      color: white;
+      border-radius: 6px;
       cursor: pointer;
+      font-size: 20px;
     }
 
-    .quantity button:hover {
-      background: #d1d5db;
-    }
-
-    .quantity span {
+    #quantity {
       font-size: 18px;
-      font-weight: bold;
+      min-width: 30px;
+      text-align: center;
     }
 
-    .add-cart {
+    #addToCart {
       width: 100%;
       padding: 15px;
       border: none;
-      border-radius: 10px;
-      background: #2563eb;
+      border-radius: 8px;
+      background: #111;
       color: white;
       font-size: 17px;
-      font-weight: bold;
       cursor: pointer;
     }
 
-    .add-cart:hover {
-      background: #1d4ed8;
+    #addToCart:hover {
+      opacity: .9;
     }
 
-    .add-cart:disabled {
-      background: #9ca3af;
+    #addToCart:disabled {
+      background: #999;
       cursor: not-allowed;
     }
 
     .message {
-      text-align: center;
-      padding: 50px 20px;
+      background: #fff3cd;
+      color: #664d03;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
     }
 
     .error {
-      color: #dc2626;
+      background: #f8d7da;
+      color: #842029;
     }
 
-    .error-box {
-      background: #fee2e2;
-      border: 1px solid #fecaca;
-      color: #991b1b;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 15px;
-      word-break: break-word;
-    }
-
-    @media (max-width: 700px) {
-      .product {
+    @media (max-width: 800px) {
+      .product-box {
         grid-template-columns: 1fr;
       }
 
       .main-image-box {
-        height: 330px;
+        height: 350px;
       }
 
-      h1 {
-        font-size: 26px;
-      }
-
-      nav {
-        flex-direction: column;
-        gap: 12px;
+      .details h2 {
+        font-size: 25px;
       }
     }
   </style>
@@ -247,682 +229,611 @@
 
 <body>
 
-  <div style="max-width:1200px;margin:8px auto;padding:0 20px;text-align:right;">
-    <label for="marketCurrency">Currency: </label>
-
-    <select id="marketCurrency">
-      <option value="EUR">EUR €</option>
-      <option value="USD">USD $</option>
-      <option value="SEK">SEK kr</option>
-    </select>
-  </div>
+<header>
+  <h1>EB MARKETIZA</h1>
 
   <nav>
-    <div class="logo">EB MARKETIZA</div>
-
-    <div>
-      <a href="index.html">Home</a>
-      <a href="products.html">Products</a>
-      <a href="cart.html">Cart 🛒</a>
-    </div>
+    <a href="./index.html">Home</a>
+    <a href="./products.html">Products</a>
+    <a href="./cart.html">Cart 🛒</a>
   </nav>
+</header>
 
-  <div class="container">
+<main>
 
-    <a href="products.html" class="back">
-      ← Back to Products
-    </a>
+  <a class="back" href="./products.html">← Back to Products</a>
 
-    <div id="message" class="message">
-      Loading product...
+  <div id="message" class="message"></div>
+
+  <div id="loading">
+    Loading product...
+  </div>
+
+  <div id="productContainer" style="display:none;">
+
+    <div class="product-box">
+
+      <div class="gallery">
+
+        <div class="main-image-box" id="mainImageBox">
+          <div class="no-image">No image</div>
+        </div>
+
+        <div class="thumbnails" id="thumbnails"></div>
+
+      </div>
+
+      <div class="details">
+
+        <h2 id="productName"></h2>
+
+        <div class="price" id="productPrice"></div>
+
+        <div class="stock" id="productStock"></div>
+
+        <div class="description" id="productDescription"></div>
+
+        <div class="quantity-box">
+
+          <button id="minusBtn" type="button">−</button>
+
+          <span id="quantity">1</span>
+
+          <button id="plusBtn" type="button">+</button>
+
+        </div>
+
+        <button id="addToCart" type="button">
+          Add to Cart
+        </button>
+
+      </div>
+
     </div>
-
-    <div id="productContainer"></div>
 
   </div>
 
-  <script type="module">
+</main>
 
-    import {
-      initMarketSelector,
-      formatMoneyFromSEK
-    } from "./market-config.js";
+<script type="module">
 
-    import { supabase } from "./supabaseClient.js";
+  import { supabase } from "./supabaseClient.js";
 
-
-    try {
-      initMarketSelector();
-    } catch (error) {
-      console.warn("Currency selector error:", error);
-    }
+  import {
+    initMarketSelector,
+    formatMoneyFromSEK
+  } from "./market-config.js";
 
 
-    const params = new URLSearchParams(
-      window.location.search
+  /* =========================
+     MARKET / CURRENCY
+  ========================= */
+
+  try {
+    initMarketSelector();
+  } catch (error) {
+    console.warn("Market selector could not start:", error);
+  }
+
+
+  /* =========================
+     GET PRODUCT ID
+  ========================= */
+
+  const params = new URLSearchParams(window.location.search);
+
+  const productId = params.get("id");
+
+
+  /* =========================
+     ELEMENTS
+  ========================= */
+
+  const loading = document.getElementById("loading");
+  const productContainer = document.getElementById("productContainer");
+  const message = document.getElementById("message");
+
+  const productName = document.getElementById("productName");
+  const productPrice = document.getElementById("productPrice");
+  const productStock = document.getElementById("productStock");
+  const productDescription = document.getElementById("productDescription");
+
+  const mainImageBox = document.getElementById("mainImageBox");
+  const thumbnails = document.getElementById("thumbnails");
+
+  const quantityElement = document.getElementById("quantity");
+
+  const minusBtn = document.getElementById("minusBtn");
+  const plusBtn = document.getElementById("plusBtn");
+
+  const addToCart = document.getElementById("addToCart");
+
+
+  let product = null;
+  let productImages = [];
+  let quantity = 1;
+
+
+  /* =========================
+     MESSAGE
+  ========================= */
+
+  function showMessage(text, isError = false) {
+
+    message.textContent = text;
+
+    message.className = isError
+      ? "message error"
+      : "message";
+
+    message.style.display = "block";
+  }
+
+
+  /* =========================
+     IMAGE URL
+  ========================= */
+
+  function getImageURL(row) {
+
+    if (!row) return "";
+
+    return (
+      row.image_url ||
+      row.public_url ||
+      row.url ||
+      row.image ||
+      ""
     );
-
-    const productId = params.get("id");
-
-    const message =
-      document.getElementById("message");
-
-    const productContainer =
-      document.getElementById("productContainer");
+  }
 
 
-    let product = null;
+  /* =========================
+     SHOW MAIN IMAGE
+  ========================= */
 
-    let images = [];
+  function showMainImage(url) {
 
-    let quantity = 1;
+    mainImageBox.innerHTML = "";
 
+    if (!url) {
 
-    function escapeHtml(value) {
-
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-
-    function showError(text) {
-
-      message.style.display = "block";
-
-      message.innerHTML = `
-        <div class="error">
-
-          <h2>Could not load product</h2>
-
-          <div class="error-box">
-            ${escapeHtml(text)}
-          </div>
-
-          <br>
-
-          <a href="products.html">
-            ← Back to Products
-          </a>
-
+      mainImageBox.innerHTML = `
+        <div class="no-image">
+          No image available
         </div>
       `;
+
+      return;
     }
 
+    const img = document.createElement("img");
 
-    async function loadProduct() {
+    img.src = url;
+    img.alt = product?.name || "Product";
 
-      if (!productId) {
+    img.onerror = () => {
 
-        showError("Product ID is missing.");
+      mainImageBox.innerHTML = `
+        <div class="no-image">
+          Image could not be loaded
+        </div>
+      `;
 
-        return;
+    };
+
+    mainImageBox.appendChild(img);
+  }
+
+
+  /* =========================
+     SHOW THUMBNAILS
+  ========================= */
+
+  function renderThumbnails() {
+
+    thumbnails.innerHTML = "";
+
+    if (!productImages.length) return;
+
+    productImages.forEach((image, index) => {
+
+      const url = getImageURL(image);
+
+      if (!url) return;
+
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.className = "thumbnail";
+
+      if (index === 0) {
+        button.classList.add("active");
       }
 
+      const img = document.createElement("img");
 
-      try {
+      img.src = url;
+      img.alt = "Product image";
 
-        const {
-          data,
-          error
-        } = await supabase
-          .from("products")
-          .select("*")
-          .eq("id", productId)
-          .maybeSingle();
+      img.onerror = () => {
+        button.style.display = "none";
+      };
 
+      button.appendChild(img);
 
-        if (error) {
+      button.addEventListener("click", () => {
 
-          console.error(
-            "Product error:",
-            error
-          );
+        document
+          .querySelectorAll(".thumbnail")
+          .forEach(item => item.classList.remove("active"));
 
-          showError(
-            "Product error: " +
-            error.message
-          );
+        button.classList.add("active");
 
-          return;
-        }
-
-
-        if (!data) {
-
-          showError(
-            "Product was not found."
-          );
-
-          return;
-        }
-
-
-        product = data;
-
-
-        /*
-          Load product images.
-        */
-
-        const {
-          data: imageData,
-          error: imageError
-        } = await supabase
-          .from("product_images")
-          .select("*")
-          .eq("product_id", productId)
-          .order("sort_order", {
-            ascending: true
-          });
-
-
-        if (imageError) {
-
-          console.error(
-            "Product images error:",
-            imageError
-          );
-
-          images = [];
-
-        } else {
-
-          images = imageData || [];
-
-        }
-
-
-        console.log(
-          "PRODUCT:",
-          product
-        );
-
-        console.log(
-          "IMAGES:",
-          images
-        );
-
-
-        renderProduct();
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        showError(
-          error.message ||
-          "Unexpected error."
-        );
-      }
-    }
-
-
-    function getImageUrl(image) {
-
-      if (!image) {
-        return "";
-      }
-
-
-      /*
-        Support the normal image_url column.
-      */
-
-      if (image.image_url) {
-        return String(
-          image.image_url
-        ).trim();
-      }
-
-
-      if (image.url) {
-        return String(
-          image.url
-        ).trim();
-      }
-
-
-      if (image.public_url) {
-        return String(
-          image.public_url
-        ).trim();
-      }
-
-
-      return "";
-    }
-
-
-    function renderProduct() {
-
-      message.style.display = "none";
-
-
-      /*
-        Create image URLs.
-      */
-
-      let imageUrls = [];
-
-
-      images.forEach(image => {
-
-        const url =
-          getImageUrl(image);
-
-        if (url) {
-          imageUrls.push(url);
-        }
+        showMainImage(url);
 
       });
 
+      thumbnails.appendChild(button);
 
-      /*
-        If product_images is empty,
-        use products.image.
-      */
+    });
 
-      if (
-        imageUrls.length === 0 &&
-        product.image
-      ) {
+  }
 
-        imageUrls.push(
-          String(product.image).trim()
+
+  /* =========================
+     PRODUCT IMAGE FALLBACK
+  ========================= */
+
+  function getFallbackProductImage() {
+
+    if (!product) return "";
+
+    return (
+      product.image ||
+      product.image_url ||
+      product.public_url ||
+      ""
+    );
+
+  }
+
+
+  /* =========================
+     LOAD PRODUCT
+  ========================= */
+
+  async function loadProduct() {
+
+    try {
+
+      console.log("Product ID:", productId);
+
+      if (!productId) {
+
+        throw new Error(
+          "No product ID was found in the URL."
         );
 
       }
 
 
-      /*
-        Remove duplicate images.
-      */
+      /* =========================
+         GET PRODUCT
+      ========================= */
 
-      imageUrls = [
-        ...new Set(imageUrls)
-      ];
-
-
-      const mainImage =
-        imageUrls.length > 0
-          ? imageUrls[0]
-          : "";
-
-
-      let galleryHTML = "";
+      const {
+        data,
+        error
+      } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .maybeSingle();
 
 
-      if (imageUrls.length > 0) {
+      console.log("Product result:", data);
+      console.log("Product error:", error);
 
-        galleryHTML =
-          imageUrls.map((url, index) => {
 
-            return `
-              <img
-                src="${escapeHtml(url)}"
-                class="thumb ${
-                  index === 0
-                    ? "active"
-                    : ""
-                }"
-                data-url="${escapeHtml(url)}"
-                alt="Product image"
-              >
-            `;
+      if (error) {
+        throw error;
+      }
 
-          }).join("");
+
+      if (!data) {
+
+        throw new Error(
+          "Product not found."
+        );
 
       }
 
 
-      const mainImageHTML =
-        mainImage
-
-          ? `
-            <img
-              id="mainImage"
-              src="${escapeHtml(mainImage)}"
-              class="main-image"
-              alt="${escapeHtml(product.name)}"
-            >
-          `
-
-          : `
-            <div class="no-image">
-              No product image available.
-            </div>
-          `;
+      product = data;
 
 
-      const stock =
-        Number(product.stock || 0);
+      /* =========================
+         GET PRODUCT IMAGES
+      ========================= */
 
-
-      productContainer.innerHTML = `
-
-        <div class="product">
-
-          <div class="image-box">
-
-            <div class="main-image-box">
-              ${mainImageHTML}
-            </div>
-
-            <div class="gallery">
-              ${galleryHTML}
-            </div>
-
-          </div>
-
-
-          <div>
-
-            <span class="category">
-              ${escapeHtml(
-                product.category ||
-                "General"
-              )}
-            </span>
-
-            <h1>
-              ${escapeHtml(
-                product.name ||
-                "Product"
-              )}
-            </h1>
-
-            <div class="price">
-              ${formatMoneyFromSEK(
-                Number(product.price || 0)
-              )}
-            </div>
-
-            <div class="description">
-              ${escapeHtml(
-                product.description ||
-                "No description available."
-              )}
-            </div>
-
-
-            ${
-              stock > 0
-
-                ? `
-                  <div class="stock in-stock">
-                    In stock: ${stock}
-                  </div>
-                `
-
-                : `
-                  <div class="stock out-stock">
-                    Out of stock
-                  </div>
-                `
-            }
-
-
-            ${
-              stock > 0
-
-                ? `
-
-                  <div class="quantity">
-
-                    <button
-                      type="button"
-                      id="minusButton"
-                    >
-                      −
-                    </button>
-
-                    <span id="quantity">
-                      1
-                    </span>
-
-                    <button
-                      type="button"
-                      id="plusButton"
-                    >
-                      +
-                    </button>
-
-                  </div>
-
-                  <button
-                    class="add-cart"
-                    id="addCartButton"
-                    type="button"
-                  >
-                    🛒 Add to Cart
-                  </button>
-
-                `
-
-                : `
-
-                  <button
-                    class="add-cart"
-                    disabled
-                  >
-                    Out of Stock
-                  </button>
-
-                `
-            }
-
-          </div>
-
-        </div>
-      `;
-
-
-      /*
-        Gallery events.
-      */
-
-      document
-        .querySelectorAll(".thumb")
-        .forEach(thumb => {
-
-          thumb.addEventListener(
-            "click",
-            () => {
-
-              const url =
-                thumb.dataset.url;
-
-              const main =
-                document.getElementById(
-                  "mainImage"
-                );
-
-              if (main) {
-                main.src = url;
-              }
-
-
-              document
-                .querySelectorAll(".thumb")
-                .forEach(item => {
-                  item.classList.remove(
-                    "active"
-                  );
-                });
-
-
-              thumb.classList.add(
-                "active"
-              );
-
-            }
-          );
-
+      const {
+        data: imageRows,
+        error: imageError
+      } = await supabase
+        .from("product_images")
+        .select("*")
+        .eq("product_id", productId)
+        .order("sort_order", {
+          ascending: true
         });
 
 
-      /*
-        Quantity buttons.
-      */
+      console.log(
+        "Product images:",
+        imageRows
+      );
 
-      const minus =
-        document.getElementById(
-          "minusButton"
+      console.log(
+        "Product images error:",
+        imageError
+      );
+
+
+      if (imageError) {
+
+        console.warn(
+          "Could not load product_images:",
+          imageError
         );
 
-      const plus =
-        document.getElementById(
-          "plusButton"
-        );
+        productImages = [];
 
+      } else {
 
-      if (minus) {
-
-        minus.addEventListener(
-          "click",
-          () => changeQuantity(-1)
-        );
+        productImages = Array.isArray(imageRows)
+          ? imageRows.filter(row => getImageURL(row))
+          : [];
 
       }
 
 
-      if (plus) {
+      /* =========================
+         FALLBACK IMAGE
+      ========================= */
 
-        plus.addEventListener(
-          "click",
-          () => changeQuantity(1)
-        );
+      if (!productImages.length) {
 
-      }
+        const fallback = getFallbackProductImage();
 
+        if (fallback) {
 
-      /*
-        Add to cart.
-      */
+          productImages = [
+            {
+              image_url: fallback
+            }
+          ];
 
-      const addButton =
-        document.getElementById(
-          "addCartButton"
-        );
-
-
-      if (addButton) {
-
-        addButton.addEventListener(
-          "click",
-          addToCart
-        );
+        }
 
       }
-    }
 
 
-    function changeQuantity(change) {
+      /* =========================
+         PRODUCT INFORMATION
+      ========================= */
 
-      if (!product) {
-        return;
-      }
-
-
-      const max =
-        Number(product.stock || 0);
-
-
-      quantity += change;
+      productName.textContent =
+        product.name ||
+        product.product_name ||
+        "Unnamed Product";
 
 
-      if (quantity < 1) {
-        quantity = 1;
-      }
-
-
-      if (quantity > max) {
-        quantity = max;
-      }
-
-
-      const quantityElement =
-        document.getElementById(
-          "quantity"
-        );
-
-
-      if (quantityElement) {
-
-        quantityElement.textContent =
-          quantity;
-
-      }
-    }
-
-
-    async function addToCart() {
-
-      if (!product) {
-        return;
-      }
-
-
-      const button =
-        document.getElementById(
-          "addCartButton"
-        );
+      const priceSEK = Number(
+        product.price_sek ??
+        product.price ??
+        0
+      );
 
 
       try {
 
-        button.disabled = true;
+        productPrice.textContent =
+          await formatMoneyFromSEK(priceSEK);
 
-        button.textContent =
-          "Adding...";
+      } catch {
 
+        productPrice.textContent =
+          `${priceSEK} SEK`;
+
+      }
+
+
+      const stock = Number(
+        product.stock ?? 0
+      );
+
+
+      productStock.textContent =
+        stock > 0
+          ? `In stock: ${stock}`
+          : "Out of stock";
+
+
+      productDescription.textContent =
+        product.description ||
+        "No description available.";
+
+
+      /* =========================
+         QUANTITY
+      ========================= */
+
+      quantity = 1;
+
+      quantityElement.textContent =
+        quantity;
+
+
+      if (stock <= 0) {
+
+        addToCart.disabled = true;
+        addToCart.textContent =
+          "Out of Stock";
+
+        minusBtn.disabled = true;
+        plusBtn.disabled = true;
+
+      }
+
+
+      /* =========================
+         IMAGES
+      ========================= */
+
+      if (productImages.length) {
+
+        showMainImage(
+          getImageURL(productImages[0])
+        );
+
+        renderThumbnails();
+
+      } else {
+
+        showMainImage("");
+
+      }
+
+
+      /* =========================
+         DISPLAY
+      ========================= */
+
+      loading.style.display = "none";
+
+      productContainer.style.display =
+        "block";
+
+
+    } catch (error) {
+
+      console.error(
+        "PRODUCT LOAD ERROR:",
+        error
+      );
+
+      loading.style.display = "none";
+
+      showMessage(
+        "Unable to load this product. Check the browser console for details.",
+        true
+      );
+
+    }
+
+  }
+
+
+  /* =========================
+     QUANTITY MINUS
+  ========================= */
+
+  minusBtn.addEventListener("click", () => {
+
+    if (quantity > 1) {
+
+      quantity--;
+
+      quantityElement.textContent =
+        quantity;
+
+    }
+
+  });
+
+
+  /* =========================
+     QUANTITY PLUS
+  ========================= */
+
+  plusBtn.addEventListener("click", () => {
+
+    const stock = Number(
+      product?.stock ?? 0
+    );
+
+    if (quantity < stock) {
+
+      quantity++;
+
+      quantityElement.textContent =
+        quantity;
+
+    }
+
+  });
+
+
+  /* =========================
+     ADD TO CART
+  ========================= */
+
+  addToCart.addEventListener(
+    "click",
+    async () => {
+
+      if (!product) return;
+
+      try {
 
         const {
           data: {
-            session
+            user
           }
-        } =
-          await supabase.auth.getSession();
+        } = await supabase.auth.getUser();
 
 
-        if (!session) {
-
-          alert(
-            "Please login before adding products to your cart."
-          );
-
+        if (!user) {
 
           window.location.href =
-            "login.html?redirect=" +
-            encodeURIComponent(
-              window.location.pathname +
-              window.location.search
-            );
-
+            "./login.html";
 
           return;
+
         }
 
 
-        const userId =
-          session.user.id;
+        const stock = Number(
+          product.stock ?? 0
+        );
 
+
+        if (stock <= 0) {
+
+          showMessage(
+            "This product is out of stock.",
+            true
+          );
+
+          return;
+
+        }
+
+
+        /* =========================
+           CHECK EXISTING CART ITEM
+        ========================= */
 
         const {
           data: existing,
           error: existingError
-        } =
-          await supabase
-            .from("cart_items")
-            .select("*")
-            .eq("user_id", userId)
-            .eq("product_id", product.id)
-            .maybeSingle();
+        } = await supabase
+          .from("cart_items")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("product_id", product.id)
+          .maybeSingle();
 
 
         if (existingError) {
@@ -931,126 +842,94 @@
             existingError
           );
 
-          alert(
-            "Could not check your cart."
-          );
-
-          return;
         }
-
-
-        let result;
 
 
         if (existing) {
 
-          let newQuantity =
-            Number(existing.quantity || 0) +
-            quantity;
+          const newQuantity =
+            Number(existing.quantity || 0)
+            + quantity;
 
 
-          if (
-            newQuantity >
-            Number(product.stock)
-          ) {
+          if (newQuantity > stock) {
 
-            newQuantity =
-              Number(product.stock);
+            showMessage(
+              `Only ${stock} item(s) are available.`,
+              true
+            );
+
+            return;
 
           }
 
 
-          result =
-            await supabase
-              .from("cart_items")
-              .update({
-                quantity: newQuantity
-              })
-              .eq("id", existing.id)
-              .eq("user_id", userId);
+          const {
+            error
+          } = await supabase
+            .from("cart_items")
+            .update({
+              quantity: newQuantity
+            })
+            .eq("id", existing.id);
+
+
+          if (error) throw error;
+
 
         } else {
 
-          result =
-            await supabase
-              .from("cart_items")
-              .insert({
-                user_id: userId,
-                product_id: product.id,
-                quantity: quantity
-              });
+          const {
+            error
+          } = await supabase
+            .from("cart_items")
+            .insert({
+
+              user_id: user.id,
+
+              product_id: product.id,
+
+              quantity: quantity
+
+            });
+
+
+          if (error) throw error;
 
         }
 
 
-        if (result.error) {
-
-          console.error(
-            result.error
-          );
-
-          alert(
-            "Could not add product to cart: " +
-            result.error.message
-          );
-
-          return;
-        }
-
-
-        alert(
-          "Product added to your cart 🛒"
+        showMessage(
+          "Product added to cart successfully."
         );
-
-
-        quantity = 1;
-
-
-        const quantityElement =
-          document.getElementById(
-            "quantity"
-          );
-
-
-        if (quantityElement) {
-
-          quantityElement.textContent =
-            "1";
-
-        }
 
 
       } catch (error) {
 
-        console.error(error);
-
-        alert(
-          "Something went wrong: " +
-          error.message
+        console.error(
+          "ADD TO CART ERROR:",
+          error
         );
 
+        showMessage(
+          error.message ||
+          "Could not add product to cart.",
+          true
+        );
 
-      } finally {
-
-        if (button) {
-
-          button.disabled = false;
-
-          button.textContent =
-            "🛒 Add to Cart";
-
-        }
       }
+
     }
+  );
 
 
-    /*
-      START
-    */
+  /* =========================
+     START
+  ========================= */
 
-    loadProduct();
+  loadProduct();
 
-  </script>
+</script>
 
 </body>
 </html>

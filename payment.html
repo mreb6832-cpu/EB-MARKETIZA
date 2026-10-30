@@ -280,6 +280,19 @@
       line-height: 1.5;
     }
 
+    .stock-ok {
+      color: #16804a;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    .stock-error {
+      color: #a32020;
+      font-size: 11px;
+      margin-top: 5px;
+      font-weight: 700;
+    }
+
     footer {
       padding: 18px;
       text-align: center;
@@ -533,7 +546,6 @@
 
       </section>
 
-
       <aside class="card">
 
         <h2 class="section-title">
@@ -561,9 +573,7 @@
           <span id="total">0 kr</span>
         </div>
 
-        <div
-          id="currencyStatus"
-          class="currency-status">
+        <div id="currencyStatus" class="currency-status">
           Currency: SEK
         </div>
 
@@ -581,7 +591,6 @@
   <footer>
     © <span id="year"></span> EB-MARKETIZA
   </footer>
-
 
   <script type="module">
 
@@ -728,24 +737,13 @@
     updatePaymentCurrency();
 
 
-    /* ========================================================
-       COUNTRY CHANGE
-    ======================================================== */
-
     countrySelect.addEventListener(
       "change",
       () => {
-
         updatePaymentCurrency();
-
       }
     );
 
-
-    /* ========================================================
-       CURRENCY CHANGE
-       Country remains the source of truth.
-    ======================================================== */
 
     currencySelect.addEventListener(
       "change",
@@ -808,6 +806,66 @@
 
       payButton.disabled =
         disabled;
+
+    }
+
+
+    /* ========================================================
+       STOCK VALIDATION
+       IMPORTANT:
+       stock = 1 and quantity = 1 IS VALID.
+       Only quantity > stock is rejected.
+    ======================================================== */
+
+    function validateStock(
+      product,
+      quantity
+    ) {
+
+      const stock =
+        Number(product.stock);
+
+      const qty =
+        Number(quantity);
+
+
+      if (!Number.isInteger(qty) || qty < 1) {
+
+        throw new Error(
+          `Invalid quantity for ${product.name}.`
+        );
+
+      }
+
+
+      if (!Number.isFinite(stock)) {
+
+        throw new Error(
+          `Stock information is unavailable for ${product.name}.`
+        );
+
+      }
+
+
+      if (stock < 0) {
+
+        throw new Error(
+          `Invalid stock value for ${product.name}.`
+        );
+
+      }
+
+
+      if (qty > stock) {
+
+        throw new Error(
+          `Not enough stock for ${product.name}. Available: ${stock}, requested: ${qty}.`
+        );
+
+      }
+
+
+      return true;
 
     }
 
@@ -887,9 +945,44 @@
           );
 
 
+          const stockText =
+            document.createElement("div");
+
+
+          if (
+            Number.isFinite(
+              Number(item.stock)
+            )
+          ) {
+
+            if (
+              item.quantity <=
+              Number(item.stock)
+            ) {
+
+              stockText.className =
+                "stock-ok";
+
+              stockText.textContent =
+                `Stock available: ${item.stock}`;
+
+            } else {
+
+              stockText.className =
+                "stock-error";
+
+              stockText.textContent =
+                `Not enough stock. Available: ${item.stock}`;
+
+            }
+
+          }
+
+
           wrapper.append(
             name,
-            detail
+            detail,
+            stockText
           );
 
 
@@ -1088,16 +1181,47 @@
         }
 
 
-        const ids = [
-          ...new Set(
-            rows
-              .map(
-                row =>
-                  row.product_id
-              )
-              .filter(Boolean)
-          )
-        ];
+        /* ====================================================
+           COMBINE DUPLICATE CART ROWS
+        ==================================================== */
+
+        const quantityMap =
+          new Map();
+
+
+        for (const row of rows) {
+
+          const productId =
+            String(row.product_id);
+
+          const quantity =
+            Number(row.quantity);
+
+
+          if (
+            !Number.isInteger(quantity) ||
+            quantity < 1
+          ) {
+
+            throw new Error(
+              "Your cart contains an invalid quantity."
+            );
+
+          }
+
+
+          quantityMap.set(
+            productId,
+            (
+              quantityMap.get(productId) || 0
+            ) + quantity
+          );
+
+        }
+
+
+        const ids =
+          [...quantityMap.keys()];
 
 
         const {
@@ -1131,92 +1255,72 @@
           );
 
 
-        cart =
-          rows.map(row => {
-
-            const product =
-              productMap.get(
-                String(
-                  row.product_id
-                )
-              );
+        cart = [];
 
 
-            if (!product) {
+        for (
+          const productId of ids
+        ) {
 
-              throw new Error(
-                "A product in your cart is unavailable. Update your cart."
-              );
-
-            }
-
-
-            const price =
-              Number(
-                product.price
-              );
+          const product =
+            productMap.get(productId);
 
 
-            const quantity =
-              Number(
-                row.quantity
-              );
+          if (!product) {
+
+            throw new Error(
+              "A product in your cart is unavailable. Please update your cart."
+            );
+
+          }
 
 
-            if (
-              !Number.isFinite(price) ||
-              price < 0
-            ) {
-
-              throw new Error(
-                "A product has an invalid price."
-              );
-
-            }
+          const price =
+            Number(product.price);
 
 
-            if (
-              !Number.isInteger(quantity) ||
-              quantity < 1
-            ) {
-
-              throw new Error(
-                "A product has an invalid quantity."
-              );
-
-            }
+          const quantity =
+            Number(
+              quantityMap.get(productId)
+            );
 
 
-            if (
-              product.stock != null &&
-              quantity >
-                Number(product.stock)
-            ) {
+          if (
+            !Number.isFinite(price) ||
+            price < 0
+          ) {
 
-              throw new Error(
-                "Not enough stock for " +
-                product.name +
-                "."
-              );
+            throw new Error(
+              `Invalid price for ${product.name}.`
+            );
 
-            }
+          }
 
 
-            return {
+          validateStock(
+            product,
+            quantity
+          );
 
-              id:
-                product.id,
 
-              name:
-                product.name,
+          cart.push({
 
-              price,
+            id:
+              product.id,
 
-              quantity
+            name:
+              product.name,
 
-            };
+            price,
+
+            quantity,
+
+            stock:
+              Number(product.stock)
 
           });
+
+        }
 
 
         renderCart();
@@ -1323,16 +1427,16 @@
 
 
         setButton(
-          "Preparing secure payment...",
+          "Checking stock...",
           true
         );
 
 
         try {
 
-          /* ===================================================
+          /* ==================================================
              CHECK SESSION
-          =================================================== */
+          ================================================== */
 
           const {
             data: sessionData,
@@ -1358,9 +1462,9 @@
           }
 
 
-          /* ===================================================
-             RECHECK PRODUCTS
-          =================================================== */
+          /* ==================================================
+             RECHECK LATEST PRODUCTS + STOCK
+          ================================================== */
 
           const ids =
             cart.map(
@@ -1400,92 +1504,138 @@
             );
 
 
-          cart =
-            cart.map(item => {
-
-              const product =
-                latestMap.get(
-                  String(item.id)
-                );
+          const refreshedCart = [];
 
 
-              if (!product) {
+          for (
+            const item of cart
+          ) {
 
-                throw new Error(
-                  item.name +
-                  " is no longer available."
-                );
-
-              }
-
-
-              const price =
-                Number(
-                  product.price
-                );
+            const product =
+              latestMap.get(
+                String(item.id)
+              );
 
 
-              if (
-                !Number.isFinite(price) ||
-                price < 0
-              ) {
+            if (!product) {
 
-                throw new Error(
-                  "Invalid price for " +
-                  product.name +
-                  "."
-                );
+              throw new Error(
+                `${item.name} is no longer available.`
+              );
 
-              }
+            }
 
 
-              if (
-                product.stock != null &&
-                item.quantity >
-                  Number(product.stock)
-              ) {
-
-                throw new Error(
-                  "Not enough stock for " +
-                  product.name +
-                  "."
-                );
-
-              }
+            const price =
+              Number(product.price);
 
 
-              return {
+            if (
+              !Number.isFinite(price) ||
+              price < 0
+            ) {
 
-                id:
-                  product.id,
+              throw new Error(
+                `Invalid price for ${product.name}.`
+              );
 
-                name:
-                  product.name,
+            }
 
-                price,
 
-                quantity:
-                  item.quantity
+            const quantity =
+              Number(item.quantity);
 
-              };
+
+            /* ================================================
+               THIS IS THE IMPORTANT STOCK CHECK
+               Example:
+               stock = 1
+               quantity = 1
+               => ACCEPT
+               
+               stock = 1
+               quantity = 2
+               => REJECT
+               ================================================ */
+
+            validateStock(
+              product,
+              quantity
+            );
+
+
+            refreshedCart.push({
+
+              id:
+                product.id,
+
+              name:
+                product.name,
+
+              price,
+
+              quantity,
+
+              stock:
+                Number(product.stock)
 
             });
+
+          }
+
+
+          cart =
+            refreshedCart;
 
 
           renderCart();
 
 
-          /* ===================================================
+          /* ==================================================
+             RECALCULATE TOTAL
+          ================================================== */
+
+          subtotal =
+            cart.reduce(
+              (sum, item) =>
+                sum +
+                (
+                  item.price *
+                  item.quantity
+                ),
+              0
+            );
+
+
+          if (
+            !Number.isFinite(subtotal) ||
+            subtotal < 0
+          ) {
+
+            throw new Error(
+              "Invalid order total."
+            );
+
+          }
+
+
+          /* ==================================================
              ADDRESS
-          =================================================== */
+          ================================================== */
 
           const address =
             getAddress();
 
 
-          /* ===================================================
+          /* ==================================================
              CREATE PENDING ORDER
-          =================================================== */
+          ================================================== */
+
+          setButton(
+            "Creating order...",
+            true
+          );
+
 
           const {
             data: order,
@@ -1526,9 +1676,9 @@
           orderCreated = true;
 
 
-          /* ===================================================
+          /* ==================================================
              ORDER ITEMS
-          =================================================== */
+          ================================================== */
 
           const orderItems =
             cart.map(item => ({
@@ -1545,7 +1695,6 @@
               quantity:
                 item.quantity,
 
-              // ADMIN PRICE ALWAYS REMAINS SEK
               unit_price:
                 item.price,
 
@@ -1574,16 +1723,16 @@
             );
 
             throw new Error(
-              "Your order was created, but its items could not be saved. Contact the store before trying again. Order ID: " +
+              "Your order was created, but its items could not be saved. Order ID: " +
               order.id
             );
 
           }
 
 
-          /* ===================================================
+          /* ==================================================
              COUNTRY → CURRENCY
-          =================================================== */
+          ================================================== */
 
           const countryCode =
             getCountryCode();
@@ -1595,9 +1744,15 @@
             );
 
 
-          /* ===================================================
-             EB SHOP PAYMENT API
-          =================================================== */
+          /* ==================================================
+             PAYMENT API
+          ================================================== */
+
+          setButton(
+            "Opening secure payment...",
+            true
+          );
+
 
           const response =
             await fetch(
@@ -1652,7 +1807,8 @@
             throw new Error(
               "Payment server returned an unexpected response (HTTP " +
               response.status +
-              "). Your order may still be pending. Check your order status before retrying."
+              "). The order is pending. Order ID: " +
+              order.id
             );
 
           }
@@ -1676,9 +1832,9 @@
           }
 
 
-          /* ===================================================
+          /* ==================================================
              SECURE REDIRECT
-          =================================================== */
+          ================================================== */
 
           const checkoutUrl =
             new URL(

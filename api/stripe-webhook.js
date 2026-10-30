@@ -1,22 +1,28 @@
-
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
-// Stripe needs the original request body to verify the signature.
+// Stripe needs the original request body
+// to verify the webhook signature.
 export const config = {
   api: {
     bodyParser: false
   }
 };
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(
+  process.env.STRIPE_SECRET_KEY
+);
 
 function getRawBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
 
     req.on("data", (chunk) => {
-      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+      chunks.push(
+        Buffer.isBuffer(chunk)
+          ? chunk
+          : Buffer.from(chunk)
+      );
     });
 
     req.on("end", () => {
@@ -28,6 +34,11 @@ function getRawBody(req) {
 }
 
 export default async function handler(req, res) {
+
+  // ----------------------------------------------------------
+  // METHOD
+  // ----------------------------------------------------------
+
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method not allowed"
@@ -35,20 +46,32 @@ export default async function handler(req, res) {
   }
 
   try {
+
+    // --------------------------------------------------------
+    // ENVIRONMENT VARIABLES
+    // --------------------------------------------------------
+
     if (
       !process.env.STRIPE_SECRET_KEY ||
       !process.env.STRIPE_WEBHOOK_SECRET ||
       !process.env.SUPABASE_URL ||
       !process.env.SUPABASE_SERVICE_ROLE_KEY
     ) {
-      console.error("A required environment variable is missing.");
+      console.error(
+        "A required environment variable is missing."
+      );
 
       return res.status(500).json({
         error: "Server configuration is incomplete"
       });
     }
 
-    const signature = req.headers["stripe-signature"];
+    // --------------------------------------------------------
+    // STRIPE SIGNATURE
+    // --------------------------------------------------------
+
+    const signature =
+      req.headers["stripe-signature"];
 
     if (!signature) {
       return res.status(400).json({
@@ -56,17 +79,35 @@ export default async function handler(req, res) {
       });
     }
 
-    const rawBody = await getRawBody(req);
+    // --------------------------------------------------------
+    // RAW BODY
+    // --------------------------------------------------------
 
-    const event = stripe.webhooks.constructEvent(
-      rawBody,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
+    const rawBody =
+      await getRawBody(req);
 
-    const isCompleted = event.type === "checkout.session.completed";
+    // --------------------------------------------------------
+    // VERIFY STRIPE EVENT
+    // --------------------------------------------------------
+
+    const event =
+      stripe.webhooks.constructEvent(
+        rawBody,
+        signature,
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+
+    // --------------------------------------------------------
+    // ONLY PROCESS SUCCESSFUL PAYMENTS
+    // --------------------------------------------------------
+
+    const isCompleted =
+      event.type ===
+      "checkout.session.completed";
+
     const isAsyncPaid =
-      event.type === "checkout.session.async_payment_succeeded";
+      event.type ===
+      "checkout.session.async_payment_succeeded";
 
     if (!isCompleted && !isAsyncPaid) {
       return res.status(200).json({
@@ -75,81 +116,125 @@ export default async function handler(req, res) {
       });
     }
 
-    const session = event.data.object;
+    const session =
+      event.data.object;
 
-    // Do not mark an unpaid Checkout Session as paid.
-    if (isCompleted && session.payment_status !== "paid") {
+    // For normal Checkout payments,
+    // make sure Stripe says the payment is actually paid.
+    if (
+      isCompleted &&
+      session.payment_status !== "paid"
+    ) {
       return res.status(200).json({
         received: true,
         paymentPending: true
       });
     }
 
+    // --------------------------------------------------------
+    // ORDER ID
+    // --------------------------------------------------------
+
     const orderId =
       session.metadata?.order_id ||
       session.client_reference_id;
 
     if (!orderId) {
-      console.error("Stripe session has no order ID:", session.id);
+      console.error(
+        "Stripe session has no order ID:",
+        session.id
+      );
 
       return res.status(400).json({
-        error: "Order ID not found in Stripe session"
+        error:
+          "Order ID not found in Stripe session"
       });
     }
 
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
-      {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false
-        }
-      }
-    );
+    // --------------------------------------------------------
+    // SUPABASE SERVER CLIENT
+    // --------------------------------------------------------
 
-    const { data, error } = await supabase
-      .from("orders")
-      .update({
-        payment_status: "paid",
-        payment_reference: session.id,
-        order_status: "new",
-        updated_at: new Date().toISOString()
-      })
-      .eq("id", orderId)
-      .select("id")
-      .maybeSingle();
+    const supabase =
+      createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY,
+        {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false
+          }
+        }
+      );
+
+    // --------------------------------------------------------
+    // COMPLETE ORDER + REDUCE STOCK
+    // --------------------------------------------------------
+    //
+    // This RPC performs everything inside
+    // one database transaction:
+    //
+    // 1. Checks whether order was already paid
+    // 2. Locks products
+    // 3. Checks stock
+    // 4. Reduces stock
+    // 5. Marks order as paid
+    // 6. Removes purchased items from cart
+    //
+    // This prevents duplicate webhook deliveries
+    // from reducing stock twice.
+    // --------------------------------------------------------
+
+    const {
+      data,
+      error
+    } =
+      await supabase.rpc(
+        "complete_paid_order",
+        {
+          p_order_id: orderId
+        }
+      );
 
     if (error) {
-      console.error("Supabase order update failed:", error.message);
+      console.error(
+        "Order completion failed:",
+        error.message
+      );
 
       return res.status(500).json({
-        error: "Failed to update order"
+        error:
+          "Failed to complete paid order"
       });
     }
 
-    if (!data) {
-      console.error("Order not found in Supabase:", orderId);
+    console.log(
+      "Paid order processed:",
+      orderId,
+      data
+    );
 
-      // Return an error so Stripe can retry after the order is fixed.
-      return res.status(500).json({
-        error: "Order not found in Supabase",
-        orderId
-      });
-    }
-
-    console.log("Order marked as paid:", orderId);
+    // --------------------------------------------------------
+    // SUCCESS
+    // --------------------------------------------------------
 
     return res.status(200).json({
       received: true,
       orderId,
-      paymentStatus: "paid"
+      paymentStatus: "paid",
+      result: data
     });
+
   } catch (error) {
-    console.error("Stripe webhook error:", error.message);
+
+    console.error(
+      "Stripe webhook error:",
+      error.message
+    );
 
     return res.status(400).json({
-      error: "Webhook verification or processing failed"
+      error:
+        "Webhook verification or processing failed"
     });
   }
 }

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Analytics | EB-MARKETIZA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f4f6fb;color:#172033}
+header{background:#111827;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+header h1{font-size:22px}
+header a,button{border:0;border-radius:8px;padding:11px 16px;text-decoration:none;cursor:pointer;font-weight:bold}
+header a{background:#374151;color:white}
+button{background:#16a34a;color:white}
+main{max-width:1150px;margin:30px auto;padding:0 18px}
+h2{margin-bottom:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;margin-bottom:30px}
+.card{background:white;padding:23px;border-radius:14px;box-shadow:0 3px 15px #0000000a}
+.card p{color:#64748b;font-size:14px;margin-bottom:12px}
+.card strong{font-size:30px}
+.panel{background:white;padding:22px;border-radius:14px;margin-bottom:22px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:500px}
+th,td{text-align:left;padding:13px;border-bottom:1px solid #e5e7eb;font-size:14px}
+th{color:#64748b}
+#status{color:#64748b;font-size:13px;margin-top:12px}
+@media(max-width:500px){header h1{font-size:18px}.card strong{font-size:25px}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>EB MARKETIZA — Live Analytics</h1>
+  <div>
+    <a href="admin.html">Admin Dashboard</a>
+    <button id="refreshBtn">Refresh</button>
+  </div>
+</header>
+
+<main>
+  <h2>Website Performance</h2>
+
+  <section class="cards">
+    <div class="card">
+      <p>Total Visitors</p>
+      <strong id="visitors">—</strong>
+    </div>
+    <div class="card">
+      <p>Page Views</p>
+      <strong id="views">—</strong>
+    </div>
+    <div class="card">
+      <p>Unique Visitors</p>
+      <strong id="unique">—</strong>
+    </div>
+    <div class="card">
+      <p>Pages Tracked</p>
+      <strong id="pages">—</strong>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Top Pages</h2>
+    <table>
+      <thead><tr><th>Page</th><th>Views</th></tr></thead>
+      <tbody id="topPages">
+        <tr><td colspan="2">Loading...</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <h2>Recent Visits</h2>
+    <table>
+      <thead><tr><th>Page</th><th>Date</th></tr></thead>
+      <tbody id="recentVisits">
+        <tr><td colspan="2">Loading...</td></tr>
+      </tbody>
+    </table>
+    <p id="status">Checking analytics...</p>
+  </section>
+</main>
+
+<script type="module">
+import { supabase } from "./supabaseClient.js";
+
+const ADMIN_EMAIL = "mucyoemmy539@gmail.com";
+
+const visitorsEl = document.getElementById("visitors");
+const viewsEl = document.getElementById("views");
+const uniqueEl = document.getElementById("unique");
+const pagesEl = document.getElementById("pages");
+const topPagesEl = document.getElementById("topPages");
+const recentEl = document.getElementById("recentVisits");
+const statusEl = document.getElementById("status");
+
+async function loadAnalytics(){
+  statusEl.textContent = "Loading analytics...";
+
+  try {
+    const { data: { user }, error: authError } =
+      await supabase.auth.getUser();
+
+    if(authError || !user || user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){
+      document.body.innerHTML =
+        "<h2 style='padding:40px'>Access denied. Admin only.</h2>";
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("visitor_events")
+      .select("session_id,page_path,visited_at")
+      .order("visited_at",{ascending:false})
+      .limit(10000);
+
+    if(error) throw error;
+
+    const events = data || [];
+    const uniqueVisitors = new Set(events.map(x => x.session_id));
+    const pageCounts = {};
+
+    events.forEach(event => {
+      pageCounts[event.page_path] =
+        (pageCounts[event.page_path] || 0) + 1;
+    });
+
+    visitorsEl.textContent = uniqueVisitors.size.toLocaleString();
+    viewsEl.textContent = events.length.toLocaleString();
+    uniqueEl.textContent = uniqueVisitors.size.toLocaleString();
+    pagesEl.textContent = Object.keys(pageCounts).length.toLocaleString();
+
+    const sortedPages = Object.entries(pageCounts)
+      .sort((a,b) => b[1]-a[1]);
+
+    topPagesEl.innerHTML = "";
+
+    if(!sortedPages.length){
+      topPagesEl.innerHTML =
+        "<tr><td colspan='2'>No visits recorded yet.</td></tr>";
+    } else {
+      sortedPages.forEach(([page,count]) => {
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        const td2 = document.createElement("td");
+        td1.textContent = page;
+        td2.textContent = count.toLocaleString();
+        tr.append(td1,td2);
+        topPagesEl.appendChild(tr);
+      });
+    }
+
+    recentEl.innerHTML = "";
+
+    if(!events.length){
+      recentEl.innerHTML =
+        "<tr><td colspan='2'>No visits recorded yet.</td></tr>";
+    } else {
+      events.slice(0,20).forEach(event => {
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        const td2 = document.createElement("td");
+        td1.textContent = event.page_path;
+        td2.textContent =
+          new Date(event.visited_at).toLocaleString();
+        tr.append(td1,td2);
+        recentEl.appendChild(tr);
+      });
+    }
+
+    statusEl.textContent =
+      "Last updated: " + new Date().toLocaleTimeString();
+
+  } catch(error) {
+    console.error(error);
+    statusEl.textContent =
+      "Could not load analytics: " + error.message;
+  }
+}
+
+document.getElementById("refreshBtn")
+  .addEventListener("click",loadAnalytics);
+
+loadAnalytics();
+setInterval(loadAnalytics,30000);
+</script>
+
+</body>
+</html>
